@@ -49,13 +49,20 @@ export function Home({ onNavigate }: Props) {
             <p className="text-sm text-slate-500 dark:text-slate-400">Organiza tu compra inteligente</p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => onNavigate('map_demo')}
+              className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors flex items-center justify-center"
+              title="Demo amCharts"
+            >
+              <MapPin className="w-6 h-6" />
+            </button>
             <button className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors">
               <Bell className="w-6 h-6" />
             </button>
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
-              <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tony" 
-                alt="User profile" 
+              <img
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tony"
+                alt="User profile"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -72,8 +79,8 @@ export function Home({ onNavigate }: Props) {
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="text-slate-400 group-focus-within:text-primary transition-colors w-5 h-5" />
           </div>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar alimentos..."
             className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400 transition-all pointer-events-none"
             readOnly
@@ -81,23 +88,21 @@ export function Home({ onNavigate }: Props) {
         </div>
 
         <div className="flex gap-8 px-4 mt-6 border-b border-slate-200 dark:border-slate-700">
-          <button 
+          <button
             onClick={() => setActiveTab('pendientes')}
-            className={`pb-3 text-sm font-bold transition-colors ${
-              activeTab === 'pendientes' 
-                ? 'text-primary border-b-2 border-primary' 
+            className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'pendientes'
+                ? 'text-primary border-b-2 border-primary'
                 : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
-            }`}
+              }`}
           >
             Pendientes
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('realizadas')}
-            className={`pb-3 text-sm font-bold transition-colors ${
-              activeTab === 'realizadas' 
-                ? 'text-primary border-b-2 border-primary' 
+            className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'realizadas'
+                ? 'text-primary border-b-2 border-primary'
                 : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
-            }`}
+              }`}
           >
             Realizadas
           </button>
@@ -113,10 +118,10 @@ export function Home({ onNavigate }: Props) {
           {activeTab === 'pendientes' ? (
             <div className="space-y-4">
               {pendingLists.length === 0 ? (
-                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
-                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                   <p className="text-slate-500 text-sm">No tienes listas pendientes.</p>
-                 </div>
+                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 text-sm">No tienes listas pendientes.</p>
+                </div>
               ) : (
                 pendingLists.map(list => (
                   <div
@@ -141,7 +146,7 @@ export function Home({ onNavigate }: Props) {
                       <div className="flex -space-x-2">
                         {list.items.slice(0, 3).map((item, idx) => (
                           <div key={idx} className="w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 bg-slate-200 overflow-hidden">
-                             {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
+                            {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
                           </div>
                         ))}
                       </div>

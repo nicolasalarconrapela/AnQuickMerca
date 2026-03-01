@@ -7,6 +7,7 @@ import { Home } from './screens/Home';
 import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
+import { MapDemo } from './screens/MapDemo';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { APP_VERSION } from './version';
 
@@ -46,6 +47,7 @@ function MainApp() {
       {currentScreen === 'list_detail' && <ListDetail onBack={() => navigate('home')} onNavigate={navigate} />}
       {currentScreen === 'layout_organization' && <LayoutOrganization onBack={() => navigate('list_detail')} onNext={() => navigate('active_navigation')} />}
       {currentScreen === 'active_navigation' && <ActiveNavigation onBack={() => navigate('list_detail')} />}
+      {currentScreen === 'map_demo' && <MapDemo onBack={() => navigate('home')} />}
 
       {/* Global version tag */}
       <div className="absolute bottom-2 left-4 pointer-events-none opacity-30">
