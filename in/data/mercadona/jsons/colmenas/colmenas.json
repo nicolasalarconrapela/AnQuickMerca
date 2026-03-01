@@ -1,0 +1,39 @@
+{
+  "colmenas": {
+    "mad1": {
+      "label": "mad1 - Madrid (Coslada)",
+      "index": "products_prod_mad1_es"
+    },
+    "bcn1": {
+      "label": "bcn1 - Barcelona (Zona Franca)",
+      "index": "products_prod_bcn1_es"
+    },
+    "vlc1": {
+      "label": "vlc1 - Valencia (Vara de Quart)",
+      "index": "products_prod_vlc1_es"
+    },
+    "svq1": {
+      "label": "svq1 - Sevilla (Híspalis)",
+      "index": "products_prod_svq1_es"
+    }
+  },
+  "ccaa_to_colmena": {
+    "AND": "svq1",
+    "ARA": "bcn1",
+    "AST": "mad1",
+    "BAL": "bcn1",
+    "CAN": "svq1",
+    "CAB": "mad1",
+    "CAT": "bcn1",
+    "CLM": "mad1",
+    "CYL": "mad1",
+    "EXT": "mad1",
+    "GAL": "mad1",
+    "MAD": "mad1",
+    "MUR": "vlc1",
+    "NAV": "mad1",
+    "PV": "mad1",
+    "RIO": "mad1",
+    "VAL": "vlc1"
+  }
+}
