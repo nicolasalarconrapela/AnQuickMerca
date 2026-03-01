@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ShoppingList, Product, ListItem } from '../types';
+import { ShoppingList, ListItem } from '../types';
 
 interface AppContextType {
   lists: ShoppingList[];
   activeListId: string | null;
   selectedStore: any | null;
+  favoriteStores: string[];
   setLists: (lists: ShoppingList[]) => void;
   setActiveListId: (id: string | null) => void;
   setSelectedStore: (store: any | null) => void;
+  setFavoriteStores: (storeIds: string[]) => void;
   addList: (list: ShoppingList) => void;
   updateList: (id: string, updates: Partial<ShoppingList>) => void;
   deleteList: (id: string) => void;
@@ -30,16 +32,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [lists, setLists] = useState<ShoppingList[]>([]);
   const [activeListId, setActiveListId] = useState<string | null>(null);
   const [selectedStore, setSelectedStore] = useState<any | null>(null);
+  const [favoriteStores, setFavoriteStores] = useState<string[]>([]);
 
   // Load from local storage
   useEffect(() => {
     const savedLists = localStorage.getItem('lists');
     const savedStore = localStorage.getItem('selectedStore');
+    const savedFavorites = localStorage.getItem('favoriteStores');
 
     if (savedStore) {
       setSelectedStore(JSON.parse(savedStore));
-    } else {
-      setSelectedStore({ id: '1', name: 'Mercadona Sevilla Centro', address: 'Calle San Eloy, 15, 41001 Sevilla' });
+    }
+
+    if (savedFavorites) {
+      setFavoriteStores(JSON.parse(savedFavorites));
     }
 
     if (savedLists) {
@@ -77,6 +83,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('selectedStore', JSON.stringify(selectedStore));
     }
   }, [selectedStore]);
+
+  useEffect(() => {
+    localStorage.setItem('favoriteStores', JSON.stringify(favoriteStores));
+  }, [favoriteStores]);
 
   const addList = (list: ShoppingList) => setLists([...lists, list]);
 
@@ -135,9 +145,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       lists,
       activeListId,
       selectedStore,
+      favoriteStores,
       setLists,
       setActiveListId,
       setSelectedStore,
+      setFavoriteStores,
       addList,
       updateList,
       deleteList,

@@ -18,14 +18,14 @@ function MainApp() {
     // Simulate splash screen delay
     if (currentScreen === 'splash') {
       const timer = setTimeout(() => {
-        // Simple check to skip onboarding if already configured
+        // Skip onboarding directly to store selection as requested
         const hasStore = localStorage.getItem('selectedStore');
         if (hasStore) {
           setCurrentScreen('home');
         } else {
-          setCurrentScreen('onboarding');
+          setCurrentScreen('store_selection'); // Used to be onboarding
         }
-      }, 2000);
+      }, 2000); // match progress bar time approx
       return () => clearTimeout(timer);
     }
   }, [currentScreen]);
