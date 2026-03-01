@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Search, Star } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 
 interface Props {
   onNext: () => void;
 }
 
 export function StoreSelection({ onNext }: Props) {
-  const [selectedStore, setSelectedStore] = useState<string | null>(null);
+  const { selectedStore, setSelectedStore } = useAppContext();
+  const [selectedId, setSelectedId] = useState<string | null>(selectedStore?.id || null);
 
   const stores = [
     { id: '1', name: 'Mercadona Sevilla Centro', address: 'Calle San Eloy, 15, 41001 Sevilla', favorite: false },
@@ -15,7 +17,11 @@ export function StoreSelection({ onNext }: Props) {
   ];
 
   const handleSelect = (id: string) => {
-    setSelectedStore(id);
+    setSelectedId(id);
+    const store = stores.find(s => s.id === id);
+    if (store) {
+      setSelectedStore(store);
+    }
     setTimeout(() => {
       onNext();
     }, 300);
@@ -67,16 +73,16 @@ export function StoreSelection({ onNext }: Props) {
               key={store.id}
               onClick={() => handleSelect(store.id)}
               className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                selectedStore === store.id 
+                selectedId === store.id
                   ? 'border-primary bg-primary/5' 
                   : 'border-slate-100 dark:border-slate-800 hover:border-primary/30'
               }`}
             >
               <div className="mr-4">
                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  selectedStore === store.id ? 'border-primary' : 'border-slate-300'
+                  selectedId === store.id ? 'border-primary' : 'border-slate-300'
                 }`}>
-                  {selectedStore === store.id && <div className="w-3 h-3 bg-primary rounded-full" />}
+                  {selectedId === store.id && <div className="w-3 h-3 bg-primary rounded-full" />}
                 </div>
               </div>
               

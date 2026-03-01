@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Screen, ShoppingList } from './types';
+import { Screen } from './types';
 import { Splash } from './screens/Splash';
 import { Onboarding } from './screens/Onboarding';
 import { StoreSelection } from './screens/StoreSelection';
@@ -8,16 +8,23 @@ import { ProductSearch } from './screens/ProductSearch';
 import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
+import { AppProvider, useAppContext } from './context/AppContext';
 
-export default function App() {
+function MainApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
-  const [selectedListId, setSelectedListId] = useState<string | null>(null);
+  const { setActiveListId, lists } = useAppContext();
 
   useEffect(() => {
     // Simulate splash screen delay
     if (currentScreen === 'splash') {
       const timer = setTimeout(() => {
-        setCurrentScreen('onboarding');
+        // Simple check to skip onboarding if already configured
+        const hasStore = localStorage.getItem('selectedStore');
+        if (hasStore) {
+          setCurrentScreen('home');
+        } else {
+          setCurrentScreen('onboarding');
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -25,7 +32,7 @@ export default function App() {
 
   const navigate = (screen: Screen, params?: any) => {
     if (params?.listId) {
-      setSelectedListId(params.listId);
+      setActiveListId(params.listId);
     }
     setCurrentScreen(screen);
   };
@@ -36,11 +43,18 @@ export default function App() {
       {currentScreen === 'onboarding' && <Onboarding onNext={() => navigate('store_selection')} />}
       {currentScreen === 'store_selection' && <StoreSelection onNext={() => navigate('home')} />}
       {currentScreen === 'home' && <Home onNavigate={navigate} />}
-      {currentScreen === 'product_search' && <ProductSearch onBack={() => navigate('home')} />}
-      {currentScreen === 'list_detail' && <ListDetail listId={selectedListId} onBack={() => navigate('home')} onNavigate={navigate} />}
+      {currentScreen === 'product_search' && <ProductSearch onBack={() => navigate('home')} onNavigate={navigate} />}
+      {currentScreen === 'list_detail' && <ListDetail onBack={() => navigate('home')} onNavigate={navigate} />}
       {currentScreen === 'layout_organization' && <LayoutOrganization onBack={() => navigate('list_detail')} onNext={() => navigate('active_navigation')} />}
       {currentScreen === 'active_navigation' && <ActiveNavigation onBack={() => navigate('list_detail')} />}
     </div>
   );
 }
 
+export default function App() {
+  return (
+    <AppProvider>
+      <MainApp />
+    </AppProvider>
+  );
+}
