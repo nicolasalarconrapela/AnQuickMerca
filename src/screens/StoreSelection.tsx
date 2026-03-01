@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Search, Star } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import { AVAILABLE_STORES } from '../types';
 
 interface Props {
   onNext: () => void;
@@ -10,18 +11,9 @@ export function StoreSelection({ onNext }: Props) {
   const { selectedStore, setSelectedStore, favoriteStores, setFavoriteStores } = useAppContext();
   const [selectedId, setSelectedId] = useState<string | null>(selectedStore?.id || null);
 
-  const stores = [
-    { id: '1', name: 'Mercadona Sevilla Centro', address: 'Calle San Eloy, 15, 41001 Sevilla' },
-    { id: '2', name: 'Mercadona Nervión', address: 'Av. de Eduardo Dato, 64, 41005 Sevilla' },
-    { id: '3', name: 'Mercadona Los Remedios', address: 'Calle Arcos, 14, 41011 Sevilla' },
-    { id: '4', name: 'Mercadona Triana', address: 'Calle San Jacinto, 45, 41010 Sevilla' },
-    { id: '5', name: 'Mercadona Macarena', address: 'Av. de la Cruz Roja, 34, 41009 Sevilla' },
-    { id: '6', name: 'Mercadona Santa Justa', address: 'Calle Pablo Picasso, 2, 41018 Sevilla' },
-  ];
-
   const handleSelect = (id: string) => {
     setSelectedId(id);
-    const store = stores.find(s => s.id === id);
+    const store = AVAILABLE_STORES.find(s => s.id === id);
     if (store) {
       setSelectedStore(store);
     }
@@ -86,7 +78,7 @@ export function StoreSelection({ onNext }: Props) {
         </div>
 
         <div className="space-y-3">
-          {stores.map(store => {
+          {AVAILABLE_STORES.map(store => {
             const isFavorite = favoriteStores.includes(store.id);
             return (
               <div

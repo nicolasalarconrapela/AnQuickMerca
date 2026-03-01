@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, MoreVertical, Edit2, Search, Minus, Plus, Trash2, ShoppingBasket, Route } from 'lucide-react';
-import { Screen } from '../types';
+import { ArrowLeft, Edit2, Search, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock } from 'lucide-react';
+import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
 
 interface Props {
@@ -9,14 +9,17 @@ interface Props {
 }
 
 export function ListDetail({ onBack, onNavigate }: Props) {
-  const { lists, activeListId, updateItemInList, removeItemFromList } = useAppContext();
+  const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList } = useAppContext();
   const list = lists.find(l => l.id === activeListId);
+
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editNameValue, setEditNameValue] = useState('');
 
   if (!list) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Lista no encontrada</p>
-        <button onClick={onBack} className="mt-4 bg-primary text-white px-4 py-2 rounded-lg">Volver</button>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background-light dark:bg-background-dark">
+        <p className="text-slate-500 mb-4">Lista no encontrada</p>
+        <button onClick={onBack} className="bg-primary text-white px-6 py-3 rounded-lg font-bold">Volver</button>
       </div>
     );
   }
@@ -42,34 +45,121 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     removeItemFromList(list.id, id);
   };
 
+  const handleStoreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+     updateList(list.id, { storeName: e.target.value });
+  };
+
+  const toggleWeekly = () => {
+     updateList(list.id, { repeatWeekly: !list.repeatWeekly });
+  };
+
+  const handleDeleteList = () => {
+     if (window.confirm('¿Seguro que quieres eliminar esta lista?')) {
+        deleteList(list.id);
+        onBack();
+     }
+  };
+
+  const handleNameSave = () => {
+    if (editNameValue.trim()) {
+      updateList(list.id, { name: editNameValue.trim() });
+    }
+    setIsEditingName(false);
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleNameSave();
+    if (e.key === 'Escape') setIsEditingName(false);
+  };
+
   const checkedCount = items.filter(i => i.checked).length;
   const totalCount = items.length;
   const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
 
   const totalEstimated = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
+  // Status Label
+  let statusLabel = 'Pdte';
+  let statusColor = 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
+
+  if (totalCount > 0 && checkedCount > 0 && checkedCount < totalCount) {
+    statusLabel = `Proceso (${checkedCount}/${totalCount})`;
+    statusColor = 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+  } else if (totalCount > 0 && checkedCount === totalCount) {
+    statusLabel = 'Hecho';
+    statusColor = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400';
+  } else if (list.status === 'completed') {
+    statusLabel = 'Hecho';
+    statusColor = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400';
+  }
+
   return (
-    <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-32 font-display">
+    <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-40 font-display">
       <header className="sticky top-0 z-30 bg-background-light dark:bg-background-dark px-4 pt-4 pb-2 border-b border-primary/10">
         <div className="flex items-center justify-between h-12">
           <button onClick={onBack} className="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
             <ArrowLeft className="w-6 h-6 text-slate-700 dark:text-slate-300" />
           </button>
-          <button className="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
-            <MoreVertical className="w-6 h-6 text-slate-700 dark:text-slate-300" />
-          </button>
+          <div className={`px-3 py-1 rounded-full text-xs font-bold ${statusColor}`}>
+            {statusLabel}
+          </div>
         </div>
         
         <div className="mt-2">
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">{list.name}</h1>
-            <Edit2 className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="flex items-center gap-2 group mb-1">
+            {isEditingName ? (
+               <input
+                 type="text"
+                 autoFocus
+                 value={editNameValue}
+                 onChange={e => setEditNameValue(e.target.value)}
+                 onBlur={handleNameSave}
+                 onKeyDown={handleNameKeyDown}
+                 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 bg-transparent border-b-2 border-primary outline-none p-0 focus:ring-0"
+               />
+            ) : (
+               <>
+                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 cursor-pointer" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }}>
+                   {list.name}
+                 </h1>
+                 <Edit2 className="w-4 h-4 text-slate-400 cursor-pointer" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }} />
+               </>
+            )}
           </div>
-          <p className="text-primary font-medium text-sm mt-0.5">{list.storeName}</p>
+
+          <div className="flex flex-col gap-2 mt-2">
+            <select
+              value={list.storeName}
+              onChange={handleStoreChange}
+              className="w-full text-sm font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-primary focus:ring-2 focus:ring-primary outline-none"
+            >
+              <option value="Mercadona">Seleccionar tienda...</option>
+              {AVAILABLE_STORES.map(store => (
+                <option key={store.id} value={store.name}>{store.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </header>
 
-      <section className="px-4 py-4">
+      {/* Action buttons section */}
+      <section className="px-4 py-3 flex gap-2">
+         <button
+           onClick={toggleWeekly}
+           className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-sm font-semibold transition-colors ${list.repeatWeekly ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/20 dark:border-indigo-800 dark:text-indigo-400' : 'bg-white border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400 hover:border-slate-300'}`}
+         >
+           <CalendarClock className="w-4 h-4" />
+           {list.repeatWeekly ? 'Semanal: Activado' : 'Programar semanal'}
+         </button>
+         <button
+           onClick={handleDeleteList}
+           className="flex items-center justify-center py-2 px-4 rounded-xl border border-red-200 bg-red-50 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 transition-colors"
+         >
+           <Trash2 className="w-4 h-4" />
+         </button>
+      </section>
+
+      <section className="px-4 py-2">
         <div className="bg-white dark:bg-slate-800/50 p-4 rounded-xl shadow-sm border border-primary/5">
           <div className="flex justify-between items-end mb-3">
             <span className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Progreso de la lista</span>
