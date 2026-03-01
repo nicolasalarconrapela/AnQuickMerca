@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowLeft, ShoppingCart, Search, Plus, Package, Check } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Search, Plus, Package, Check, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import { ListItem, Screen } from '../types';
+import { ListItem, ShoppingList, Screen } from '../types';
 
 interface Props {
   onBack: () => void;
@@ -12,8 +12,13 @@ export function ProductSearch({ onBack, onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'todo' | 'fresco' | 'despensa'>('todo');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { addItemToList, activeListId } = useAppContext();
+  const { lists, addItemToList, addList, setActiveListId, selectedStore } = useAppContext();
   const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
+
+  // Modal state
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+
+  const pendingLists = lists.filter(l => l.status === 'pending');
 
   const allProducts = [
     { id: 'p1', name: 'Hélices con vegetales', brand: 'Hacendado', category: 'Despensa', price: 1.60, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200&h=200&fit=crop' },
@@ -34,25 +39,56 @@ export function ProductSearch({ onBack, onNavigate }: Props) {
     });
   }, [searchQuery, activeTab]);
 
-  const handleAdd = (product: any) => {
-    if (!activeListId) {
-       alert("No hay una lista activa. Crea una desde Home.");
-       return;
-    }
+  const handleAddClick = (product: any) => {
+    setSelectedProduct(product);
+  };
+
+  const addItemToSpecificList = (listId: string) => {
+    if (!selectedProduct) return;
 
     const newItem: ListItem = {
-      ...product,
+      ...selectedProduct,
       quantity: 1,
       checked: false
     };
 
-    addItemToList(activeListId, newItem);
+    addItemToList(listId, newItem);
 
     // Visual feedback
-    setAddedItems(prev => ({ ...prev, [product.id]: true }));
+    setAddedItems(prev => ({ ...prev, [selectedProduct.id]: true }));
     setTimeout(() => {
-      setAddedItems(prev => ({ ...prev, [product.id]: false }));
+      setAddedItems(prev => ({ ...prev, [selectedProduct.id]: false }));
     }, 1500);
+
+    setSelectedProduct(null);
+  };
+
+  const createListAndAddItem = () => {
+    if (!selectedProduct) return;
+
+    const newList: ShoppingList = {
+      id: Math.random().toString(36).substring(7),
+      name: `Lista ${new Date().toLocaleDateString()}`,
+      storeName: selectedStore?.name || 'Mercadona',
+      date: new Date().toLocaleDateString(),
+      items: [{
+         ...selectedProduct,
+         quantity: 1,
+         checked: false
+      }],
+      status: 'pending'
+    };
+
+    addList(newList);
+    setActiveListId(newList.id);
+
+    // Visual feedback
+    setAddedItems(prev => ({ ...prev, [selectedProduct.id]: true }));
+    setTimeout(() => {
+      setAddedItems(prev => ({ ...prev, [selectedProduct.id]: false }));
+    }, 1500);
+
+    setSelectedProduct(null);
   };
 
   return (
@@ -154,7 +190,7 @@ export function ProductSearch({ onBack, onNavigate }: Props) {
                 </div>
 
                 <button
-                  onClick={() => handleAdd(product)}
+                  onClick={() => handleAddClick(product)}
                   className={`flex items-center justify-center size-10 rounded-full transition-all active:scale-95 ${
                     addedItems[product.id]
                       ? 'bg-green-500 text-white shadow-md'
@@ -175,6 +211,68 @@ export function ProductSearch({ onBack, onNavigate }: Props) {
           </div>
         </div>
       </main>
+
+      {/* Modal / Bottom Sheet */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setSelectedProduct(null)}>
+          <div
+            className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-3xl shadow-2xl p-6 animate-in slide-in-from-bottom duration-300"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                Añadir a...
+              </h3>
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="bg-slate-100 dark:bg-slate-800 text-slate-500 p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-4 mb-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+              {selectedProduct.image ? (
+                <img src={selectedProduct.image} className="w-12 h-12 rounded object-cover" alt="" />
+              ) : (
+                <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center text-primary/50"><Package className="w-6 h-6" /></div>
+              )}
+              <div>
+                 <p className="font-bold text-slate-900 dark:text-slate-100">{selectedProduct.name}</p>
+                 <p className="text-xs text-slate-500">{selectedProduct.price.toFixed(2).replace('.', ',')} €</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
+              {pendingLists.length > 0 ? (
+                pendingLists.map(list => (
+                  <button
+                    key={list.id}
+                    onClick={() => addItemToSpecificList(list.id)}
+                    className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-primary/5 transition-colors flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-slate-100">{list.name}</p>
+                      <p className="text-xs text-slate-500">{list.items.length} productos • {list.storeName}</p>
+                    </div>
+                    <Plus className="text-primary w-5 h-5" />
+                  </button>
+                ))
+              ) : (
+                <p className="text-center text-slate-500 text-sm py-4">No tienes listas pendientes</p>
+              )}
+            </div>
+
+            <button
+              onClick={createListAndAddItem}
+              className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+              Crear lista nueva y añadir
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
