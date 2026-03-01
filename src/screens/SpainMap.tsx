@@ -137,6 +137,53 @@ export function StoreSelection({ onNext }: Props) {
 
     const availableCcaas = useMemo(() => new Set(ccaaMap.keys()), [ccaaMap]);
 
+    // Flatten hierarchy for global search
+    const searchableItems = useMemo(() => {
+        const items: {
+            id: string;
+            type: 'ccaa' | 'provincia' | 'poblacion';
+            name: string;
+            parentCcaa?: string;
+            parentProvincia?: string;
+            count: number;
+        }[] = [];
+
+        for (const [ccaaName, ccaaData] of ccaaMap.entries()) {
+            // Add CCAA
+            items.push({
+                id: `ccaa-${ccaaName}`,
+                type: 'ccaa',
+                name: ccaaName,
+                count: ccaaData.totalStores
+            });
+
+            for (const [provName, poblaciones] of ccaaData.provincias.entries()) {
+                // Add Provincia
+                const provStores = poblaciones.reduce((sum, p) => sum + p.stores.length, 0);
+                items.push({
+                    id: `prov-${ccaaName}-${provName}`,
+                    type: 'provincia',
+                    name: provName,
+                    parentCcaa: ccaaName,
+                    count: provStores
+                });
+
+                for (const pob of poblaciones) {
+                    // Add Poblacion
+                    items.push({
+                        id: `pob-${ccaaName}-${provName}-${pob.nombre}`,
+                        type: 'poblacion',
+                        name: pob.nombre,
+                        parentCcaa: ccaaName,
+                        parentProvincia: provName,
+                        count: pob.stores.length
+                    });
+                }
+            }
+        }
+        return items;
+    }, [ccaaMap]);
+
     // Data mapped for amCharts heatmap
     const mapValuesByRegion = useMemo(() => {
         const vals: Record<string, number> = {};
@@ -152,9 +199,9 @@ export function StoreSelection({ onNext }: Props) {
     // ─ Current slice ─
     const currentProvincias = useMemo(() => {
         if (!selectedCcaaName) return [];
-        const ccaa = ccaaMap.get(selectedCcaaName);
+        const ccaa = ccaaMap.get(selectedCcaaName) as CcaaData;
         if (!ccaa) return [];
-        return Array.from(ccaa.provincias.entries()).map(([name, pobs]) => ({
+        return Array.from(ccaa.provincias).map(([name, pobs]) => ({
             name,
             poblaciones: pobs,
             totalStores: pobs.reduce((a, p) => a + p.stores.length, 0),
@@ -244,6 +291,22 @@ export function StoreSelection({ onNext }: Props) {
         setTimeout(() => onNext(), 350);
     };
 
+    const handleGlobalSearchSelect = (item: any) => {
+        setSearchQuery('');
+        if (item.type === 'ccaa') {
+            selectCcaa(item.name);
+        } else if (item.type === 'provincia') {
+            setSelectedCcaaName(item.parentCcaa);
+            setSelectedProvincia(item.name);
+            setLevel('poblacion');
+        } else if (item.type === 'poblacion') {
+            setSelectedCcaaName(item.parentCcaa);
+            setSelectedProvincia(item.parentProvincia);
+            setSelectedPoblacion(item.name);
+            setLevel('tienda');
+        }
+    };
+
     // ─ Breadcrumb ─
     const breadcrumb = useMemo(() => {
         const parts: string[] = [];
@@ -299,7 +362,7 @@ export function StoreSelection({ onNext }: Props) {
                                 type="text"
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                placeholder="Buscar comunidad autónoma..."
+                                placeholder="Buscar comunidad, provincia o ciudad..."
                                 className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                             />
                             {searchQuery && (
@@ -311,30 +374,50 @@ export function StoreSelection({ onNext }: Props) {
                             {/* Desplegable de Resultados Absoluto */}
                             {searchQuery && (
                                 <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 flex flex-col max-h-[60vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
-                                    {Array.from(ccaaMap.entries())
-                                        .filter(([name]) => name.toLowerCase().includes(searchQuery.toLowerCase()))
-                                        .sort((a, b) => a[0].localeCompare(b[0]))
-                                        .map(([name, data]) => (
+                                    {searchableItems
+                                        .filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                        .sort((a, b) => {
+                                            // Prioridad: CCAA (0) > Provincia (1) > Población (2)
+                                            const priority: Record<string, number> = { ccaa: 0, provincia: 1, poblacion: 2 };
+                                            if (priority[a.type] !== priority[b.type]) {
+                                                return priority[a.type] - priority[b.type];
+                                            }
+                                            return a.name.localeCompare(b.name);
+                                        })
+                                        .slice(0, 50) // Limit results for performance
+                                        .map((item) => (
                                             <button
-                                                key={name}
-                                                onClick={() => selectCcaa(name)}
+                                                key={item.id}
+                                                onClick={() => handleGlobalSearchSelect(item)}
                                                 className="flex items-center gap-3 p-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b last:border-0 border-slate-100 dark:border-slate-700 group"
                                             >
-                                                <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${item.type === 'ccaa' ? 'bg-primary' :
+                                                    item.type === 'provincia' ? 'bg-blue-500' : 'bg-emerald-500'
+                                                    }`} />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
-                                                        {titleCase(name)}
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
+                                                            {item.type === 'poblacion' ? item.name : titleCase(item.name)}
+                                                        </p>
+                                                        <span className={`text-[9px] px-1.5 py-0.5 rounded-full uppercase font-bold ${item.type === 'ccaa' ? 'bg-primary/10 text-primary' :
+                                                            item.type === 'provincia' ? 'bg-blue-500/10 text-blue-600' : 'bg-emerald-500/10 text-emerald-600'
+                                                            }`}>
+                                                            {item.type === 'provincia' ? 'provincia' : item.type === 'ccaa' ? 'comunidad' : 'ciudad'}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-400">
+                                                        {item.type === 'ccaa' ? `${item.count} tiendas totales` :
+                                                            item.type === 'provincia' ? `En ${titleCase(item.parentCcaa!)} · ${item.count} tiendas` :
+                                                                `En ${titleCase(item.parentProvincia!)} (${titleCase(item.parentCcaa!)})`}
                                                     </p>
-                                                    <p className="text-[10px] text-slate-400">{data.totalStores} tiendas</p>
                                                 </div>
                                                 <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
                                             </button>
                                         ))}
 
-                                    {/* Estado vacío */}
-                                    {Array.from(ccaaMap.entries()).filter(([name]) => name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                                    {searchableItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                                         <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                                            No se encontraron comunidades.
+                                            No se encontraron resultados.
                                         </div>
                                     )}
                                 </div>
