@@ -291,9 +291,58 @@ export function StoreSelection({ onNext }: Props) {
             <main className="flex-1 overflow-y-auto hide-scrollbar">
                 {/* ── CCAA Level: Show Map ── */}
                 {level === 'ccaa' && (
-                    <div className="px-4 pt-4 pb-6">
+                    <div className="px-4 pt-4 pb-6 flex flex-col relative">
+                        {/* Buscador CCAA arriba con desplegable */}
+                        <div className="relative mb-4 z-40">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                placeholder="Buscar comunidad autónoma..."
+                                className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                            />
+                            {searchQuery && (
+                                <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+
+                            {/* Desplegable de Resultados Absoluto */}
+                            {searchQuery && (
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 flex flex-col max-h-[60vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                                    {Array.from(ccaaMap.entries())
+                                        .filter(([name]) => name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                        .sort((a, b) => a[0].localeCompare(b[0]))
+                                        .map(([name, data]) => (
+                                            <button
+                                                key={name}
+                                                onClick={() => selectCcaa(name)}
+                                                className="flex items-center gap-3 p-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b last:border-0 border-slate-100 dark:border-slate-700 group"
+                                            >
+                                                <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
+                                                        {titleCase(name)}
+                                                    </p>
+                                                    <p className="text-[10px] text-slate-400">{data.totalStores} tiendas</p>
+                                                </div>
+                                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
+                                            </button>
+                                        ))}
+
+                                    {/* Estado vacío */}
+                                    {Array.from(ccaaMap.entries()).filter(([name]) => name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                                        <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
+                                            No se encontraron comunidades.
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         {/* Legend */}
-                        <div className="flex items-center gap-4 mb-3 text-xs text-slate-500">
+                        <div className="flex items-center gap-4 mb-3 text-xs text-slate-500 z-10">
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-3 rounded bg-[#4ade80] border border-[#047857]" />
                                 <span>Con tiendas</span>
@@ -305,7 +354,7 @@ export function StoreSelection({ onNext }: Props) {
                         </div>
 
                         {/* Map */}
-                        <div className="relative h-[35rem] bg-white rounded-xl shadow-inner border border-slate-100 overflow-hidden">
+                        <div className="relative h-[35rem] bg-white rounded-xl shadow-inner border border-slate-100 overflow-hidden z-10 pointer-events-auto">
                             <SpainRegionsMap
                                 valuesByRegion={mapValuesByRegion}
                                 onRegionSelect={(ineId) => {
@@ -315,33 +364,6 @@ export function StoreSelection({ onNext }: Props) {
                                     }
                                 }}
                             />
-                        </div>
-
-                        {/* Quick list below map */}
-                        <div className="mt-4">
-                            <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                                Comunidades Autónomas ({availableCcaas.size})
-                            </h2>
-                            <div className="grid grid-cols-2 gap-2">
-                                {Array.from(ccaaMap.entries())
-                                    .sort((a, b) => a[0].localeCompare(b[0]))
-                                    .map(([name, data]) => (
-                                        <button
-                                            key={name}
-                                            onClick={() => selectCcaa(name)}
-                                            className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-left hover:bg-primary/10 hover:border-primary transition-all border border-slate-100 dark:border-slate-700 group"
-                                        >
-                                            <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
-                                                    {titleCase(name)}
-                                                </p>
-                                                <p className="text-[10px] text-slate-400">{data.totalStores} tiendas</p>
-                                            </div>
-                                            <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
-                                        </button>
-                                    ))}
-                            </div>
                         </div>
                     </div>
                 )}
