@@ -8,6 +8,7 @@ import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
 import { AppProvider, useAppContext } from './context/AppContext';
+import { APP_VERSION } from './version';
 
 function MainApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
@@ -45,6 +46,13 @@ function MainApp() {
       {currentScreen === 'list_detail' && <ListDetail onBack={() => navigate('home')} onNavigate={navigate} />}
       {currentScreen === 'layout_organization' && <LayoutOrganization onBack={() => navigate('list_detail')} onNext={() => navigate('active_navigation')} />}
       {currentScreen === 'active_navigation' && <ActiveNavigation onBack={() => navigate('list_detail')} />}
+
+      {/* Global version tag */}
+      <div className="absolute bottom-2 left-4 pointer-events-none opacity-30">
+        <span className="text-[10px] font-mono font-medium text-slate-400 dark:text-slate-500">
+          v{APP_VERSION}
+        </span>
+      </div>
     </div>
   );
 }
