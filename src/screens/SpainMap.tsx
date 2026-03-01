@@ -504,7 +504,14 @@ export function StoreSelection({ onNext }: Props) {
                         )}
                         <div className="space-y-2">
                             {filteredProvincias
-                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .sort((a, b) => {
+                                    // Si la provincia se llama igual que la CCAA seleccionada, va primera
+                                    const aIsCcaa = a.name.toUpperCase() === selectedCcaaName?.toUpperCase();
+                                    const bIsCcaa = b.name.toUpperCase() === selectedCcaaName?.toUpperCase();
+                                    if (aIsCcaa && !bIsCcaa) return -1;
+                                    if (!aIsCcaa && bIsCcaa) return 1;
+                                    return a.name.localeCompare(b.name);
+                                })
                                 .map(prov => (
                                     <button
                                         key={prov.name}
@@ -516,7 +523,9 @@ export function StoreSelection({ onNext }: Props) {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors truncate">
-                                                {titleCase(prov.name)}
+                                                {prov.name.toUpperCase() === selectedCcaaName?.toUpperCase()
+                                                    ? titleCase(prov.name).toUpperCase()
+                                                    : titleCase(prov.name)}
                                             </p>
                                             <p className="text-xs text-slate-400 mt-0.5">
                                                 {prov.poblaciones.length} poblaciones · {prov.totalStores} tiendas
@@ -551,7 +560,14 @@ export function StoreSelection({ onNext }: Props) {
                         )}
                         <div className="space-y-2">
                             {filteredPoblaciones
-                                .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                                .sort((a, b) => {
+                                    // Si la población se llama igual que la provincia seleccionada, va primera
+                                    const aIsProv = a.nombre.toUpperCase() === selectedProvincia?.toUpperCase();
+                                    const bIsProv = b.nombre.toUpperCase() === selectedProvincia?.toUpperCase();
+                                    if (aIsProv && !bIsProv) return -1;
+                                    if (!aIsProv && bIsProv) return 1;
+                                    return a.nombre.localeCompare(b.nombre);
+                                })
                                 .map(pob => (
                                     <button
                                         key={pob.nombre}
@@ -563,7 +579,9 @@ export function StoreSelection({ onNext }: Props) {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors truncate">
-                                                {pob.nombre}
+                                                {pob.nombre.toUpperCase() === selectedProvincia?.toUpperCase()
+                                                    ? pob.nombre.toUpperCase()
+                                                    : pob.nombre}
                                             </p>
                                             <p className="text-xs text-slate-400 mt-0.5">{pob.stores.length} tienda{pob.stores.length > 1 ? 's' : ''}</p>
                                         </div>
