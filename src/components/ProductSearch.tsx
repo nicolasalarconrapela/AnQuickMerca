@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, X, ShoppingBasket, Plus, Minus, Check, Package } from 'lucide-react';
+import { Search, X, ShoppingBasket, Plus, Minus, Check, Package, Download } from 'lucide-react';
 import { Product, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
 
@@ -112,6 +112,16 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
         }
     };
 
+    const handleDownloadJson = (product: Product) => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(product, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", `${product.name.replace(/\s+/g, '_')}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
     return (
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
@@ -158,7 +168,16 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                                     </div>
                                     <div className="flex-1 min-w-0 pr-2">
                                         <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{product.name}</h3>
-                                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} €/ud</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} €/ud</p>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); handleDownloadJson(product); }}
+                                                className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary transition-colors"
+                                                title="Descargar JSON"
+                                            >
+                                                <Download className="w-3 h-3" />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {inList ? (
