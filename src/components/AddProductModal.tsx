@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, Package, Plus, ChevronDown, Check } from 'lucide-react';
+import { X, Search, Package, Plus, Minus, ChevronDown, Check } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import { ListItem, ShoppingList } from '../types';
+import { ListItem, ShoppingList, Product } from '../types';
 
 interface Props {
   onClose: () => void;
@@ -11,10 +11,7 @@ interface Props {
 
 export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
-  const { lists, addList, addItemToList, selectedStore } = useAppContext();
-
-  // Track selected product IDs
-  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const { lists, addList, addItemToList, updateItemInList, removeItemFromList, selectedStore } = useAppContext();
 
   // For the dropdown (only if no preselectedListId)
   const pendingLists = lists.filter(l => l.status === 'pending');
@@ -24,11 +21,21 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   );
 
   const activeList = targetListId !== 'new' ? pendingLists.find(l => l.id === targetListId) : null;
-  const existingProductIds = useMemo(() => {
-    return activeList ? activeList.items.map(item => item.id) : [];
+  // Create a map of product id to quantity in the currently selected list
+  const existingItemsMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    if (activeList) {
+      activeList.items.forEach(item => {
+        map[item.id] = item.quantity;
+      });
+    }
+    return map;
   }, [activeList]);
 
-  const allProducts = [
+  // If we are creating a new list, we manage a local set of added items until we close/confirm
+  const [localNewListItems, setLocalNewListItems] = useState<Record<string, number>>({});
+
+  const allProducts: Product[] = [
     { id: 'p1', name: 'Hélices con vegetales', brand: 'Hacendado', category: 'Despensa', price: 1.60, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200&h=200&fit=crop' },
     { id: 'p2', name: 'Macarrones integrales', brand: 'Hacendado', category: 'Despensa', price: 0.85, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&h=200&fit=crop' },
     { id: 'p3', name: 'Espaguetis pasta fina', brand: 'Hacendado', category: 'Despensa', price: 1.25, unit: 'Paquete 1kg', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&h=200&fit=crop' },
@@ -46,45 +53,74 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     );
   }, [searchQuery]);
 
-  const toggleProductSelection = (id: string, isAlreadyInList: boolean) => {
-    if (isAlreadyInList) return;
-
-    setSelectedProductIds(prev =>
-      prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-    );
+  const handleAddOne = (product: Product) => {
+    if (targetListId === 'new') {
+      setLocalNewListItems(prev => ({ ...prev, [product.id]: 1 }));
+    } else {
+      const newItem: ListItem = { ...product, quantity: 1, checked: false };
+      addItemToList(targetListId, newItem);
+    }
   };
 
-  const handleAddProducts = () => {
-    if (selectedProductIds.length === 0) return;
-
-    const productsToAdd = allProducts.filter(p => selectedProductIds.includes(p.id));
-
-    let listIdToUse = targetListId;
-
+  const handleUpdateQuantity = (product: Product, delta: number) => {
     if (targetListId === 'new') {
-      const newList: ShoppingList = {
-        id: Math.random().toString(36).substring(7),
-        name: `Lista ${new Date().toLocaleDateString()}`,
-        storeName: selectedStore?.name || 'Mercadona',
-        date: new Date().toLocaleDateString(),
-        items: [],
-        status: 'pending'
-      };
-      addList(newList);
-      listIdToUse = newList.id;
+      setLocalNewListItems(prev => {
+        const current = prev[product.id] || 0;
+        const next = current + delta;
+        if (next <= 0) {
+          const newMap = { ...prev };
+          delete newMap[product.id];
+          return newMap;
+        }
+        return { ...prev, [product.id]: next };
+      });
+    } else {
+       const currentQty = existingItemsMap[product.id] || 0;
+       const nextQty = currentQty + delta;
+       if (nextQty <= 0) {
+         removeItemFromList(targetListId, product.id);
+       } else {
+         updateItemInList(targetListId, product.id, { quantity: nextQty });
+       }
     }
+  };
 
-    productsToAdd.forEach(p => {
-      const newItem: ListItem = { ...p, quantity: 1, checked: false };
-      addItemToList(listIdToUse, newItem);
-    });
+  const handleDone = () => {
+    if (targetListId === 'new') {
+      const idsToAdd = Object.keys(localNewListItems);
+      if (idsToAdd.length > 0) {
+         const newList: ShoppingList = {
+          id: Math.random().toString(36).substring(7),
+          name: `Lista ${new Date().toLocaleDateString()}`,
+          storeName: selectedStore?.name || 'Mercadona',
+          date: new Date().toLocaleDateString(),
+          items: [],
+          status: 'pending'
+        };
+        addList(newList);
 
-    onAdded(listIdToUse);
+        idsToAdd.forEach(id => {
+          const p = allProducts.find(p => p.id === id);
+          if (p) {
+            addItemToList(newList.id, { ...p, quantity: localNewListItems[id], checked: false });
+          }
+        });
+        onAdded(newList.id);
+      } else {
+        onClose();
+      }
+    } else {
+      // Direct edits are already saved to context.
+      onAdded(targetListId);
+    }
     onClose();
   };
 
+  // Determine total products selected (only used for UI feedback when creating new list)
+  const newItemsCount = Object.keys(localNewListItems).length;
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={handleDone}>
       <div
         className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-[2rem] shadow-2xl flex flex-col h-[85vh] animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
@@ -95,7 +131,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
             Añadir Productos
           </h3>
           <button
-            onClick={onClose}
+            onClick={handleDone}
             className="bg-slate-100 dark:bg-slate-800 text-slate-500 p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -116,8 +152,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                   value={targetListId}
                   onChange={(e) => {
                     setTargetListId(e.target.value);
-                    // Clear current selection if we switch lists to avoid adding duplicate
-                    setSelectedProductIds([]);
+                    setLocalNewListItems({}); // clear local temp items if switching
                   }}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm font-medium rounded-xl p-3 pr-10 appearance-none focus:ring-2 focus:ring-primary outline-none"
                 >
@@ -148,31 +183,25 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
 
         {/* Scrollable Content Section */}
         <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0 bg-slate-50 dark:bg-slate-900/50">
-          {/* Product Results */}
           <div className="space-y-2">
             {filteredProducts.map(product => {
-              const isAlreadyInList = existingProductIds.includes(product.id);
-              const isSelected = selectedProductIds.includes(product.id);
+              // Determine quantity based on if we are creating new or editing existing
+              const quantity = targetListId === 'new'
+                 ? (localNewListItems[product.id] || 0)
+                 : (existingItemsMap[product.id] || 0);
+
+              const isAdded = quantity > 0;
 
               return (
                 <div
                   key={product.id}
-                  onClick={() => toggleProductSelection(product.id, isAlreadyInList)}
-                  className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all bg-white dark:bg-slate-900 ${isAlreadyInList ? 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-800/30 border-transparent shadow-none' : 'cursor-pointer shadow-sm'} ${
-                    isSelected && !isAlreadyInList
-                      ? 'border-primary bg-primary/5 dark:bg-primary/10'
-                      : !isAlreadyInList ? 'border-transparent hover:border-slate-200 dark:hover:border-slate-700' : ''
+                  className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all bg-white dark:bg-slate-900 ${
+                    isAdded
+                      ? 'border-primary bg-primary/5 dark:bg-primary/10 shadow-none'
+                      : 'border-transparent shadow-sm'
                   }`}
                 >
-                  {/* Checkbox circle */}
-                  <div className={`shrink-0 flex items-center justify-center size-5 rounded-full border-2 transition-colors ${
-                    isAlreadyInList ? 'border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700 text-slate-500' :
-                    isSelected ? 'border-primary bg-primary text-white' : 'border-slate-300 dark:border-slate-600'
-                  }`}>
-                    {(isSelected || isAlreadyInList) && <Check className="w-3 h-3" />}
-                  </div>
-
-                  <div className="size-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                  <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                     {product.image ? (
                       <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
@@ -180,17 +209,30 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 pr-2">
                     <h3 className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate leading-tight mb-0.5">{product.name}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-xs truncate">
                       {product.brand} • <span className="font-medium text-slate-700 dark:text-slate-300">{product.price.toFixed(2).replace('.', ',')} €</span>
                     </p>
                   </div>
 
-                  {isAlreadyInList && (
-                     <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full shrink-0">
-                       Añadido
-                     </div>
+                  {isAdded ? (
+                    <div className="flex items-center bg-slate-100 dark:bg-slate-800/50 rounded-full p-1 border border-slate-200 dark:border-slate-700 shrink-0">
+                      <button onClick={() => handleUpdateQuantity(product, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="w-6 text-center font-bold text-slate-800 dark:text-slate-200 text-sm">{quantity}</span>
+                      <button onClick={() => handleUpdateQuantity(product, 1)} className="text-primary hover:bg-primary/10 p-1 rounded-full transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleAddOne(product)}
+                      className="flex items-center justify-center size-10 rounded-full bg-slate-100 hover:bg-primary hover:text-white text-primary dark:bg-slate-800 dark:hover:bg-primary transition-colors shrink-0"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
                   )}
                 </div>
               );
@@ -205,17 +247,18 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           </div>
         </div>
 
-        {/* Sticky Footer Action Button */}
-        <div className="shrink-0 p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2rem] pb-safe">
-           <button
-             onClick={handleAddProducts}
-             disabled={selectedProductIds.length === 0}
-             className="w-full bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
-           >
-             <Plus className="w-5 h-5" />
-             Añadir {selectedProductIds.length > 0 ? `${selectedProductIds.length} producto${selectedProductIds.length > 1 ? 's' : ''}` : ''}
-           </button>
-        </div>
+        {/* Footer (Only really needed if creating a new list, but keeping consistent is good. If modifying existing, changes are immediate) */}
+        {targetListId === 'new' && (
+          <div className="shrink-0 p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2rem] pb-safe">
+             <button
+               onClick={handleDone}
+               disabled={newItemsCount === 0}
+               className="w-full bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
+             >
+               Crear lista y añadir
+             </button>
+          </div>
+        )}
       </div>
     </div>
   );

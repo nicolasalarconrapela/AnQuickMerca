@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown, Check, X } from 'lucide-react';
+import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown, Check, X, Search } from 'lucide-react';
 import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
@@ -269,13 +269,13 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               <ShoppingBasket className="w-10 h-10 text-slate-400" />
             </div>
             <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">Lista vacía</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Empieza a añadir productos a tu compra.</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Busca y añade productos a tu compra.</p>
             <button
               onClick={() => setShowAddProductModal(true)}
               className="bg-primary/10 text-primary font-bold px-6 py-3 rounded-full hover:bg-primary/20 transition-colors inline-flex items-center gap-2"
             >
-              <Plus className="w-5 h-5" />
-              Añadir productos
+              <Search className="w-5 h-5" />
+              Buscar productos
             </button>
           </div>
         )}
@@ -287,7 +287,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
           onClick={() => setShowAddProductModal(true)}
           className="fixed right-6 size-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 bottom-32"
         >
-          <Plus className="w-8 h-8" />
+          <Search className="w-6 h-6" />
         </button>
       )}
 
