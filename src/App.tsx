@@ -4,7 +4,6 @@ import { Splash } from './screens/Splash';
 import { Onboarding } from './screens/Onboarding';
 import { StoreSelection } from './screens/StoreSelection';
 import { Home } from './screens/Home';
-import { ProductSearch } from './screens/ProductSearch';
 import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
@@ -43,7 +42,6 @@ function MainApp() {
       {currentScreen === 'onboarding' && <Onboarding onNext={() => navigate('store_selection')} />}
       {currentScreen === 'store_selection' && <StoreSelection onNext={() => navigate('home')} />}
       {currentScreen === 'home' && <Home onNavigate={navigate} />}
-      {currentScreen === 'product_search' && <ProductSearch onBack={() => navigate('home')} onNavigate={navigate} />}
       {currentScreen === 'list_detail' && <ListDetail onBack={() => navigate('home')} onNavigate={navigate} />}
       {currentScreen === 'layout_organization' && <LayoutOrganization onBack={() => navigate('list_detail')} onNext={() => navigate('active_navigation')} />}
       {currentScreen === 'active_navigation' && <ActiveNavigation onBack={() => navigate('list_detail')} />}

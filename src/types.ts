@@ -3,7 +3,6 @@ export type Screen =
   | 'onboarding'
   | 'store_selection'
   | 'home'
-  | 'product_search'
   | 'list_detail'
   | 'layout_organization'
   | 'active_navigation';

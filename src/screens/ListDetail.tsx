@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown } from 'lucide-react';
 import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { AddProductModal } from '../components/AddProductModal';
 
 interface Props {
   onBack: () => void;
@@ -14,6 +15,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState('');
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   if (!list) {
     return (
@@ -240,7 +242,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">Lista vacía</h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Empieza a añadir productos a tu compra.</p>
             <button
-              onClick={() => onNavigate('product_search')}
+              onClick={() => setShowAddProductModal(true)}
               className="bg-primary/10 text-primary font-bold px-6 py-3 rounded-full hover:bg-primary/20 transition-colors inline-flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
@@ -253,8 +255,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
       {/* Floating Action Button */}
       {totalCount > 0 && (
         <button
-          onClick={() => onNavigate('product_search')}
-          className="fixed right-6 size-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 bottom-36"
+          onClick={() => setShowAddProductModal(true)}
+          className="fixed right-6 size-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 bottom-32"
         >
           <Plus className="w-8 h-8" />
         </button>
@@ -284,6 +286,14 @@ export function ListDetail({ onBack, onNavigate }: Props) {
           }
         </button>
       </div>
+
+      {showAddProductModal && (
+        <AddProductModal
+          preselectedListId={list.id}
+          onClose={() => setShowAddProductModal(false)}
+          onAdded={() => setShowAddProductModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { AddProductModal } from '../components/AddProductModal';
 
 interface Props {
   onNavigate: (screen: Screen, params?: any) => void;
@@ -10,6 +11,7 @@ interface Props {
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
   const { lists, selectedStore, addList, setActiveListId } = useAppContext();
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   const pendingLists = lists.filter(l => l.status === 'pending');
   const completedLists = lists.filter(l => l.status === 'completed');
@@ -32,9 +34,15 @@ export function Home({ onNavigate }: Props) {
     return list.items.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2);
   };
 
+  const handleProductAdded = (listId: string) => {
+    setActiveListId(listId);
+    setShowAddProductModal(false);
+    onNavigate('list_detail');
+  };
+
   return (
     <div className="flex flex-col min-h-screen w-full bg-background-light dark:bg-background-dark font-display pb-24">
-      <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+      <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Bienvenido, Tony.</h1>
@@ -60,7 +68,7 @@ export function Home({ onNavigate }: Props) {
           <ChevronRight className="text-primary w-4 h-4 ml-auto" />
         </div>
 
-        <div className="relative group" onClick={() => onNavigate('product_search')}>
+        <div className="relative group cursor-text" onClick={() => setShowAddProductModal(true)}>
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="text-slate-400 group-focus-within:text-primary transition-colors w-5 h-5" />
           </div>
@@ -175,6 +183,13 @@ export function Home({ onNavigate }: Props) {
       >
         <Plus className="w-8 h-8" />
       </button>
+
+      {showAddProductModal && (
+        <AddProductModal
+          onClose={() => setShowAddProductModal(false)}
+          onAdded={handleProductAdded}
+        />
+      )}
     </div>
   );
 }
