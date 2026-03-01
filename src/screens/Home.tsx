@@ -71,7 +71,16 @@ export function Home({ onNavigate }: Props) {
 
         <div className="flex items-center gap-2 mb-4 bg-primary/5 dark:bg-primary/10 p-2 rounded-lg cursor-pointer" onClick={() => onNavigate('store_selection')}>
           <MapPin className="text-primary w-4 h-4" />
-          <span className="text-xs font-medium text-primary">{selectedStore?.name || 'Selecciona tienda'}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-primary truncate">
+              {selectedStore?.name || 'Selecciona tu Mercadona'}
+            </p>
+            {selectedStore?.address && (
+              <p className="text-[10px] text-primary/70 truncate -mt-0.5">
+                {selectedStore.address}
+              </p>
+            )}
+          </div>
           <ChevronRight className="text-primary w-4 h-4 ml-auto" />
         </div>
 
@@ -91,8 +100,8 @@ export function Home({ onNavigate }: Props) {
           <button
             onClick={() => setActiveTab('pendientes')}
             className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'pendientes'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
             Pendientes
@@ -100,8 +109,8 @@ export function Home({ onNavigate }: Props) {
           <button
             onClick={() => setActiveTab('realizadas')}
             className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'realizadas'
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
             Realizadas
