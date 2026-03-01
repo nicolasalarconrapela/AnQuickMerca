@@ -86,11 +86,11 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
       <div
-        className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-[2rem] shadow-2xl flex flex-col max-h-[90vh] animate-in slide-in-from-bottom duration-300"
+        className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-[2rem] shadow-2xl flex flex-col h-[85vh] animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+        {/* Sticky Header Section */}
+        <div className="shrink-0 flex items-center justify-between p-5 pb-4">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
             Añadir Productos
           </h3>
@@ -102,13 +102,13 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        {/* Sticky Controls Section */}
+        <div className="shrink-0 px-5 pb-3 border-b border-slate-100 dark:border-slate-800 space-y-4">
 
           {/* List Selection (Only if not preselected) */}
           {!preselectedListId && (
-            <div className="mb-5 relative">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <div className="relative">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
                 Añadir a la lista
               </label>
               <div className="relative">
@@ -119,20 +119,20 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                     // Clear current selection if we switch lists to avoid adding duplicate
                     setSelectedProductIds([]);
                   }}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium rounded-xl p-3.5 pr-10 appearance-none focus:ring-2 focus:ring-primary outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm font-medium rounded-xl p-3 pr-10 appearance-none focus:ring-2 focus:ring-primary outline-none"
                 >
                   <option value="new">+ Crear lista nueva</option>
                   {pendingLists.map(l => (
                     <option key={l.id} value={l.id}>{l.name} ({l.items.length} prod.)</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
             </div>
           )}
 
           {/* Search Box */}
-          <div className="relative mb-4 group">
+          <div className="relative group">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
               <Search className="w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" />
             </div>
@@ -141,12 +141,15 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
               placeholder="Buscar tomate, pan, leche..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 bg-slate-100 dark:bg-slate-800/50 border border-transparent rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 transition-all outline-none"
+              className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-transparent rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:border-primary/30 focus:ring-2 focus:ring-primary/20 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 transition-all outline-none"
             />
           </div>
+        </div>
 
+        {/* Scrollable Content Section */}
+        <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0 bg-slate-50 dark:bg-slate-900/50">
           {/* Product Results */}
-          <div className="space-y-2 pb-20">
+          <div className="space-y-2">
             {filteredProducts.map(product => {
               const isAlreadyInList = existingProductIds.includes(product.id);
               const isSelected = selectedProductIds.includes(product.id);
@@ -155,37 +158,37 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                 <div
                   key={product.id}
                   onClick={() => toggleProductSelection(product.id, isAlreadyInList)}
-                  className={`flex items-center gap-4 p-3 rounded-2xl border-2 transition-all ${isAlreadyInList ? 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-800/30 border-transparent' : 'cursor-pointer'} ${
+                  className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all bg-white dark:bg-slate-900 ${isAlreadyInList ? 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-800/30 border-transparent shadow-none' : 'cursor-pointer shadow-sm'} ${
                     isSelected && !isAlreadyInList
                       ? 'border-primary bg-primary/5 dark:bg-primary/10'
-                      : !isAlreadyInList ? 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-100 dark:hover:border-slate-700' : ''
+                      : !isAlreadyInList ? 'border-transparent hover:border-slate-200 dark:hover:border-slate-700' : ''
                   }`}
                 >
                   {/* Checkbox circle */}
-                  <div className={`shrink-0 flex items-center justify-center size-6 rounded-full border-2 transition-colors ${
+                  <div className={`shrink-0 flex items-center justify-center size-5 rounded-full border-2 transition-colors ${
                     isAlreadyInList ? 'border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700 text-slate-500' :
                     isSelected ? 'border-primary bg-primary text-white' : 'border-slate-300 dark:border-slate-600'
                   }`}>
-                    {(isSelected || isAlreadyInList) && <Check className="w-3.5 h-3.5" />}
+                    {(isSelected || isAlreadyInList) && <Check className="w-3 h-3" />}
                   </div>
 
-                  <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                  <div className="size-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                     {product.image ? (
                       <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <Package className="w-6 h-6 text-slate-400" />
+                      <Package className="w-5 h-5 text-slate-400" />
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate">{product.name}</h3>
+                    <h3 className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate leading-tight mb-0.5">{product.name}</h3>
                     <p className="text-slate-500 dark:text-slate-400 text-xs truncate">
                       {product.brand} • <span className="font-medium text-slate-700 dark:text-slate-300">{product.price.toFixed(2).replace('.', ',')} €</span>
                     </p>
                   </div>
 
                   {isAlreadyInList && (
-                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full shrink-0">
+                     <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full shrink-0">
                        Añadido
                      </div>
                   )}
@@ -202,12 +205,12 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           </div>
         </div>
 
-        {/* Footer Add Button */}
-        <div className="p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2rem]">
+        {/* Sticky Footer Action Button */}
+        <div className="shrink-0 p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2rem] pb-safe">
            <button
              onClick={handleAddProducts}
              disabled={selectedProductIds.length === 0}
-             className="w-full bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors"
+             className="w-full bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
            >
              <Plus className="w-5 h-5" />
              Añadir {selectedProductIds.length > 0 ? `${selectedProductIds.length} producto${selectedProductIds.length > 1 ? 's' : ''}` : ''}
