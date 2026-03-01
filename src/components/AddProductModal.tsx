@@ -23,6 +23,11 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     preselectedListId || (pendingLists.length > 0 ? pendingLists[0].id : 'new')
   );
 
+  const activeList = targetListId !== 'new' ? pendingLists.find(l => l.id === targetListId) : null;
+  const existingProductIds = useMemo(() => {
+    return activeList ? activeList.items.map(item => item.id) : [];
+  }, [activeList]);
+
   const allProducts = [
     { id: 'p1', name: 'Hélices con vegetales', brand: 'Hacendado', category: 'Despensa', price: 1.60, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200&h=200&fit=crop' },
     { id: 'p2', name: 'Macarrones integrales', brand: 'Hacendado', category: 'Despensa', price: 0.85, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&h=200&fit=crop' },
@@ -41,7 +46,9 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     );
   }, [searchQuery]);
 
-  const toggleProductSelection = (id: string) => {
+  const toggleProductSelection = (id: string, isAlreadyInList: boolean) => {
+    if (isAlreadyInList) return;
+
     setSelectedProductIds(prev =>
       prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
     );
@@ -107,7 +114,11 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
               <div className="relative">
                 <select
                   value={targetListId}
-                  onChange={(e) => setTargetListId(e.target.value)}
+                  onChange={(e) => {
+                    setTargetListId(e.target.value);
+                    // Clear current selection if we switch lists to avoid adding duplicate
+                    setSelectedProductIds([]);
+                  }}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium rounded-xl p-3.5 pr-10 appearance-none focus:ring-2 focus:ring-primary outline-none"
                 >
                   <option value="new">+ Crear lista nueva</option>
@@ -137,23 +148,25 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           {/* Product Results */}
           <div className="space-y-2 pb-20">
             {filteredProducts.map(product => {
+              const isAlreadyInList = existingProductIds.includes(product.id);
               const isSelected = selectedProductIds.includes(product.id);
 
               return (
                 <div
                   key={product.id}
-                  onClick={() => toggleProductSelection(product.id)}
-                  className={`flex items-center gap-4 p-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                    isSelected
+                  onClick={() => toggleProductSelection(product.id, isAlreadyInList)}
+                  className={`flex items-center gap-4 p-3 rounded-2xl border-2 transition-all ${isAlreadyInList ? 'opacity-50 cursor-not-allowed bg-slate-50 dark:bg-slate-800/30 border-transparent' : 'cursor-pointer'} ${
+                    isSelected && !isAlreadyInList
                       ? 'border-primary bg-primary/5 dark:bg-primary/10'
-                      : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-100 dark:hover:border-slate-700'
+                      : !isAlreadyInList ? 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-100 dark:hover:border-slate-700' : ''
                   }`}
                 >
                   {/* Checkbox circle */}
                   <div className={`shrink-0 flex items-center justify-center size-6 rounded-full border-2 transition-colors ${
+                    isAlreadyInList ? 'border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700 text-slate-500' :
                     isSelected ? 'border-primary bg-primary text-white' : 'border-slate-300 dark:border-slate-600'
                   }`}>
-                    {isSelected && <Check className="w-3.5 h-3.5" />}
+                    {(isSelected || isAlreadyInList) && <Check className="w-3.5 h-3.5" />}
                   </div>
 
                   <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
@@ -170,6 +183,12 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                       {product.brand} • <span className="font-medium text-slate-700 dark:text-slate-300">{product.price.toFixed(2).replace('.', ',')} €</span>
                     </p>
                   </div>
+
+                  {isAlreadyInList && (
+                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full shrink-0">
+                       Añadido
+                     </div>
+                  )}
                 </div>
               );
             })}
