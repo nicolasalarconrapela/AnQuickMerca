@@ -19,6 +19,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [useMockData, setUseMockData] = useState(true);
   const [productCache, setProductCache] = useState<Record<string, Product>>({});
   const { lists, addList, addItemToList, updateItemInList, removeItemFromList, selectedStore } = useAppContext();
 
@@ -57,39 +58,40 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
-        // --- MOCK DATA PARA TESTING ---
         let data: any = { hits: [] };
-        const query = searchQuery.toLowerCase();
-        
-        if (query.includes('agua')) {
-          data = aguaData;
-        } else if (query.includes('cepillo')) {
-          data = cepilloData;
-        } else if (query.includes('pizza') || query.includes('peperoni')) {
-          data = pizzaData;
-        } else if (query.includes('t')) {
-          data = tData;
+
+        if (useMockData) {
+          // --- MOCK DATA PARA TESTING ---
+          const query = searchQuery.toLowerCase();
+          
+          if (query.includes('agua')) {
+            data = aguaData;
+          } else if (query.includes('cepillo')) {
+            data = cepilloData;
+          } else if (query.includes('pizza') || query.includes('peperoni')) {
+            data = pizzaData;
+          } else if (query.includes('t')) {
+            data = tData;
+          }
+        } else {
+          // --- LLAMADA API REAL ---
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              params: `query=${encodeURIComponent(searchQuery)}&hitsPerPage=20`
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Error fetching Algolia search results');
+          }
+
+          data = await response.json();
         }
-
-        // --- LLAMADA API REAL (comentada para usar mocks) ---
-        /*
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            params: `query=${encodeURIComponent(searchQuery)}&hitsPerPage=20`
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Error fetching Algolia search results');
-        }
-
-        data = await response.json();
-        */
         
         const algoliaProducts: Product[] = data.hits.map((hit: any) => ({
           id: hit.id,
@@ -115,7 +117,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedStore]);
+  }, [searchQuery, selectedStore, useMockData]);
 
   const filteredProducts = searchResults;
 
@@ -193,9 +195,20 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
       >
         {/* Sticky Header Section */}
         <div className="shrink-0 flex items-center justify-between p-5 pb-4">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            Añadir Productos
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              Añadir Productos
+            </h3>
+            <label className="flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50 hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors">
+              <input
+                type="checkbox"
+                checked={useMockData}
+                onChange={(e) => setUseMockData(e.target.checked)}
+                className="w-3.5 h-3.5 accent-orange-600 rounded cursor-pointer"
+              />
+              <span className="text-xs font-semibold uppercase tracking-wider">Demo Data</span>
+            </label>
+          </div>
           <button
             onClick={handleDone}
             className="bg-slate-100 dark:bg-slate-800 text-slate-500 p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
