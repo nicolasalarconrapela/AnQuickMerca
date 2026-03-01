@@ -1,5 +1,6 @@
 export type Screen =
   | "splash"
+  | "welcome"
   | "onboarding"
   | "store_selection"
   | "home"
@@ -7,6 +8,11 @@ export type Screen =
   | "layout_organization"
   | "active_navigation"
   | "map_demo";
+
+export interface UserProfile {
+  name: string;
+  language: "en" | "es";
+}
 
 export interface Product {
   id: string;

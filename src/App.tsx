@@ -8,6 +8,7 @@ import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
 import { MapDemo } from './screens/MapDemo';
+import { Welcome } from './screens/Welcome';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { APP_VERSION } from './version';
 import { LogViewer } from './components/LogViewer';
@@ -21,14 +22,17 @@ function MainApp() {
     // Simulate splash screen delay
     if (currentScreen === 'splash') {
       const timer = setTimeout(() => {
-        // Skip onboarding directly to store selection as requested
+        const hasProfile = localStorage.getItem('userProfile');
         const hasStore = localStorage.getItem('selectedStore');
-        if (hasStore) {
-          setCurrentScreen('home');
+
+        if (!hasProfile) {
+          setCurrentScreen('welcome');
+        } else if (!hasStore) {
+          setCurrentScreen('store_selection');
         } else {
-          setCurrentScreen('store_selection'); // Used to be onboarding
+          setCurrentScreen('home');
         }
-      }, 2000); // match progress bar time approx
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [currentScreen]);
@@ -55,6 +59,7 @@ function MainApp() {
   return (
     <div className="min-h-screen w-full max-w-md mx-auto bg-background-light dark:bg-background-dark overflow-x-hidden relative shadow-2xl">
       {currentScreen === 'splash' && <Splash />}
+      {currentScreen === 'welcome' && <Welcome onNext={() => navigate('store_selection')} />}
       {currentScreen === 'onboarding' && <Onboarding onNext={() => navigate('store_selection')} />}
       {currentScreen === 'store_selection' && <StoreSelection onNext={() => navigate('home')} />}
       {currentScreen === 'home' && <Home onNavigate={navigate} />}

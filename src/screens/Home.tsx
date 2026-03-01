@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag } from 'lucide-react';
+import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
@@ -10,8 +10,20 @@ interface Props {
 
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
-  const { lists, selectedStore, addList, setActiveListId } = useAppContext();
+  const { lists, selectedStore, addList, setActiveListId, userProfile, setUserProfile } = useAppContext();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+
+  const isSpanish = userProfile?.language === 'es';
+  const name = userProfile?.name || 'User';
+
+  const toggleLanguage = () => {
+    if (userProfile) {
+      setUserProfile({
+        ...userProfile,
+        language: isSpanish ? 'en' : 'es'
+      });
+    }
+  };
 
   const pendingLists = lists.filter(l => l.status === 'pending');
   const completedLists = lists.filter(l => l.status === 'completed');
@@ -45,10 +57,22 @@ export function Home({ onNavigate }: Props) {
       <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Bienvenido, Tony.</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Organiza tu compra inteligente</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              {isSpanish ? `Bienvenido, ${name}.` : `Welcome, ${name}.`}
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {isSpanish ? 'Organiza tu compra inteligente' : 'Organize your smart shopping'}
+            </p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={toggleLanguage}
+              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              title={isSpanish ? "Cambiar idioma" : "Switch language"}
+            >
+              <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
+              <Globe className="w-5 h-5" />
+            </button>
             <button
               onClick={() => onNavigate('map_demo')}
               className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors flex items-center justify-center"
@@ -61,7 +85,7 @@ export function Home({ onNavigate }: Props) {
             </button>
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
               <img
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tony"
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`}
                 alt="User profile"
                 className="w-full h-full object-cover"
               />
@@ -73,7 +97,7 @@ export function Home({ onNavigate }: Props) {
           <MapPin className="text-primary w-4 h-4" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-primary truncate">
-              {selectedStore?.name || 'Selecciona tu Mercadona'}
+              {selectedStore?.name || (isSpanish ? 'Selecciona tu Mercadona' : 'Select your store')}
             </p>
             {selectedStore?.address && (
               <p className="text-[10px] text-primary/70 truncate -mt-0.5">
@@ -90,7 +114,7 @@ export function Home({ onNavigate }: Props) {
           </div>
           <input
             type="text"
-            placeholder="Buscar alimentos..."
+            placeholder={isSpanish ? "Buscar alimentos..." : "Search food..."}
             className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400 transition-all pointer-events-none"
             readOnly
           />
@@ -104,7 +128,7 @@ export function Home({ onNavigate }: Props) {
               : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
-            Pendientes
+            {isSpanish ? 'Pendientes' : 'Pending'}
           </button>
           <button
             onClick={() => setActiveTab('realizadas')}
@@ -113,7 +137,7 @@ export function Home({ onNavigate }: Props) {
               : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
-            Realizadas
+            {isSpanish ? 'Realizadas' : 'Completed'}
           </button>
         </div>
       </header>
@@ -129,7 +153,9 @@ export function Home({ onNavigate }: Props) {
               {pendingLists.length === 0 ? (
                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500 text-sm">No tienes listas pendientes.</p>
+                  <p className="text-slate-500 text-sm">
+                    {isSpanish ? 'No tienes listas pendientes.' : 'No pending lists yet.'}
+                  </p>
                 </div>
               ) : (
                 pendingLists.map(list => (

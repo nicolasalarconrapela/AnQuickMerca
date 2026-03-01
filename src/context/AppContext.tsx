@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ShoppingList, ListItem } from '../types';
+import { ShoppingList, ListItem, UserProfile } from '../types';
 
 interface AppContextType {
   lists: ShoppingList[];
   activeListId: string | null;
   selectedStore: any | null;
   favoriteStores: string[];
+  userProfile: UserProfile | null;
   setLists: (lists: ShoppingList[]) => void;
   setActiveListId: (id: string | null) => void;
   setSelectedStore: (store: any | null) => void;
   setFavoriteStores: (storeIds: string[]) => void;
+  setUserProfile: (profile: UserProfile | null) => void;
   addList: (list: ShoppingList) => void;
   updateList: (id: string, updates: Partial<ShoppingList>) => void;
   deleteList: (id: string) => void;
@@ -33,12 +35,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [activeListId, setActiveListId] = useState<string | null>(null);
   const [selectedStore, setSelectedStore] = useState<any | null>(null);
   const [favoriteStores, setFavoriteStores] = useState<string[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   // Load from local storage
   useEffect(() => {
     const savedLists = localStorage.getItem('lists');
     const savedStore = localStorage.getItem('selectedStore');
     const savedFavorites = localStorage.getItem('favoriteStores');
+    const savedProfile = localStorage.getItem('userProfile');
+
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
+    }
 
     if (savedStore) {
       setSelectedStore(JSON.parse(savedStore));
@@ -87,6 +95,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem('favoriteStores', JSON.stringify(favoriteStores));
   }, [favoriteStores]);
+
+  useEffect(() => {
+    if (userProfile) {
+      localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    }
+  }, [userProfile]);
 
   const addList = (list: ShoppingList) => setLists([...lists, list]);
 
@@ -146,10 +160,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       activeListId,
       selectedStore,
       favoriteStores,
+      userProfile,
       setLists,
       setActiveListId,
       setSelectedStore,
       setFavoriteStores,
+      setUserProfile,
       addList,
       updateList,
       deleteList,
