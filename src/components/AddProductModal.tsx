@@ -3,6 +3,12 @@ import { X, Search, Package, Plus, Minus, ChevronDown, Check } from 'lucide-reac
 import { useAppContext } from '../context/AppContext';
 import { ListItem, ShoppingList, Product } from '../types';
 
+// Mock data for testing
+import aguaData from '../../in/data/algolia/algolia_agua_all.json';
+import cepilloData from '../../in/data/algolia/algolia_cepillo_one.json';
+import pizzaData from '../../in/data/algolia/algolia_pizzapeperroni_two.json';
+import tData from '../../in/data/algolia/algolia_t_all.json';
+
 interface Props {
   onClose: () => void;
   onAdded: (listId: string) => void;
@@ -51,6 +57,22 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
+        // --- MOCK DATA PARA TESTING ---
+        let data: any = { hits: [] };
+        const query = searchQuery.toLowerCase();
+        
+        if (query.includes('agua')) {
+          data = aguaData;
+        } else if (query.includes('cepillo')) {
+          data = cepilloData;
+        } else if (query.includes('pizza') || query.includes('peperoni')) {
+          data = pizzaData;
+        } else if (query.includes('t')) {
+          data = tData;
+        }
+
+        // --- LLAMADA API REAL (comentada para usar mocks) ---
+        /*
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -66,7 +88,8 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           throw new Error('Error fetching Algolia search results');
         }
 
-        const data = await response.json();
+        data = await response.json();
+        */
         
         const algoliaProducts: Product[] = data.hits.map((hit: any) => ({
           id: hit.id,
