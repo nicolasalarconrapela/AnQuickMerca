@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { X, Search, Package, Plus, Minus, ChevronDown, Check } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { ListItem, ShoppingList, Product } from '../types';
@@ -11,6 +11,9 @@ interface Props {
 
 export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [productCache, setProductCache] = useState<Record<string, Product>>({});
   const { lists, addList, addItemToList, updateItemInList, removeItemFromList, selectedStore } = useAppContext();
 
   // For the dropdown (only if no preselectedListId)
@@ -35,23 +38,63 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   // If we are creating a new list, we manage a local set of added items until we close/confirm
   const [localNewListItems, setLocalNewListItems] = useState<Record<string, number>>({});
 
-  const allProducts: Product[] = [
-    { id: 'p1', name: 'Hélices con vegetales', brand: 'Hacendado', category: 'Despensa', price: 1.60, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200&h=200&fit=crop' },
-    { id: 'p2', name: 'Macarrones integrales', brand: 'Hacendado', category: 'Despensa', price: 0.85, unit: 'Paquete 500g', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&h=200&fit=crop' },
-    { id: 'p3', name: 'Espaguetis pasta fina', brand: 'Hacendado', category: 'Despensa', price: 1.25, unit: 'Paquete 1kg', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=200&h=200&fit=crop' },
-    { id: 'p4', name: 'Hélices sin gluten', brand: 'Hacendado', category: 'Despensa', price: 2.10, unit: 'Paquete 500g', image: '' },
-    { id: 'p5', name: 'Tomates Pera', brand: 'Hacendado', unit: '1kg', price: 1.60, category: 'Fresco', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&h=200&fit=crop' },
-    { id: 'p6', name: 'Plátanos de Canarias', brand: 'Fresco', unit: '1kg', price: 1.99, category: 'Fresco', image: 'https://images.unsplash.com/photo-1571501679680-de32f1e7aad4?w=200&h=200&fit=crop' },
-    { id: 'p7', name: 'Leche semidesnatada', brand: 'Hacendado', unit: '1L', price: 0.90, category: 'Despensa', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop' },
-    { id: 'p8', name: 'Huevos clase L', brand: 'Hacendado', unit: 'Docena', price: 2.15, category: 'Fresco', image: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200&h=200&fit=crop' }
-  ];
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
 
-  const filteredProducts = useMemo(() => {
-    return allProducts.filter(p =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.brand.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
+    const colmena = selectedStore?.colmena || 'mad1';
+    const indexName = `products_prod_${colmena}_es`;
+    const url = `https://7uzjkl1dj0-dsn.algolia.net/1/indexes/${indexName}/query?x-algolia-agent=Algolia%20for%20JavaScript%20(5.49.1)%3B%20Search%20(5.49.1)%3B%20Browser&x-algolia-api-key=9d8f2e39e90df472b4f2e559a116fe17&x-algolia-application-id=7UZJKL1DJ0`;
+
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            params: `query=${encodeURIComponent(searchQuery)}&hitsPerPage=20`
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Error fetching Algolia search results');
+        }
+
+        const data = await response.json();
+        
+        const algoliaProducts: Product[] = data.hits.map((hit: any) => ({
+          id: hit.id,
+          name: hit.display_name || hit.slug || 'Producto sin nombre',
+          brand: hit.brand || '',
+          category: hit.categories?.[0]?.name || 'Otros',
+          price: parseFloat(hit.price_instructions?.unit_price || "0"),
+          unit: hit.packaging || hit.price_instructions?.unit_name || 'Ud',
+          image: hit.thumbnail || ''
+        }));
+
+        setSearchResults(algoliaProducts);
+        setProductCache(prev => {
+          const next = { ...prev };
+          algoliaProducts.forEach(p => { next[p.id] = p; });
+          return next;
+        });
+      } catch (error) {
+        console.error("Error fetching from Algolia:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedStore]);
+
+  const filteredProducts = searchResults;
 
   const handleAddOne = (product: Product) => {
     if (targetListId === 'new') {
@@ -100,7 +143,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
         addList(newList);
 
         idsToAdd.forEach(id => {
-          const p = allProducts.find(p => p.id === id);
+          const p = productCache[id];
           if (p) {
             addItemToList(newList.id, { ...p, quantity: localNewListItems[id], checked: false });
           }
@@ -184,7 +227,12 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
         {/* Scrollable Content Section */}
         <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0 bg-slate-50 dark:bg-slate-900/50">
           <div className="space-y-2">
-            {filteredProducts.map(product => {
+            {isLoading && (
+              <div className="flex justify-center p-4">
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+            {!isLoading && filteredProducts.map(product => {
               // Determine quantity based on if we are creating new or editing existing
               const quantity = targetListId === 'new'
                  ? (localNewListItems[product.id] || 0)
@@ -238,10 +286,16 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
               );
             })}
 
-            {filteredProducts.length === 0 && (
+            {(!isLoading && filteredProducts.length === 0 && searchQuery.trim() !== '') && (
                <div className="text-center py-10">
                  <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                  <p className="text-slate-500 text-sm">No se encontraron productos</p>
+               </div>
+            )}
+            {(!isLoading && filteredProducts.length === 0 && searchQuery.trim() === '') && (
+               <div className="text-center py-10">
+                 <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                 <p className="text-slate-500 text-sm">Empieza a escribir para buscar productos...</p>
                </div>
             )}
           </div>

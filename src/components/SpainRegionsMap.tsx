@@ -66,7 +66,8 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
         polygonSeries.mapPolygons.template.events.on('click', (ev) => {
             const dataItem = ev.target.dataItem;
             if (dataItem) {
-                const id = dataItem.get('id') as string;
+                const dataContext = dataItem.dataContext as any;
+                const id = dataContext?.id as string;
                 const name = (dataItem.dataContext as any).name as string;
                 if (onRegionSelect) onRegionSelect(id, name);
             }
