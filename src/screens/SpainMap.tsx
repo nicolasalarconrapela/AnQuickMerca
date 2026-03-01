@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { useTranslation } from '../i18n';
 import { ArrowLeft, MapPin, Store, ChevronRight, Search, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import rawJsonData from '../../in/data/mercadona/jsons/locations/mercadona_listo_para_comer_enriquecido.json';
@@ -123,6 +124,7 @@ interface Props {
 
 // ─── Main StoreSelection with Spain Map ──────────────────────────────────
 export function StoreSelection({ onNext }: Props) {
+  const { t } = useTranslation();
     const { selectedStore, setSelectedStore, favoriteStores, setFavoriteStores } = useAppContext();
     const jsonData = rawJsonData as unknown as JsonData;
 
@@ -361,7 +363,7 @@ export function StoreSelection({ onNext }: Props) {
                 )}
                 <div className="flex-1 min-w-0">
                     <h1 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100 truncate">
-                        {level === 'ccaa' && 'Selecciona tu Mercadona'}
+                        {level === 'ccaa' && t('store.select')}
                         {level === 'provincia' && titleCase(selectedCcaaName ?? '')}
                         {level === 'poblacion' && titleCase(selectedProvincia ?? '')}
                         {level === 'tienda' && selectedPoblacion}
@@ -393,7 +395,7 @@ export function StoreSelection({ onNext }: Props) {
                                 type="text"
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                placeholder="Buscar comunidad, provincia o ciudad..."
+                                placeholder={t('store.search')}
                                 className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                             />
                             {searchQuery && (
@@ -459,11 +461,11 @@ export function StoreSelection({ onNext }: Props) {
                         <div className="flex items-center gap-4 mb-3 text-xs text-slate-500 z-10">
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-3 rounded bg-[#4ade80] border border-[#047857]" />
-                                <span>Con tiendas</span>
+                                <span>{t('store.with_stores')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-3 rounded bg-slate-200 border border-slate-400" />
-                                <span>Sin datos</span>
+                                <span>{t('store.no_data')}</span>
                             </div>
                         </div>
 

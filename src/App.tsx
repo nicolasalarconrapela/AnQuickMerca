@@ -9,6 +9,7 @@ import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
 import { MapDemo } from './screens/MapDemo';
 import { AppProvider, useAppContext } from './context/AppContext';
+import { TranslationProvider } from './i18n';
 import { APP_VERSION } from './version';
 import { LogViewer } from './components/LogViewer';
 
@@ -28,7 +29,7 @@ function MainApp() {
         } else {
           setCurrentScreen('store_selection'); // Used to be onboarding
         }
-      }, 2000); // match progress bar time approx
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [currentScreen]);
@@ -80,8 +81,10 @@ function MainApp() {
 
 export default function App() {
   return (
-    <AppProvider>
-      <MainApp />
-    </AppProvider>
+    <TranslationProvider>
+      <AppProvider>
+        <MainApp />
+      </AppProvider>
+    </TranslationProvider>
   );
 }

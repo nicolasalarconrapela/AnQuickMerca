@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../i18n';
 import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown, Check, X, Search } from 'lucide-react';
 import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
@@ -154,7 +155,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 onChange={handleStoreChange}
                 className="bg-transparent border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 w-full appearance-none pr-6 cursor-pointer"
               >
-                <option value="Mercadona">Seleccionar tienda...</option>
+                <option value="Mercadona">{t('list.select_store')}</option>
                 {AVAILABLE_STORES.map(store => (
                   <option key={store.id} value={store.name}>{store.name}</option>
                 ))}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../i18n';
 import { ArrowLeft, MapPin, Search, Star } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { AVAILABLE_STORES } from '../types';
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function StoreSelection({ onNext }: Props) {
+  const { t } = useTranslation();
   const { selectedStore, setSelectedStore, favoriteStores, setFavoriteStores } = useAppContext();
   const [selectedId, setSelectedId] = useState<string | null>(selectedStore?.id || null);
 
@@ -47,7 +49,7 @@ export function StoreSelection({ onNext }: Props) {
            </button>
         )}
         <h1 className="text-xl font-bold leading-tight tracking-tight flex-1 text-slate-900 dark:text-slate-100">
-          Selecciona tu Mercadona
+          {t('store.select')}
         </h1>
       </header>
 

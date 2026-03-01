@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../i18n';
 import { ShoppingCart } from 'lucide-react';
 
 export function Splash() {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

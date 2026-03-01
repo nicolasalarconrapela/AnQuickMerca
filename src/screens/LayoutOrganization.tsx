@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../i18n';
 import { ArrowRight, X, MapPin, Apple, Coffee, Snowflake, Droplets, Lock, Menu, ShoppingBasket } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 

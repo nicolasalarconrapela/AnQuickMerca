@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { useTranslation } from '../i18n';
 import { AddProductModal } from '../components/AddProductModal';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function Home({ onNavigate }: Props) {
+  const { t, language, setLanguage } = useTranslation();
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
   const { lists, selectedStore, addList, setActiveListId } = useAppContext();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -45,8 +47,8 @@ export function Home({ onNavigate }: Props) {
       <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Bienvenido, Tony.</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Organiza tu compra inteligente</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('home.greeting')}, Tony.</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('home.subtitle')}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -58,6 +60,9 @@ export function Home({ onNavigate }: Props) {
             </button>
             <button className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors">
               <Bell className="w-6 h-6" />
+            </button>
+            <button data-testid="lang-btn" onClick={() => setLanguage(language === 'en' ? 'es' : 'en')} className="px-3 py-1 ml-2 text-xs font-bold rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors uppercase h-8 mt-1">
+              {language}
             </button>
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
               <img
@@ -73,7 +78,7 @@ export function Home({ onNavigate }: Props) {
           <MapPin className="text-primary w-4 h-4" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-primary truncate">
-              {selectedStore?.name || 'Selecciona tu Mercadona'}
+              {selectedStore?.name || t('store.select')}
             </p>
             {selectedStore?.address && (
               <p className="text-[10px] text-primary/70 truncate -mt-0.5">
@@ -90,7 +95,7 @@ export function Home({ onNavigate }: Props) {
           </div>
           <input
             type="text"
-            placeholder="Buscar alimentos..."
+            placeholder={t('home.search_food')}
             className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400 transition-all pointer-events-none"
             readOnly
           />
@@ -121,7 +126,7 @@ export function Home({ onNavigate }: Props) {
       <main className="px-4 pb-10">
         <section className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('home.my_lists')}</h2>
           </div>
 
           {activeTab === 'pendientes' ? (
@@ -129,7 +134,7 @@ export function Home({ onNavigate }: Props) {
               {pendingLists.length === 0 ? (
                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500 text-sm">No tienes listas pendientes.</p>
+                  <p className="text-slate-500 text-sm">{t('home.no_pending')}</p>
                 </div>
               ) : (
                 pendingLists.map(list => (
@@ -144,11 +149,11 @@ export function Home({ onNavigate }: Props) {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="font-bold text-lg">{list.name}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{t('home.products_count', { count: list.items.length })}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">{getListTotal(list)} €</p>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total estimado</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">{t('home.estimated_total')}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50">
@@ -159,7 +164,7 @@ export function Home({ onNavigate }: Props) {
                           </div>
                         ))}
                       </div>
-                      {list.items.length > 3 && <span className="text-xs text-slate-400 ml-1">+{list.items.length - 3} más</span>}
+                      {list.items.length > 3 && <span className="text-xs text-slate-400 ml-1">+{list.items.length - 3} {t('home.more_items', { count: '' }).replace('+', '').trim()}</span>}
                       <ChevronRight className="ml-auto text-slate-300 w-5 h-5" />
                     </div>
                   </div>
@@ -169,7 +174,7 @@ export function Home({ onNavigate }: Props) {
           ) : (
             <div className="space-y-3">
               {completedLists.length === 0 ? (
-                <p className="text-center text-slate-500 py-8 text-sm">No tienes listas completadas.</p>
+                <p className="text-center text-slate-500 py-8 text-sm">{t('home.no_completed')}</p>
               ) : (
                 completedLists.map((list) => (
                   <div key={list.id} className="flex items-center gap-4 bg-white/50 dark:bg-slate-800/50 p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
@@ -181,7 +186,7 @@ export function Home({ onNavigate }: Props) {
                         <h4 className="text-sm font-semibold">{list.name}</h4>
                         <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{getListTotal(list)} €</span>
                       </div>
-                      <p className="text-[11px] text-slate-500">{list.date} • {list.items.length} productos</p>
+                      <p className="text-[11px] text-slate-500">{list.date} • {t('home.products_count', { count: list.items.length })}</p>
                     </div>
                   </div>
                 ))

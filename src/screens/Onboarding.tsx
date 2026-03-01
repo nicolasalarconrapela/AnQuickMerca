@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../i18n';
 import { ArrowLeft, Map, MapPin } from 'lucide-react';
 
 interface Props {

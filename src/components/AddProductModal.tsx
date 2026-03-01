@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from '../i18n';
 import { X, Search, Package, Plus, Minus, ChevronDown, Check } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { ListItem, ShoppingList, Product } from '../types';
