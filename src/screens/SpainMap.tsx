@@ -2,7 +2,10 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { ArrowLeft, MapPin, Store, ChevronRight, Search, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import rawJsonData from '../../in/data/mercadona/jsons/locations/mercadona_listo_para_comer_enriquecido.json';
+import colmenasJson from '../../in/data/mercadona/jsons/colmenas/colmenas.json';
 import { SpainRegionsMap } from '../components/SpainRegionsMap';
+
+const colmenasData = colmenasJson as any;
 
 interface MercadonaLocation {
     ccaa: string;
@@ -46,6 +49,29 @@ function normaliseCcaa(raw: string): string {
     const upper = raw.toUpperCase().trim();
     return CCAA_NORMALISE[upper] ?? upper;
 }
+
+// ─── CCAA ↔ COLMENAS mapping ───────────────────────────────────────────
+const CCAA_TO_COLMENA_CODE: Record<string, string> = {
+    'ANDALUCÍA': 'AND',
+    'ARAGÓN': 'ARA',
+    'PRINCIPADO DE ASTURIAS': 'AST',
+    'ISLAS BALEARES': 'BAL',
+    'CANARIAS': 'CAN',
+    'CANTABRIA': 'CAB',
+    'CASTILLA Y LEÓN': 'CYL',
+    'CASTILLA-LA MANCHA': 'CLM',
+    'CATALUNYA': 'CAT',
+    'COMUNIDAD VALENCIANA': 'VAL',
+    'EXTREMADURA': 'EXT',
+    'GALICIA': 'GAL',
+    'COMUNIDAD DE MADRID': 'MAD',
+    'REGIÓN DE MURCIA': 'MUR',
+    'NAVARRA': 'NAV',
+    'PAÍS VASCO': 'PV',
+    'LA RIOJA': 'RIO',
+    'CEUTA': 'AND',
+    'MELILLA': 'AND',
+};
 
 // ─── CCAA ↔ INE mapping (for new amCharts map) ──────────────────────────
 const CCAA_TO_INE: Record<string, string> = {
@@ -277,14 +303,19 @@ export function StoreSelection({ onNext }: Props) {
     };
 
     const selectStore = (loc: MercadonaLocation) => {
+        const ccaaNorm = normaliseCcaa(loc.ccaa);
+        const colmenaCode = CCAA_TO_COLMENA_CODE[ccaaNorm];
+        const colmenaId = colmenaCode ? colmenasData.ccaa_to_colmena[colmenaCode] : null;
+
         const storeObj = {
             id: `${loc.provincia}-${loc.poblacion.nombre}-${loc.direccion.raw}`,
             name: `Mercadona ${titleCase(loc.poblacion.nombre)}`,
             address: loc.direccion.raw,
-            ccaa: selectedCcaaName,
+            ccaa: selectedCcaaName || ccaaNorm,
             provincia: loc.provincia,
             poblacion: loc.poblacion.nombre,
             listoParaComer: loc.listo_para_comer,
+            colmena: colmenaId,
         };
         setSelectedStore(storeObj);
         localStorage.setItem('selectedStore', JSON.stringify(storeObj));
@@ -575,9 +606,26 @@ export function StoreSelection({ onNext }: Props) {
                                         <Store className={`w-4.5 h-4.5 ${store.listo_para_comer === true ? 'text-emerald-600' : 'text-amber-600'}`} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors truncate">
-                                            Mercadona
-                                        </p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors truncate">
+                                                Mercadona
+                                            </p>
+                                            {(() => {
+                                                const ccaaNorm = normaliseCcaa(store.ccaa);
+                                                const colmenaCode = CCAA_TO_COLMENA_CODE[ccaaNorm];
+                                                const colmenaId = colmenaCode ? colmenasData.ccaa_to_colmena[colmenaCode] : null;
+
+                                                if (!colmenaId) return null;
+                                                return (
+                                                    <span
+                                                        className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-indigo-100/80 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 uppercase shrink-0 border border-indigo-200 dark:border-indigo-800/50"
+                                                        title={colmenasData.colmenas[colmenaId]?.label}
+                                                    >
+                                                        {colmenaId}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </div>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{store.direccion.raw}</p>
                                         <div className="flex items-center gap-2 mt-1">
                                             {store.listo_para_comer === true && (
