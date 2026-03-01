@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Screen } from './types';
 import { Splash } from './screens/Splash';
 import { Onboarding } from './screens/Onboarding';
-import { StoreSelection } from './screens/StoreSelection';
+import { StoreSelection } from './screens/SpainMap';
 import { Home } from './screens/Home';
 import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
