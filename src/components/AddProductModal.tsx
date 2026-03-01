@@ -156,13 +156,11 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                     {isSelected && <Check className="w-3.5 h-3.5" />}
                   </div>
 
-                  <div className="shrink-0">
+                  <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                     {product.image ? (
-                      <img src={product.image} alt={product.name} className="size-12 rounded-xl object-cover bg-slate-100" />
+                      <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
-                        <Package className="w-6 h-6" />
-                      </div>
+                      <Package className="w-6 h-6 text-slate-400" />
                     )}
                   </div>
 

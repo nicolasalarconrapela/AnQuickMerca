@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown, Check, X } from 'lucide-react';
 import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
@@ -69,6 +69,10 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     setIsEditingName(false);
   };
 
+  const handleNameClear = () => {
+     setEditNameValue('');
+  };
+
   const handleNameKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleNameSave();
     if (e.key === 'Escape') setIsEditingName(false);
@@ -108,23 +112,32 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         </div>
         
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 group">
+          <div className="flex items-center gap-2 group min-h-[40px]">
             {isEditingName ? (
-               <input
-                 type="text"
-                 autoFocus
-                 value={editNameValue}
-                 onChange={e => setEditNameValue(e.target.value)}
-                 onBlur={handleNameSave}
-                 onKeyDown={handleNameKeyDown}
-                 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 bg-transparent border-b-2 border-primary outline-none p-0 focus:ring-0 w-full"
-               />
+               <div className="flex items-center w-full gap-2 border-b-2 border-primary pb-1">
+                 <input
+                   type="text"
+                   autoFocus
+                   value={editNameValue}
+                   onChange={e => setEditNameValue(e.target.value)}
+                   onKeyDown={handleNameKeyDown}
+                   className="flex-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 bg-transparent outline-none p-0 focus:ring-0 min-w-0"
+                 />
+                 <button onClick={handleNameClear} className="p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">
+                    <X className="w-4 h-4" />
+                 </button>
+                 <button onClick={handleNameSave} className="p-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 shrink-0">
+                    <Check className="w-4 h-4" />
+                 </button>
+               </div>
             ) : (
                <>
-                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 cursor-pointer" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }}>
+                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 cursor-pointer truncate" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }}>
                    {list.name}
                  </h1>
-                 <Edit2 className="w-4 h-4 text-slate-400 cursor-pointer" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }} />
+                 <button onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }} className="p-1.5 rounded-full text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors shrink-0">
+                    <Edit2 className="w-4 h-4" />
+                 </button>
                </>
             )}
           </div>
@@ -190,8 +203,16 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               type="checkbox" 
               checked={item.checked}
               onChange={() => toggleCheck(item.id)}
-              className="size-6 rounded border-2 border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer transition-all hover:border-primary"
+              className="size-6 rounded border-2 border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer transition-all hover:border-primary shrink-0"
             />
+
+            <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-100 dark:border-slate-700 flex items-center justify-center relative">
+              {item.image ? (
+                 <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
+              ) : (
+                <ShoppingBasket className="w-5 h-5 text-slate-400" />
+              )}
+            </div>
             
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-slate-900 dark:text-slate-100 truncate">{item.name}</h3>
@@ -200,7 +221,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               </p>
             </div>
 
-            <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50 shrink-0">
               <button onClick={() => updateQuantity(item.id, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
@@ -218,8 +239,16 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               type="checkbox" 
               checked={item.checked}
               onChange={() => toggleCheck(item.id)}
-              className="size-6 rounded border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-primary cursor-pointer" 
+              className="size-6 rounded border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-primary cursor-pointer shrink-0"
             />
+
+            <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-400 overflow-hidden relative">
+               {item.image ? (
+                 <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" />
+               ) : (
+                  <ShoppingBasket className="w-5 h-5" />
+               )}
+            </div>
             
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-slate-500 line-through truncate">{item.name}</h3>
@@ -228,7 +257,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               </p>
             </div>
 
-            <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-500 p-2 transition-colors">
+            <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-500 p-2 transition-colors shrink-0">
               <Trash2 className="w-5 h-5" />
             </button>
           </div>
