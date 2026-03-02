@@ -1,0 +1,1423 @@
+{
+    "count": 26,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 12,
+            "name": "Oils, spices & sauces",
+            "order": 7,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 112,
+                    "name": "Oil, vinegar & salt",
+                    "order": 7,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 115,
+                    "name": "Spices",
+                    "order": 7,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 116,
+                    "name": "Mayonnaise, ketchup & mustard",
+                    "order": 7,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 117,
+                    "name": "Other sauces",
+                    "order": 7,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "name": "Water & soft drinks",
+            "order": 8,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 156,
+                    "name": "Water",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 163,
+                    "name": "Isotonic & energy drinks",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 158,
+                    "name": "Cola drinks",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 159,
+                    "name": "Orange & lemon soft drinks",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 161,
+                    "name": "Tonic & bitter",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 162,
+                    "name": "Still & tea soft drinks",
+                    "order": 8,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "name": "Snacks",
+            "order": 9,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 135,
+                    "name": "Olives & pickles",
+                    "order": 9,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 133,
+                    "name": "Nuts, seeds & dried fruit",
+                    "order": 9,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 132,
+                    "name": "Potato crisp & snacks",
+                    "order": 9,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "name": "Rice, pulses & pasta",
+            "order": 10,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 118,
+                    "name": "Rice",
+                    "order": 10,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 121,
+                    "name": "Pulses",
+                    "order": 10,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 120,
+                    "name": "Pasta & noodles",
+                    "order": 10,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "name": "Sugar, sweets & chocolate",
+            "order": 11,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 89,
+                    "name": "Sugar & sweeteners",
+                    "order": 11,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 95,
+                    "name": "Chewing gum & candy",
+                    "order": 11,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 92,
+                    "name": "Chocolate",
+                    "order": 11,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 97,
+                    "name": "Sweets",
+                    "order": 11,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 90,
+                    "name": "Marmalade & honey",
+                    "order": 11,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "name": "Baby",
+            "order": 14,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 216,
+                    "name": "Baby food",
+                    "order": 14,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 219,
+                    "name": "Bottles & soothers",
+                    "order": 14,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 218,
+                    "name": "Hygiene & care",
+                    "order": 14,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 217,
+                    "name": "Wipes & nappies",
+                    "order": 14,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "name": "Beer, wine & spirits",
+            "order": 15,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 164,
+                    "name": "Beer",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 166,
+                    "name": "Alcohol-free beer",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 181,
+                    "name": "Spirits",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 174,
+                    "name": "Cider & cava",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 168,
+                    "name": "Tinto de verano & sangria",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 170,
+                    "name": "White wine",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 173,
+                    "name": "Lambrusco & sparkling wine",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 171,
+                    "name": "Rose wine",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 169,
+                    "name": "Red wine",
+                    "order": 15,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "name": "Chocolate drinks, coffee & tea",
+            "order": 16,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 86,
+                    "name": "Chocolate drinks & hot chocolate",
+                    "order": 16,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 81,
+                    "name": "Coffee pods & single cups",
+                    "order": 16,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 83,
+                    "name": "Ground coffee & coffee beans",
+                    "order": 16,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 84,
+                    "name": "Soluble coffee & other drinks",
+                    "order": 16,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 88,
+                    "name": "Tea & infusions",
+                    "order": 16,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Meat",
+            "order": 17,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 46,
+                    "name": "Meat boxes",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 38,
+                    "name": "Poultry",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 47,
+                    "name": "Frozen meat",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 37,
+                    "name": "Pork",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 42,
+                    "name": "Rabbit & lamb",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 43,
+                    "name": "Sausages",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 44,
+                    "name": "Burgers and minced food",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 40,
+                    "name": "Beef",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 45,
+                    "name": "Breaded & prepared meats",
+                    "order": 17,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Cereal & biscuits",
+            "order": 18,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 78,
+                    "name": "Cereal",
+                    "order": 18,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 80,
+                    "name": "Biscuits",
+                    "order": 18,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 79,
+                    "name": "Cakes",
+                    "order": 18,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "Deli & cheese",
+            "order": 159,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 48,
+                    "name": "Cooked poultry & ham",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 52,
+                    "name": "Bacon & sausages",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 49,
+                    "name": "Chopped pork & mortadella",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 51,
+                    "name": "Cured meat",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 50,
+                    "name": "Serrano ham",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 58,
+                    "name": "Pate & sobrasada",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 54,
+                    "name": "Cured, semicured & soft cheese",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 56,
+                    "name": "Sliced, grated & portioned cheese",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 53,
+                    "name": "Spreadable cheese, fresh cheese and specialties",
+                    "order": 159,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "name": "Frozen food",
+            "order": 213,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 147,
+                    "name": "Rice & pasta",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 148,
+                    "name": "Meat",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 154,
+                    "name": "Ice cream",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 155,
+                    "name": "Ice",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 150,
+                    "name": "Seafood",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 149,
+                    "name": "Fish",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 151,
+                    "name": "Pizza",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 884,
+                    "name": "Breaded food",
+                    "order": 213,
+                    "layout": 2,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 152,
+                    "name": "Cake & churros",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 145,
+                    "name": "Vegetables",
+                    "order": 213,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "name": "Cans, soups & creams",
+            "order": 215,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 122,
+                    "name": "Tuna & other fish cans",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 123,
+                    "name": "Cockles & mussels",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 127,
+                    "name": "Vegetable & fruit tins",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 130,
+                    "name": "Gazpacho & creams",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 129,
+                    "name": "Soups & stock",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 126,
+                    "name": "Tomato",
+                    "order": 215,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 21,
+            "name": "Hair care",
+            "order": 238,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 201,
+                    "name": "Conditioner & masque",
+                    "order": 238,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 199,
+                    "name": "Shampoo",
+                    "order": 238,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 203,
+                    "name": "Hair colourants",
+                    "order": 238,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 202,
+                    "name": "Hair styling",
+                    "order": 238,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 20,
+            "name": "Facial & body care",
+            "order": 241,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 192,
+                    "name": "Shaving & male care",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 189,
+                    "name": "Body care",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 185,
+                    "name": "Facial care & hygiene",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 191,
+                    "name": "Hair removal",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 188,
+                    "name": "Deodorant",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 187,
+                    "name": "Hand soap & gel",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 186,
+                    "name": "Dental hygiene",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 190,
+                    "name": "Feminine hygiene",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 194,
+                    "name": "Manicure & pedicure",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 196,
+                    "name": "Perfume & cologne",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 198,
+                    "name": "Sunscreen & aftersun",
+                    "order": 241,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "name": "Herbal remedies & parapharmacy",
+            "order": 305,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 213,
+                    "name": "Herbal remedies",
+                    "order": 305,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 214,
+                    "name": "Parapharmacy",
+                    "order": 305,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Fruits & vegetables",
+            "order": 306,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 27,
+                    "name": "Fruits",
+                    "order": 306,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 28,
+                    "name": "Lettuce & prepared salad",
+                    "order": 306,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 29,
+                    "name": "Vegetables",
+                    "order": 306,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Eggs, milk & butter",
+            "order": 373,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 77,
+                    "name": "Eggs",
+                    "order": 373,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 72,
+                    "name": "Milk & milk alternatives",
+                    "order": 373,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 75,
+                    "name": "Butter & margarine",
+                    "order": 373,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 26,
+            "name": "Cleaning & household",
+            "order": 374,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 226,
+                    "name": "Laundry detergent & fabric conditioner",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 237,
+                    "name": "Sponges, cloths & gloves",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 241,
+                    "name": "Insect killers & fresheners",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 234,
+                    "name": "Bleach & strong liquids",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 235,
+                    "name": "Window cleaner",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 233,
+                    "name": "Home & floor cleaner",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 231,
+                    "name": "Bathroom & toilet cleaner",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 230,
+                    "name": "Kitchen cleaner",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 232,
+                    "name": "Furniture & multi-purpose cleaners",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 229,
+                    "name": "Dish cleaning",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 243,
+                    "name": "Tableware & food storage",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 238,
+                    "name": "Toilet tissue & kitchen rolls",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 239,
+                    "name": "Batteries & bin bags",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 244,
+                    "name": "Cleaning tools & shoe utensils",
+                    "order": 374,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 22,
+            "name": "Makeup",
+            "order": 422,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 206,
+                    "name": "Foundation & concealer",
+                    "order": 422,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 207,
+                    "name": "Blush & powders",
+                    "order": 422,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 208,
+                    "name": "Lips",
+                    "order": 422,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 210,
+                    "name": "Eyes",
+                    "order": 422,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 212,
+                    "name": "Brushes & tools",
+                    "order": 422,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Seafood & fish",
+            "order": 442,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 32,
+                    "name": "Seafood",
+                    "order": 442,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 34,
+                    "name": "Frozen fish",
+                    "order": 442,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 31,
+                    "name": "Fresh fish",
+                    "order": 442,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 36,
+                    "name": "Salted & smoked fish",
+                    "order": 442,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 25,
+            "name": "Pet",
+            "order": 443,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 222,
+                    "name": "Cat",
+                    "order": 443,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 221,
+                    "name": "Dog",
+                    "order": 443,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 225,
+                    "name": "Others",
+                    "order": 443,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Bread & bakery",
+            "order": 515,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 65,
+                    "name": "Oven pastries",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 66,
+                    "name": "Packaged pastries",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 69,
+                    "name": "Flour & baking supplies",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 59,
+                    "name": "Oven bread",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 60,
+                    "name": "Packaged sliced bread & other specialities",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 62,
+                    "name": "Toasted bread & breadcrumbs",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 64,
+                    "name": "Breadsticks & croutons",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 68,
+                    "name": "Cakes & tarts",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 71,
+                    "name": "Candles & decoration",
+                    "order": 515,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "name": "Pizza & ready meals",
+            "order": 597,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 897,
+                    "name": "Ready to eat",
+                    "order": 597,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 138,
+                    "name": "Pizza",
+                    "order": 597,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 140,
+                    "name": "Hot ready meals",
+                    "order": 597,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 142,
+                    "name": "Cold ready meals",
+                    "order": 597,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "name": "Dessert & yoghurt",
+            "order": 598,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 105,
+                    "name": "Bífidus",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 110,
+                    "name": "Flan & custard",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 111,
+                    "name": "Jelly & other desserts",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 106,
+                    "name": "Soy desserts",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 103,
+                    "name": "Low fat yoghurt",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 109,
+                    "name": "Greek yoghurt",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 108,
+                    "name": "Liquid yoghurt",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 104,
+                    "name": "Natural & flavoured yoghurt",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 107,
+                    "name": "Children's yoghurt & dessert",
+                    "order": 598,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "name": "Juice",
+            "order": 793,
+            "is_extended": false,
+            "categories": [
+                {
+                    "id": 99,
+                    "name": "Assorted fruit",
+                    "order": 793,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 100,
+                    "name": "Peach & pineapple",
+                    "order": 793,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 143,
+                    "name": "Orange",
+                    "order": 793,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                },
+                {
+                    "id": 98,
+                    "name": "Tomato & other flavours",
+                    "order": 793,
+                    "layout": 1,
+                    "published": true,
+                    "is_extended": false
+                }
+            ]
+        }
+    ]
+}

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag } from 'lucide-react';
+import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon, Map } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
+import { ConfirmationModal } from '../components/ConfirmationModal';
 
 interface Props {
   onNavigate: (screen: Screen, params?: any) => void;
@@ -10,8 +11,23 @@ interface Props {
 
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
-  const { lists, selectedStore, addList, setActiveListId } = useAppContext();
+  const { lists, selectedStore, addList, deleteList, updateList, setActiveListId, userProfile, setUserProfile } = useAppContext();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [listToDelete, setListToDelete] = useState<ShoppingList | null>(null);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+
+  const isSpanish = userProfile?.language === 'es';
+  const name = userProfile?.name || 'User';
+
+  const toggleLanguage = () => {
+    if (userProfile) {
+      setUserProfile({
+        ...userProfile,
+        language: isSpanish ? 'en' : 'es'
+      });
+    }
+  };
 
   const pendingLists = lists.filter(l => l.status === 'pending');
   const completedLists = lists.filter(l => l.status === 'completed');
@@ -30,6 +46,13 @@ export function Home({ onNavigate }: Props) {
     onNavigate('list_detail');
   };
 
+  const handleRename = (id: string) => {
+    if (renameValue.trim()) {
+      updateList(id, { name: renameValue.trim() });
+    }
+    setEditingListId(null);
+  };
+
   const getListTotal = (list: ShoppingList) => {
     return list.items.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2);
   };
@@ -45,26 +68,34 @@ export function Home({ onNavigate }: Props) {
       <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Bienvenido, Tony.</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Organiza tu compra inteligente</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-7 mb-4">
+              {isSpanish ? `👋🏽 Bienvenido, ${name}.` : `👋🏽 Welcome, ${name}.`}
+            </h1>
           </div>
           <div className="flex gap-2">
-            <button className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors">
-              <Bell className="w-6 h-6" />
+            <button
+              onClick={toggleLanguage}
+              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              title={isSpanish ? "Cambiar idioma" : "Switch language"}
+            >
+              <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
+              <Globe className="w-5 h-5" />
             </button>
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
-              <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tony" 
-                alt="User profile" 
-                className="w-full h-full object-cover"
-              />
-            </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 mb-4 bg-primary/5 dark:bg-primary/10 p-2 rounded-lg cursor-pointer" onClick={() => onNavigate('store_selection')}>
           <MapPin className="text-primary w-4 h-4" />
-          <span className="text-xs font-medium text-primary">{selectedStore?.name || 'Selecciona tienda'}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-primary truncate">
+              {selectedStore?.name || (isSpanish ? 'Selecciona tu Mercadona' : 'Select your store')}
+            </p>
+            {selectedStore?.address && (
+              <p className="text-[10px] text-primary/70 truncate -mt-0.5">
+                {selectedStore.address}
+              </p>
+            )}
+          </div>
           <ChevronRight className="text-primary w-4 h-4 ml-auto" />
         </div>
 
@@ -72,51 +103,52 @@ export function Home({ onNavigate }: Props) {
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="text-slate-400 group-focus-within:text-primary transition-colors w-5 h-5" />
           </div>
-          <input 
-            type="text" 
-            placeholder="Buscar alimentos..."
+          <input
+            type="text"
+            placeholder={isSpanish ? "Buscar alimentos..." : "Search food..."}
             className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400 transition-all pointer-events-none"
             readOnly
           />
         </div>
 
-        <div className="flex gap-8 px-4 mt-6 border-b border-slate-200 dark:border-slate-700">
-          <button 
+        <div className="flex items-center justify-between mt-6 px-4">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
+        </div>
+
+        <div className="flex gap-8 px-4 mt-2 border-b border-slate-200 dark:border-slate-700">
+          <button
             onClick={() => setActiveTab('pendientes')}
-            className={`pb-3 text-sm font-bold transition-colors ${
-              activeTab === 'pendientes' 
-                ? 'text-primary border-b-2 border-primary' 
-                : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
-            }`}
+            className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'pendientes'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
+              }`}
           >
-            Pendientes
+            {isSpanish ? 'Pendientes' : 'Pending'}
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('realizadas')}
-            className={`pb-3 text-sm font-bold transition-colors ${
-              activeTab === 'realizadas' 
-                ? 'text-primary border-b-2 border-primary' 
-                : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
-            }`}
+            className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'realizadas'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
+              }`}
           >
-            Realizadas
+            {isSpanish ? 'Realizadas' : 'Completed'}
           </button>
         </div>
       </header>
 
       <main className="px-4 pb-10">
-        <section className="mt-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
-          </div>
+        <section className="mt-4">
 
           {activeTab === 'pendientes' ? (
             <div className="space-y-4">
               {pendingLists.length === 0 ? (
-                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
-                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                   <p className="text-slate-500 text-sm">No tienes listas pendientes.</p>
-                 </div>
+                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 text-sm">
+                    {isSpanish ? 'No tienes listas pendientes.' : 'No pending lists yet.'}
+                  </p>
+                </div>
               ) : (
                 pendingLists.map(list => (
                   <div
@@ -127,21 +159,81 @@ export function Home({ onNavigate }: Props) {
                     }}
                     className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer"
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-bold text-lg">{list.name}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                    <div className="flex justify-between items-start mb-2 pr-20">
+                      <div className="flex-1 mr-2">
+                        {editingListId === list.id ? (
+                          <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/30 p-1 rounded-xl border border-primary/30">
+                            <input
+                              type="text"
+                              autoFocus
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleRename(list.id);
+                                if (e.key === 'Escape') setEditingListId(null);
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-full bg-transparent border-none outline-none text-lg font-bold p-1"
+                            />
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleRename(list.id); }}
+                              className="p-1.5 bg-primary text-white rounded-lg shadow-sm"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingListId(null); }}
+                              className="p-1.5 bg-slate-200 dark:bg-slate-600 rounded-lg"
+                            >
+                              <CloseIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div
+                            onDoubleClick={(e) => {
+                              e.stopPropagation();
+                              setRenameValue(list.name);
+                              setEditingListId(list.id);
+                            }}
+                          >
+                            <h3 className="font-bold text-lg truncate">{list.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">{getListTotal(list)} €</p>
                         <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total estimado</p>
                       </div>
                     </div>
+
+                    <div className="absolute top-4 right-4 flex gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRenameValue(list.name);
+                          setEditingListId(list.id);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-primary transition-colors bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setListToDelete(list);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50">
                       <div className="flex -space-x-2">
                         {list.items.slice(0, 3).map((item, idx) => (
                           <div key={idx} className="w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 bg-slate-200 overflow-hidden">
-                             {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
+                            {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
                           </div>
                         ))}
                       </div>
@@ -153,21 +245,57 @@ export function Home({ onNavigate }: Props) {
               )}
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {completedLists.length === 0 ? (
-                <p className="text-center text-slate-500 py-8 text-sm">No tienes listas completadas.</p>
+                <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 text-sm">
+                    {isSpanish ? 'No tienes listas completadas.' : 'No completed lists yet.'}
+                  </p>
+                </div>
               ) : (
-                completedLists.map((list) => (
-                  <div key={list.id} className="flex items-center gap-4 bg-white/50 dark:bg-slate-800/50 p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                    <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400">
-                      <Calendar className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h4 className="text-sm font-semibold">{list.name}</h4>
-                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{getListTotal(list)} €</span>
+                completedLists.map(list => (
+                  <div
+                    key={list.id}
+                    onClick={() => {
+                      setActiveListId(list.id);
+                      onNavigate('list_detail');
+                    }}
+                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    <div className="flex justify-between items-start mb-2 pr-10">
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-500 line-through truncate">{list.name}</h3>
+                        <p className="text-xs text-slate-400">{list.items.length} productos • {list.date}</p>
                       </div>
-                      <p className="text-[11px] text-slate-500">{list.date} • {list.items.length} productos</p>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-slate-400">{getListTotal(list)} €</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total</p>
+                      </div>
+                    </div>
+
+                    <div className="absolute top-4 right-4 flex gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setListToDelete(list);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-100 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/30">
+                      <div className="flex -space-x-2">
+                        {list.items.slice(0, 3).map((item, idx) => (
+                          <div key={idx} className="w-6 h-6 rounded-full border-2 border-slate-100 dark:border-slate-800 bg-slate-200 overflow-hidden grayscale">
+                            {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
+                          </div>
+                        ))}
+                      </div>
+                      {list.items.length > 3 && <span className="text-xs text-slate-300 ml-1">+{list.items.length - 3}</span>}
+                      <ChevronRight className="ml-auto text-slate-300 w-5 h-5" />
                     </div>
                   </div>
                 ))
@@ -188,6 +316,23 @@ export function Home({ onNavigate }: Props) {
         <AddProductModal
           onClose={() => setShowAddProductModal(false)}
           onAdded={handleProductAdded}
+        />
+      )}
+
+      {listToDelete && (
+        <ConfirmationModal
+          title={isSpanish ? '¿Eliminar lista?' : 'Delete list?'}
+          message={isSpanish
+            ? `¿Estás seguro de que quieres eliminar la lista "${listToDelete.name}"? Esta acción no se puede deshacer.`
+            : `Are you sure you want to delete the list "${listToDelete.name}"? This action cannot be undone.`
+          }
+          confirmText={isSpanish ? 'Eliminar' : 'Delete'}
+          cancelText={isSpanish ? 'Cancelar' : 'Cancel'}
+          onConfirm={() => {
+            deleteList(listToDelete.id);
+            setListToDelete(null);
+          }}
+          onCancel={() => setListToDelete(null)}
         />
       )}
     </div>
