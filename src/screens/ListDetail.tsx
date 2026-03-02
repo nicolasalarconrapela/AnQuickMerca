@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function ListDetail({ onBack, onNavigate }: Props) {
-  const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList, addItemToList, selectedStore, userProfile } = useAppContext();
+  const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList, addItemToList, completeList, selectedStore, userProfile } = useAppContext();
   const list = lists.find(l => l.id === activeListId);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -35,7 +35,22 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   const toggleCheck = (id: string) => {
     const item = items.find(i => i.id === id);
     if (item) {
-      updateItemInList(list.id, id, { checked: !item.checked });
+      const newChecked = !item.checked;
+      updateItemInList(list.id, id, { checked: newChecked });
+
+      // Si estamos marcando como hecho, comprobamos si es el último
+      if (newChecked) {
+        const remaining = items.filter(i => i.id !== id && !i.checked);
+        if (remaining.length === 0) {
+          // Todos marcados!
+          setTimeout(() => {
+            completeList(list.id);
+            if (!list.repetition) {
+              onBack(); // Si no es recurrente, volvemos a la home
+            }
+          }, 600);
+        }
+      }
     }
   };
 
@@ -55,8 +70,11 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     updateList(list.id, { storeName: e.target.value });
   };
 
-  const toggleWeekly = () => {
-    updateList(list.id, { repeatWeekly: !list.repeatWeekly });
+  const toggleRepetition = () => {
+    const cycle: (typeof list.repetition)[] = [undefined, 'diaria', 'semanal', 'mensual', 'anual'];
+    const currentIndex = cycle.indexOf(list.repetition);
+    const nextIndex = (currentIndex + 1) % cycle.length;
+    updateList(list.id, { repetition: cycle[nextIndex] });
   };
 
   const handleDeleteList = () => {
@@ -199,11 +217,11 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
       <section className="px-5 py-4 flex gap-3">
         <button
-          onClick={toggleWeekly}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-colors shadow-sm ${list.repeatWeekly ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
+          onClick={toggleRepetition}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-colors shadow-sm ${list.repetition ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
         >
           <CalendarClock className="w-4 h-4" />
-          {list.repeatWeekly ? 'Semanal' : 'Programar'}
+          {list.repetition ? (list.repetition.charAt(0).toUpperCase() + list.repetition.slice(1)) : 'Programar'}
         </button>
         <button
           onClick={handleDeleteList}

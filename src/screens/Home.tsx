@@ -131,7 +131,11 @@ export function Home({ onNavigate }: Props) {
           />
         </div>
 
-        <div className="flex gap-8 px-4 mt-6 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between mt-6 px-4">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
+        </div>
+
+        <div className="flex gap-8 px-4 mt-2 border-b border-slate-200 dark:border-slate-700">
           <button
             onClick={() => setActiveTab('pendientes')}
             className={`pb-3 text-sm font-bold transition-colors ${activeTab === 'pendientes'
@@ -154,10 +158,7 @@ export function Home({ onNavigate }: Props) {
       </header>
 
       <main className="px-4 pb-10">
-        <section className="mt-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
-          </div>
+        <section className="mt-4">
 
           {activeTab === 'pendientes' ? (
             <div className="space-y-4">
@@ -264,21 +265,57 @@ export function Home({ onNavigate }: Props) {
               )}
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {completedLists.length === 0 ? (
-                <p className="text-center text-slate-500 py-8 text-sm">No tienes listas completadas.</p>
+                <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 text-sm">
+                    {isSpanish ? 'No tienes listas completadas.' : 'No completed lists yet.'}
+                  </p>
+                </div>
               ) : (
-                completedLists.map((list) => (
-                  <div key={list.id} className="flex items-center gap-4 bg-white/50 dark:bg-slate-800/50 p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                    <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400">
-                      <Calendar className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h4 className="text-sm font-semibold">{list.name}</h4>
-                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{getListTotal(list)} €</span>
+                completedLists.map(list => (
+                  <div
+                    key={list.id}
+                    onClick={() => {
+                      setActiveListId(list.id);
+                      onNavigate('list_detail');
+                    }}
+                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    <div className="flex justify-between items-start mb-2 pr-10">
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-500 line-through truncate">{list.name}</h3>
+                        <p className="text-xs text-slate-400">{list.items.length} productos • {list.date}</p>
                       </div>
-                      <p className="text-[11px] text-slate-500">{list.date} • {list.items.length} productos</p>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-slate-400">{getListTotal(list)} €</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total</p>
+                      </div>
+                    </div>
+
+                    <div className="absolute top-4 right-4 flex gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setListToDelete(list);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-100 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/30">
+                      <div className="flex -space-x-2">
+                        {list.items.slice(0, 3).map((item, idx) => (
+                          <div key={idx} className="w-6 h-6 rounded-full border-2 border-slate-100 dark:border-slate-800 bg-slate-200 overflow-hidden grayscale">
+                            {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
+                          </div>
+                        ))}
+                      </div>
+                      {list.items.length > 3 && <span className="text-xs text-slate-300 ml-1">+{list.items.length - 3}</span>}
+                      <ChevronRight className="ml-auto text-slate-300 w-5 h-5" />
                     </div>
                   </div>
                 ))

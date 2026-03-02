@@ -37,7 +37,7 @@ export interface ShoppingList {
   date: string;
   items: ListItem[];
   status: "pending" | "completed";
-  repeatWeekly?: boolean;
+  repetition?: "diaria" | "semanal" | "mensual" | "anual";
 }
 
 export const AVAILABLE_STORES = [

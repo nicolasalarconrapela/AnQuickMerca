@@ -18,6 +18,7 @@ interface AppContextType {
   addItemToList: (listId: string, item: ListItem) => void;
   updateItemInList: (listId: string, itemId: string, updates: Partial<ListItem>) => void;
   removeItemFromList: (listId: string, itemId: string) => void;
+  completeList: (id: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -218,6 +219,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const completeList = (id: string) => {
+    setLists(prev => prev.map(list => {
+      if (list.id === id) {
+        if (list.repetition) {
+          return {
+            ...list,
+            items: list.items.map(i => ({ ...i, checked: false })),
+            date: new Date().toLocaleDateString()
+          };
+        }
+        return { ...list, status: 'completed' };
+      }
+      return list;
+    }));
+  };
+
   return (
     <AppContext.Provider value={{
       lists,
@@ -235,7 +252,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       deleteList,
       addItemToList,
       updateItemInList,
-      removeItemFromList
+      removeItemFromList,
+      completeList
     }}>
       {children}
     </AppContext.Provider>
