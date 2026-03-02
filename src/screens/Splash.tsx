@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 export function Splash() {
   const [progress, setProgress] = useState(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Animate progress from 0 to 100 over ~1800ms
@@ -32,7 +34,7 @@ export function Splash() {
               AnQuickMerca
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-base font-medium">
-              Optimiza tu compra en segundos
+              {t.splash_tagline}
             </p>
           </div>
         </div>
@@ -46,7 +48,7 @@ export function Splash() {
             </div>
             <div className="flex justify-center">
               <p className="text-slate-400 dark:text-slate-500 text-sm font-medium tracking-wide">
-                Preparando tu recorrido... {Math.min(100, progress)}%
+                {t.splash_loading} {Math.min(100, progress)}%
               </p>
             </div>
           </div>

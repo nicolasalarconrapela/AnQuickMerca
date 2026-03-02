@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SupermarketMap } from '../components/SupermarketMap';
 import { MapSection } from '../types';
 import { ArrowLeft, MapPin, Share2, Info } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 interface StoreMapScreenProps {
     onBack: () => void;
@@ -9,6 +10,7 @@ interface StoreMapScreenProps {
 
 export const StoreMapScreen: React.FC<StoreMapScreenProps> = ({ onBack }) => {
     const [selectedSection, setSelectedSection] = useState<MapSection | null>(null);
+    const { t } = useTranslation();
 
     return (
         <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950">
@@ -22,7 +24,7 @@ export const StoreMapScreen: React.FC<StoreMapScreenProps> = ({ onBack }) => {
                         <ArrowLeft size={20} className="text-slate-600 dark:text-slate-400" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">Plano del Súper</h1>
+                        <h1 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">{t.smap_title}</h1>
                         <p className="text-xs font-bold text-primary flex items-center gap-1 uppercase tracking-widest">
                             <MapPin size={10} /> Mercadona Sevilla Centro
                         </p>
@@ -72,17 +74,17 @@ export const StoreMapScreen: React.FC<StoreMapScreenProps> = ({ onBack }) => {
 
                         <div className="grid grid-cols-2 gap-3 mb-4">
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800">
-                                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Pasillos</p>
-                                <p className="text-sm font-bold">Zonas 4, 5 y 6</p>
+                                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">{t.smap_aisles}</p>
+                                <p className="text-sm font-bold">{selectedSection.label}</p>
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800">
-                                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Capacidad</p>
-                                <p className="text-sm font-bold">Alta ocupación</p>
+                                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">{t.smap_capacity}</p>
+                                <p className="text-sm font-bold">{t.smap_high_occupancy}</p>
                             </div>
                         </div>
 
                         <button className="w-full py-4 bg-primary text-white text-sm font-black uppercase tracking-widest rounded-3xl shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                            Ver productos de esta zona
+                            {t.smap_view_products}
                         </button>
                     </div>
                 </div>

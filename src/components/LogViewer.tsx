@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { logger, LogEntry, LogLevel } from '../utils/logger';
 import { X, Trash2, Filter, ChevronDown, Terminal } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 interface LogViewerProps {
     onClose: () => void;
 }
 
 export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
+    const { t } = useTranslation();
     const [logs, setLogs] = useState<LogEntry[]>([]);
     const [filterLevel, setFilterLevel] = useState<LogLevel | 'all'>('all');
     const [isAutoScrollDelay, setIsAutoScrollDelay] = useState(false);
@@ -49,7 +51,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
             <div className="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 sticky top-0 z-10 shadow-sm">
                 <h2 className="text-base font-bold flex items-center gap-2 text-slate-800 dark:text-slate-100">
                     <Terminal strokeWidth={2} className="w-5 h-5 text-indigo-500" />
-                    Console Logs
+                    {t.log_title}
                     <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
                         {filteredLogs.length}
                     </span>
@@ -61,11 +63,11 @@ export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
                             onChange={(e) => setFilterLevel(e.target.value as LogLevel | 'all')}
                             className="appearance-none pr-8 pl-3 py-1.5 text-xs font-medium border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 cursor-pointer"
                         >
-                            <option value="all">All Levels</option>
-                            <option value="info">Info Logs</option>
-                            <option value="warn">Warnings</option>
-                            <option value="error">Errors</option>
-                            <option value="debug">Debug</option>
+                            <option value="all">{t.log_all_levels}</option>
+                            <option value="info">{t.log_info}</option>
+                            <option value="warn">{t.log_warnings}</option>
+                            <option value="error">{t.log_errors}</option>
+                            <option value="debug">{t.log_debug}</option>
                         </select>
                         <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-amber-500 transition-colors" />
                     </div>
@@ -73,7 +75,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
                     <button
                         onClick={() => logger.clearLogs()}
                         className="p-1.5 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/40 rounded-lg transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
-                        title="Clear Console"
+                        title={t.log_clear}
                     >
                         <Trash2 size={18} strokeWidth={2} />
                     </button>
@@ -83,7 +85,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
                     <button
                         onClick={onClose}
                         className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-700"
-                        title="Close"
+                        title={t.log_close}
                     >
                         <X size={20} strokeWidth={2.5} />
                     </button>
@@ -98,7 +100,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ onClose }) => {
                 {filteredLogs.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-600 space-y-3 opacity-80">
                         <Terminal size={48} strokeWidth={1} className="text-slate-300 dark:text-slate-700" />
-                        <p className="text-sm font-medium">Waiting for incoming logs...</p>
+                        <p className="text-sm font-medium">{t.log_waiting}</p>
                     </div>
                 ) : (
                     filteredLogs.map((log) => (

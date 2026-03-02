@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Package, ShieldCheck, Droplet, Info, ShoppingCart } from 'lucide-react';
 import { Product } from '../types';
+import { translations } from '../i18n';
 
 interface Props {
     product: Product;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Props) {
+    const t = translations[lang ?? 'es'];
     const hit = product.rawHit || {};
     const pi = hit.price_instructions || {};
 
@@ -69,7 +71,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                                 <div className="text-xl font-black text-slate-900 dark:text-white">
                                     {formatPrice(product.price)}
                                 </div>
-                                <p className="text-[8px] text-slate-400 font-bold uppercase tracking-tight">IVA INC.</p>
+                                <p className="text-[8px] text-slate-400 font-bold uppercase tracking-tight">{t.product_tax_included}</p>
                             </div>
                         </div>
                     </div>
@@ -78,7 +80,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                     <div className="grid grid-cols-2 gap-3">
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                {lang === 'es' ? 'Referencia' : 'Reference'}
+                                {t.product_reference}
                             </p>
                             <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                                 {pi.reference_price ? `${formatPrice(pi.reference_price)} / ${pi.reference_format || 'kg'}` : '-'}
@@ -86,7 +88,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                         </div>
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                {lang === 'es' ? 'Formato' : 'Format'}
+                                {t.product_format}
                             </p>
                             <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                                 {pi.unit_name || product.unit} ({pi.unit_size} {pi.size_format})
@@ -97,23 +99,23 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                     {/* Información Adicional */}
                     <div className="space-y-4">
                         <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">
-                            {lang === 'es' ? 'Ficha Técnica' : 'Technical Info'}
+                            {t.product_technical_info}
                         </h3>
 
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800">
-                                <span className="text-slate-500">{lang === 'es' ? 'Impuesto (IVA)' : 'Tax'}</span>
+                                <span className="text-slate-500">{t.product_tax}</span>
                                 <span className="font-bold text-slate-800 dark:text-slate-200">{pi.tax_percentage || (pi.iva ? pi.iva + '%' : '-')}</span>
                             </div>
                             <div className="flex items-center justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800">
-                                <span className="text-slate-500">{lang === 'es' ? 'Código de producto' : 'Product ID'}</span>
+                                <span className="text-slate-500">{t.product_id}</span>
                                 <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">#{product.id}</span>
                             </div>
                             {hit.published && (
                                 <div className="flex items-center justify-between text-sm py-2">
                                     <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
                                         <ShieldCheck className="w-4 h-4" />
-                                        <span>{lang === 'es' ? 'En stock' : 'In stock'}</span>
+                                        <span>{t.product_in_stock}</span>
                                     </div>
                                     <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 px-2 py-0.5 rounded text-uppercase">VERIFIED</span>
                                 </div>
@@ -128,7 +130,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                             className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 h-14 rounded-2xl font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-slate-900/10 dark:shadow-white/5 mt-4"
                         >
                             <ShoppingCart className="w-5 h-5" />
-                            {lang === 'es' ? 'AÑADIR A LA LISTA' : 'ADD TO LIST'}
+                            {t.product_add_to_list}
                         </button>
                     )}
                 </div>
@@ -137,7 +139,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                 <div className="bg-slate-50 dark:bg-slate-800/30 p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-2">
                     <Info className="w-3.5 h-3.5 text-slate-400" />
                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center">
-                        {lang === 'es' ? 'Los precios mostrados son estimaciones basadas en la última actualización.' : 'Prices shown are estimates based on the latest update.'}
+                        {t.product_price_disclaimer}
                     </p>
                 </div>
             </div>

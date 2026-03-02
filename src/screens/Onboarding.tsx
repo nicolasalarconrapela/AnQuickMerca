@@ -1,11 +1,13 @@
 import React from 'react';
 import { ArrowLeft, Map, MapPin } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onNext: () => void;
 }
 
 export function Onboarding({ onNext }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col min-h-screen w-full bg-white dark:bg-background-dark">
       <header className="flex items-center p-6 justify-between">
@@ -20,10 +22,10 @@ export function Onboarding({ onNext }: Props) {
       <main className="flex-1 flex flex-col px-6">
         <div className="pt-8 pb-12 text-center">
           <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-extrabold leading-tight tracking-tight mb-6">
-            Encuentra tu Mercadona más cercano
+            {t.onboarding_title}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-lg font-medium leading-relaxed max-w-[300px] mx-auto">
-            Necesitamos tu ubicación para optimizar tu recorrido en tienda.
+            {t.onboarding_description}
           </p>
         </div>
 
@@ -44,20 +46,20 @@ export function Onboarding({ onNext }: Props) {
             onClick={onNext}
             className="w-full bg-primary hover:bg-primary-dark text-white font-bold text-lg h-14 rounded-full shadow-md transition-all active:scale-[0.98] mb-2"
           >
-            Permitir ubicación
+            {t.onboarding_allow_location}
           </button>
           <button 
             onClick={onNext}
             className="w-full py-4 text-primary font-bold text-base hover:underline transition-all"
           >
-            Introducir código postal manualmente
+            {t.onboarding_enter_postal}
           </button>
         </div>
       </main>
 
       <footer className="px-6 pb-10">
         <p className="text-slate-500 dark:text-slate-400 text-sm text-center leading-normal font-medium">
-          Tu ubicación solo se usa para encontrar tiendas cercanas.
+          {t.onboarding_location_disclaimer}
         </p>
       </footer>
     </div>

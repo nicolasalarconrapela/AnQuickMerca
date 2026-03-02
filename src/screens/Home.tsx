@@ -4,6 +4,7 @@ import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onNavigate: (screen: Screen, params?: any) => void;
@@ -12,6 +13,7 @@ interface Props {
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
   const { lists, selectedStore, addList, deleteList, updateList, setActiveListId, userProfile, setUserProfile } = useAppContext();
+  const { t } = useTranslation();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [listToDelete, setListToDelete] = useState<ShoppingList | null>(null);
   const [editingListId, setEditingListId] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export function Home({ onNavigate }: Props) {
   const createNewList = () => {
     const newList: ShoppingList = {
       id: Math.random().toString(36).substring(7),
-      name: `Lista ${new Date().toLocaleDateString()}`,
+      name: t.home_new_list_name(new Date().toLocaleDateString()),
       storeName: selectedStore?.name || 'Mercadona',
       date: new Date().toLocaleDateString(),
       items: [],
@@ -69,14 +71,14 @@ export function Home({ onNavigate }: Props) {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-7 mb-4">
-              {isSpanish ? `👋🏽 Bienvenido, ${name}.` : `👋🏽 Welcome, ${name}.`}
+              {t.home_welcome(name)}
             </h1>
           </div>
           <div className="flex gap-2">
             <button
               onClick={toggleLanguage}
               className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
-              title={isSpanish ? "Cambiar idioma" : "Switch language"}
+              title={t.home_switch_language}
             >
               <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
               <Globe className="w-5 h-5" />
@@ -88,7 +90,7 @@ export function Home({ onNavigate }: Props) {
           <MapPin className="text-primary w-4 h-4" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-primary truncate">
-              {selectedStore?.name || (isSpanish ? 'Selecciona tu Mercadona' : 'Select your store')}
+              {selectedStore?.name || t.home_select_store}
             </p>
             {selectedStore?.address && (
               <p className="text-[10px] text-primary/70 truncate -mt-0.5">
@@ -105,14 +107,14 @@ export function Home({ onNavigate }: Props) {
           </div>
           <input
             type="text"
-            placeholder={isSpanish ? "Buscar alimentos..." : "Search food..."}
+            placeholder={t.home_search_placeholder}
             className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400 transition-all pointer-events-none"
             readOnly
           />
         </div>
 
         <div className="flex items-center justify-between mt-6 px-4">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Mis listas</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t.home_my_lists}</h2>
         </div>
 
         <div className="flex gap-8 px-4 mt-2 border-b border-slate-200 dark:border-slate-700">
@@ -123,7 +125,7 @@ export function Home({ onNavigate }: Props) {
               : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
-            {isSpanish ? 'Pendientes' : 'Pending'}
+            {t.home_pending}
           </button>
           <button
             onClick={() => setActiveTab('realizadas')}
@@ -132,7 +134,7 @@ export function Home({ onNavigate }: Props) {
               : 'text-slate-500 dark:text-slate-400 hover:text-primary font-medium'
               }`}
           >
-            {isSpanish ? 'Realizadas' : 'Completed'}
+            {t.home_completed}
           </button>
         </div>
       </header>
@@ -146,7 +148,7 @@ export function Home({ onNavigate }: Props) {
                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
-                    {isSpanish ? 'No tienes listas pendientes.' : 'No pending lists yet.'}
+                    {t.home_no_pending}
                   </p>
                 </div>
               ) : (
@@ -197,13 +199,13 @@ export function Home({ onNavigate }: Props) {
                             }}
                           >
                             <h3 className="font-bold text-lg truncate">{list.name}</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} {t.home_products}</p>
                           </div>
                         )}
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">{getListTotal(list)} €</p>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total estimado</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-tighter">{t.home_estimated_total}</p>
                       </div>
                     </div>
 
@@ -237,7 +239,7 @@ export function Home({ onNavigate }: Props) {
                           </div>
                         ))}
                       </div>
-                      {list.items.length > 3 && <span className="text-xs text-slate-400 ml-1">+{list.items.length - 3} más</span>}
+                      {list.items.length > 3 && <span className="text-xs text-slate-400 ml-1">+{list.items.length - 3} {t.home_more}</span>}
                       <ChevronRight className="ml-auto text-slate-300 w-5 h-5" />
                     </div>
                   </div>
@@ -250,7 +252,7 @@ export function Home({ onNavigate }: Props) {
                 <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
-                    {isSpanish ? 'No tienes listas completadas.' : 'No completed lists yet.'}
+                    {t.home_no_completed}
                   </p>
                 </div>
               ) : (
@@ -266,7 +268,7 @@ export function Home({ onNavigate }: Props) {
                     <div className="flex justify-between items-start mb-2 pr-10">
                       <div>
                         <h3 className="font-bold text-lg text-slate-500 line-through truncate">{list.name}</h3>
-                        <p className="text-xs text-slate-400">{list.items.length} productos • {list.date}</p>
+                        <p className="text-xs text-slate-400">{list.items.length} {t.home_products} • {list.date}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-slate-400">{getListTotal(list)} €</p>
@@ -321,13 +323,10 @@ export function Home({ onNavigate }: Props) {
 
       {listToDelete && (
         <ConfirmationModal
-          title={isSpanish ? '¿Eliminar lista?' : 'Delete list?'}
-          message={isSpanish
-            ? `¿Estás seguro de que quieres eliminar la lista "${listToDelete.name}"? Esta acción no se puede deshacer.`
-            : `Are you sure you want to delete the list "${listToDelete.name}"? This action cannot be undone.`
-          }
-          confirmText={isSpanish ? 'Eliminar' : 'Delete'}
-          cancelText={isSpanish ? 'Cancelar' : 'Cancel'}
+          title={t.home_delete_list_title}
+          message={t.home_delete_list_message(listToDelete.name)}
+          confirmText={t.home_delete}
+          cancelText={t.home_cancel}
           onConfirm={() => {
             deleteList(listToDelete.id);
             setListToDelete(null);

@@ -1,59 +1,141 @@
 <div align="center">
+  <img src="public/icon-512x512.png" alt="AnQuickMerca Logo" width="120" height="120" style="border-radius: 24px;" />
 
-<img src="public/icon.svg" alt="AnQuickMerca Logo" width="120" />
+  # AnQuickMerca
 
-# AnQuickMerca
+  **Optimiza tu compra en segundos · Optimize your shopping in seconds**
 
-**Your Supermarket GPS — Optimize your grocery shopping in seconds**
+  [![CI](https://github.com/nicolasar/AnQuickMerca/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolasar/AnQuickMerca/actions)
+  [![Version](https://img.shields.io/badge/version-0.5.0--beta-blue)](./src/version.ts)
+  [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+  [![PWA](https://img.shields.io/badge/PWA-ready-purple)](./public/manifest.json)
 
-[![Version](https://img.shields.io/badge/version-0.5.0--beta-blue)](package.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)](tsconfig.json)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](package.json)
-[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)](vite.config.ts)
-
+  [🇪🇸 Español](#español) · [🇺🇸 English](#english)
 </div>
 
 ---
 
-## About
+## Español
 
-AnQuickMerca is a mobile-first web application designed to transform the tedious task of grocery shopping into a high-efficiency experience. It acts as a **logistical GPS** for your supermarket visits — helping you create shopping lists, find products using Algolia-powered search, and navigate optimized routes through the store layout.
+### ¿Qué es AnQuickMerca?
 
-## Features
+AnQuickMerca es una **Progressive Web App (PWA)** diseñada para optimizar tus compras en Mercadona. Crea listas de la compra inteligentes, navega por la tienda con rutas optimizadas y busca productos con IA.
 
-- **Smart Shopping Lists** — Create, manage, and organize multiple shopping lists with product search powered by Algolia
-- **Store Selection via Spain Map** — Interactive map for selecting your Mercadona store by Community, Province, and City
-- **Store Layout Navigation** — Visual store map with aisle-by-aisle navigation to optimize your shopping route
-- **Product Search** — Real-time search with product details, prices, and images
-- **Active Navigation Mode** — Step-by-step in-store guidance with progress tracking
-- **PWA Support** — Installable on mobile devices for a native-like experience
-- **Dark Mode** — Full dark/light theme support
-- **Multi-language** — English and Spanish support
-- **AI-Powered** — Gemini API integration for intelligent features
+### Características principales
 
-## Tech Stack
+- 🛒 **Gestión de listas** — Crea, edita y organiza tus listas de la compra
+- 🗺️ **Navegación en tienda** — Rutas optimizadas por pasillos para reducir tiempo en tienda
+- 🔍 **Búsqueda con IA** — Encuentra productos con ayuda de Gemini AI
+- 🌍 **Selección de tienda** — Mapa interactivo de toda España con tiendas Mercadona
+- 📱 **Instalable como app** — Funciona offline como app nativa en móvil
+- 🌐 **Bilingüe** — Interfaz completa en Español e Inglés
+- 🔁 **Listas recurrentes** — Configura compras diarias, semanales, mensuales o anuales
+- 💰 **Total estimado** — Calcula el coste de tu compra en tiempo real
 
-| Technology | Purpose |
-|---|---|
-| **React 19** | UI framework |
-| **TypeScript 5.8** | Type safety |
-| **Vite 6** | Build tool & dev server |
-| **Tailwind CSS 4** | Styling |
-| **Motion** | Animations |
-| **Lucide React** | Icons |
-| **Algolia** | Product search data |
-| **Gemini API** | AI features |
-| **amCharts 5** | Map visualizations |
+### Tech Stack
 
-## Getting Started
+| Tecnología | Uso |
+|-----------|-----|
+| React 19 + TypeScript | Frontend framework |
+| Vite 6 | Build tool y dev server |
+| Tailwind CSS 4 | Estilos y diseño |
+| Motion (Framer Motion) | Animaciones |
+| Lucide React | Iconografía |
+| Google Gemini AI | Búsqueda inteligente de productos |
+| amCharts 5 | Mapa interactivo de España |
+| PWA (Web App Manifest) | Instalación y soporte offline |
 
-### Prerequisites
+### Instalación y desarrollo
 
-- [Node.js](https://nodejs.org/) (v18+)
-- A [Gemini API Key](https://ai.google.dev/)
+```bash
+# Clonar el repositorio
+git clone https://github.com/nicolasar/AnQuickMerca.git
+cd AnQuickMerca
 
-### Installation
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env.local
+# Edita .env.local y añade tu GEMINI_API_KEY
+
+# Iniciar servidor de desarrollo
+npm run dev
+# Abre http://localhost:3000
+```
+
+### Variables de entorno
+
+| Variable | Descripción | Requerida |
+|----------|-------------|-----------|
+| `GEMINI_API_KEY` | API Key de Google Gemini para búsqueda de productos | Sí |
+
+### Scripts disponibles
+
+```bash
+npm run dev      # Servidor de desarrollo en puerto 3000
+npm run build    # Build de producción
+npm run preview  # Preview del build
+npm run lint     # Verificación de tipos TypeScript
+```
+
+### Estructura del proyecto
+
+```
+AnQuickMerca/
+├── src/
+│   ├── components/     # Componentes reutilizables (modales, mapa, búsqueda)
+│   ├── context/        # Estado global con React Context
+│   ├── hooks/          # Custom hooks (useTranslation, usePanZoom)
+│   ├── i18n/           # Sistema de internacionalización (ES/EN)
+│   ├── screens/        # Pantallas de la aplicación
+│   ├── utils/          # Utilidades (logger)
+│   ├── data/           # Datos del mapa del supermercado
+│   └── types.ts        # Definiciones de tipos TypeScript
+├── public/
+│   ├── data/           # Datos de productos (Algolia) y GeoJSON de España
+│   └── manifest.json   # Configuración PWA
+└── .github/            # Templates de Issues, PRs y CI/CD
+```
+
+### Contribuir
+
+1. Haz fork del repositorio
+2. Crea una rama para tu feature: `git checkout -b feature/nueva-funcionalidad`
+3. Realiza tus cambios y haz commit: `git commit -m 'feat: añadir nueva funcionalidad'`
+4. Push a tu rama: `git push origin feature/nueva-funcionalidad`
+5. Abre un Pull Request usando el template
+
+### Convenciones de commits
+
+Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` — Nueva funcionalidad
+- `fix:` — Corrección de bugs
+- `docs:` — Cambios en documentación
+- `style:` — Cambios de estilo (no afectan lógica)
+- `refactor:` — Refactorización de código
+- `chore:` — Tareas de mantenimiento
+
+---
+
+## English
+
+### What is AnQuickMerca?
+
+AnQuickMerca is a **Progressive Web App (PWA)** designed to optimize your Mercadona shopping. Create smart shopping lists, navigate the store with optimized routes, and search for products using AI.
+
+### Key Features
+
+- 🛒 **List management** — Create, edit and organize your shopping lists
+- 🗺️ **In-store navigation** — Optimized aisle routes to reduce time in store
+- 🔍 **AI-powered search** — Find products with Gemini AI assistance
+- 🌍 **Store selection** — Interactive map of Spain with all Mercadona locations
+- 📱 **Installable as app** — Works offline as a native-like app on mobile
+- 🌐 **Bilingual** — Full interface in Spanish and English
+- 🔁 **Recurring lists** — Set up daily, weekly, monthly or yearly shopping
+- 💰 **Estimated total** — Real-time cost calculation for your shopping
+
+### Installation & Development
 
 ```bash
 # Clone the repository
@@ -63,75 +145,43 @@ cd AnQuickMerca
 # Install dependencies
 npm install
 
-# Create environment file
+# Set up environment variables
 cp .env.example .env.local
-```
+# Edit .env.local and add your GEMINI_API_KEY
 
-Set your `GEMINI_API_KEY` in `.env.local`:
-
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-
-### Development
-
-```bash
-# Start dev server on port 3000
+# Start development server
 npm run dev
+# Open http://localhost:3000
 ```
 
-### Build
+### Environment Variables
 
-```bash
-# Production build
-npm run build
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GEMINI_API_KEY` | Google Gemini API Key for product search | Yes |
 
-# Preview production build
-npm run preview
-```
-
-### Other Commands
-
-```bash
-# Type-check without emitting
-npm run lint
-
-# Clean build artifacts
-npm run clean
-```
-
-## Project Structure
-
-```
-AnQuickMerca/
-├── public/              # Static assets (icons, manifest, GeoJSON)
-├── src/
-│   ├── components/      # Reusable UI components
-│   ├── context/         # React context (global state)
-│   ├── data/            # Static JSON data
-│   ├── hooks/           # Custom React hooks
-│   ├── screens/         # App screens/pages
-│   ├── utils/           # Utility functions
-│   ├── App.tsx          # Main app with screen router
-│   ├── main.tsx         # Entry point
-│   └── types.ts         # TypeScript type definitions
-├── in/data/             # Raw input data (Algolia, categories, locations)
-├── .github/             # Issue & PR templates
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-└── package.json         # Dependencies & scripts
-```
-
-## Contributing
-
-Contributions are welcome! Please see the [issue templates](.github/ISSUE_TEMPLATE/) and [PR template](.github/PULL_REQUEST_TEMPLATE.md) for guidelines.
+### Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'feat: add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request using the template
 
-## License
+### Commit Conventions
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` — New feature
+- `fix:` — Bug fix
+- `docs:` — Documentation changes
+- `style:` — Style changes (no logic impact)
+- `refactor:` — Code refactoring
+- `chore:` — Maintenance tasks
+
+---
+
+<div align="center">
+  Made with ❤️ for smarter shopping
+
+  **AnQuickMerca** · v0.5.0-beta
+</div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Search, Star } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { AVAILABLE_STORES } from '../types';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onNext: () => void;
@@ -9,6 +10,7 @@ interface Props {
 
 export function StoreSelection({ onNext }: Props) {
   const { selectedStore, setSelectedStore, favoriteStores, setFavoriteStores } = useAppContext();
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(selectedStore?.id || null);
 
   const handleSelect = (id: string) => {
@@ -28,7 +30,7 @@ export function StoreSelection({ onNext }: Props) {
       setFavoriteStores(favoriteStores.filter(storeId => storeId !== id));
     } else {
       if (favoriteStores.length >= 5) {
-        alert("Solo puedes tener hasta 5 tiendas favoritas.");
+        alert(t.store_favorites_limit);
         return;
       }
       setFavoriteStores([...favoriteStores, id]);
@@ -47,13 +49,13 @@ export function StoreSelection({ onNext }: Props) {
            </button>
         )}
         <h1 className="text-xl font-bold leading-tight tracking-tight flex-1 text-slate-900 dark:text-slate-100">
-          Selecciona tu Mercadona
+          {t.store_select_title}
         </h1>
       </header>
 
       <main className="flex-1 px-4 py-2">
         <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
-          Elige tu tienda principal y guarda hasta 5 favoritos para acceder rápido.
+          {t.store_description}
         </p>
 
         <div className="flex items-center gap-2 text-primary font-medium mb-4">
@@ -68,12 +70,12 @@ export function StoreSelection({ onNext }: Props) {
             </div>
             <input 
               type="text" 
-              placeholder="Introduce código postal..." 
+              placeholder={t.store_postal_placeholder} 
               className="w-full pl-10 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary text-sm"
             />
           </div>
           <button className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 rounded-xl transition-colors">
-            Buscar
+            {t.store_search_button}
           </button>
         </div>
 

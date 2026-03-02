@@ -3,6 +3,7 @@ import { Search, X, ShoppingBasket, Plus, Minus, Check, Package, Download } from
 import { Product, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { ProductDetailModal } from './ProductDetailModal';
+import { useTranslation } from '../i18n';
 
 interface Props {
     placeholder?: string;
@@ -12,8 +13,9 @@ interface Props {
     autoFocus?: boolean;
 }
 
-export function ProductSearch({ placeholder = "Busca productos...", listId, onProductSelect, onSearchChange, autoFocus = false }: Props) {
+export function ProductSearch({ placeholder, listId, onProductSelect, onSearchChange, autoFocus = false }: Props) {
     const { lists, updateItemInList, removeItemFromList, addItemToList, selectedStore, userProfile } = useAppContext();
+    const { t, lang } = useTranslation();
 
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -45,7 +47,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
 
                 if (useMockData) {
                     let mockAssetPath = '';
-                    const lang = userProfile?.language || 'es';
+                    const lang = userProfile?.language || 'en';
 
                     if (query.includes('tortilla') || query.includes('omelette')) {
                         mockAssetPath = `/data/algolia/demo/${lang}/tortilla.json`;
@@ -69,7 +71,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     }
                 } else {
                     const colmena = selectedStore?.colmena || 'mad1';
-                    const lang = userProfile?.language || 'es';
+                    const lang = userProfile?.language || 'en';
                     const indexName = `products_prod_${colmena}_${lang}`;
                     const url = `https://7uzjkl1dj0-dsn.algolia.net/1/indexes/${indexName}/query?x-algolia-agent=Algolia%20for%20JavaScript%20(5.49.1)%3B%20Search%20(5.49.1)%3B%20Browser&x-algolia-api-key=9d8f2e39e90df472b4f2e559a116fe17&x-algolia-application-id=7UZJKL1DJ0`;
 
@@ -160,7 +162,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     <input
                         type="text"
                         autoFocus={autoFocus}
-                        placeholder={placeholder}
+                        placeholder={placeholder || t.search_placeholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="flex-1 bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 text-sm font-medium placeholder:text-slate-400"
@@ -175,7 +177,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
 
             {searchQuery && (
                 <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300 w-full px-0.5">
-                    <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Resultados</h3>
+                    <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">{t.search_results}</h3>
                     {isLoading ? (
                         <div className="flex justify-center py-10">
                             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -199,11 +201,11 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                                             >
                                                 <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{product.name}</h3>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} €/ud</p>
+                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} {t.search_price_unit}</p>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleDownloadJson(product); }}
                                                         className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary transition-colors"
-                                                        title="Descargar JSON"
+                                                        title={t.search_download_json}
                                                     >
                                                         <Download className="w-3 h-3" />
                                                     </button>
@@ -248,7 +250,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                                         onClick={() => setCurrentPage(p => p - 1)}
                                         className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
-                                        Anterior
+                                        {t.search_previous}
                                     </button>
                                     <span className="text-xs font-bold text-slate-400">
                                         {currentPage} / {Math.ceil(searchResults.length / resultsPerPage)}
@@ -258,13 +260,13 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                                         onClick={() => setCurrentPage(p => p + 1)}
                                         className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
-                                        Siguiente
+                                        {t.search_next}
                                     </button>
                                 </div>
                             )}
                         </>
                     ) : (
-                        <div className="text-center py-10 text-slate-400 text-sm">No hay resultados para "{searchQuery}"</div>
+                        <div className="text-center py-10 text-slate-400 text-sm">{t.search_no_results(searchQuery)}</div>
                     )}
                 </div>
             )}
@@ -274,7 +276,7 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     product={selectedDetail}
                     onClose={() => setSelectedDetail(null)}
                     onAdd={handleAdd}
-                    lang={userProfile?.language}
+                    lang={lang}
                 />
             )}
         </div>

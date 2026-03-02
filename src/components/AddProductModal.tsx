@@ -4,6 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import { ShoppingList, Product } from '../types';
 import { ProductSearch } from './ProductSearch';
 import { ProductDetailModal } from './ProductDetailModal';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onClose: () => void;
@@ -13,6 +14,7 @@ interface Props {
 
 export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) {
   const { lists, addList, addItemToList, selectedStore, userProfile } = useAppContext();
+  const { t, lang } = useTranslation();
   const isSpanish = userProfile?.language === 'es';
 
   // For the dropdown (only if no preselectedListId)
@@ -48,7 +50,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
 
         const newList: ShoppingList = {
           id: Math.random().toString(36).substring(7),
-          name: isSpanish ? `Lista ${new Date().toLocaleDateString()}` : `List ${new Date().toLocaleDateString()}`,
+          name: t.home_new_list_name(new Date().toLocaleDateString()),
           storeName: selectedStore?.name || 'Mercadona',
           date: new Date().toLocaleDateString(),
           items: items,
@@ -78,7 +80,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
         {/* Sticky Header Section */}
         <div className="shrink-0 flex items-center justify-between p-5 pb-4">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            {isSpanish ? 'Añadir Productos' : 'Add Products'}
+            {t.modal_add_title}
           </h3>
           <button
             onClick={handleDone}
@@ -95,7 +97,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           {!preselectedListId && (
             <div className="relative">
               <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
-                {isSpanish ? 'Añadir a la lista' : 'Add to list'}
+                {t.modal_add_to_list}
               </label>
               <div className="relative">
                 <select
@@ -106,7 +108,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                   }}
                   className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm font-medium rounded-2xl p-3 pr-10 appearance-none focus:ring-2 focus:ring-primary outline-none"
                 >
-                  <option value="new">+ {isSpanish ? 'Crear lista nueva' : 'Create new list'}</option>
+                  <option value="new">{t.modal_create_list}</option>
                   {pendingLists.map(l => (
                     <option key={l.id} value={l.id}>{l.name} ({l.items.length} prod.)</option>
                   ))}
@@ -119,7 +121,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           <ProductSearch
             listId={targetListId === 'new' ? undefined : targetListId}
             onProductSelect={targetListId === 'new' ? handleProductSelect : undefined}
-            placeholder={isSpanish ? "Busca alimentos..." : "Search food..."}
+            placeholder={t.modal_search_placeholder}
             autoFocus
           />
         </div>
@@ -129,7 +131,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           <div className="space-y-4">
             {targetListId === 'new' && newItemsCount > 0 && (
               <div className="bg-primary/5 p-4 rounded-2xl border border-primary/20">
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-3">Prod. seleccionados ({newItemsCount})</h4>
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-3">{t.modal_selected_products(newItemsCount)}</h4>
                 <div className="flex flex-wrap gap-2">
                   {Object.keys(localNewListItems).map(id => (
                     <div key={id} className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full border border-primary/20 text-xs font-bold shadow-sm animate-in zoom-in-50">
@@ -159,7 +161,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
               disabled={newItemsCount === 0}
               className="w-full bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl shadow-sm flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
             >
-              {isSpanish ? 'Crear lista y añadir' : 'Create list and add'}
+              {t.modal_create_and_add}
             </button>
           </div>
         )}
@@ -169,7 +171,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
         <ProductDetailModal
           product={selectedDetail}
           onClose={() => setSelectedDetail(null)}
-          lang={userProfile?.language}
+          lang={lang}
         />
       )}
     </div>

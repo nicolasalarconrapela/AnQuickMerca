@@ -5,6 +5,7 @@ import {
 import { SupermarketMap } from '../components/SupermarketMap';
 import { useAppContext } from '../context/AppContext';
 import { AVAILABLE_STORES } from '../types';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onBack: () => void;
@@ -14,6 +15,7 @@ interface Props {
 export function LayoutOrganization({ onBack, onNext }: Props) {
   const [viewMode, setViewMode] = useState<'visual' | 'list'>('visual');
   const { lists, activeListId, updateList } = useAppContext();
+  const { t } = useTranslation();
   const list = lists.find(l => l.id === activeListId);
   const items = list?.items || [];
 
@@ -25,7 +27,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
       <header className="px-6 pt-12 pb-4 bg-white border-b border-[rgba(31,41,55,0.10)] flex flex-col relative z-20">
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-4">
-            <h1 className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-1">Mapa de Ruta</h1>
+            <h1 className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-1">{t.layout_route_map}</h1>
             <div className="relative inline-flex items-center w-full">
               <select
                 value={list.storeName}
@@ -41,7 +43,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
               <ChevronDown className="w-5 h-5 text-slate-400 absolute right-0 pointer-events-none" />
             </div>
             <p className="text-sm font-medium text-slate-600 mt-1">
-              {items.filter(i => !i.checked).length} productos pendientes
+              {t.layout_pending_products(items.filter(i => !i.checked).length)}
             </p>
           </div>
           <button onClick={onBack} className="p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 rounded-full border border-[rgba(31,41,55,0.10)]">
@@ -76,7 +78,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
               ))}
               {items.filter(i => !i.checked).length === 0 && (
                 <div className="py-12 text-center text-slate-400 text-sm">
-                  Todos los productos han sido recogidos.
+                  {t.layout_all_collected}
                 </div>
               )}
             </div>
@@ -90,7 +92,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
           onClick={onNext}
           className="w-full h-[48px] bg-[#00754A] hover:bg-[#00623E] text-white font-semibold text-base rounded border-none flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
         >
-          Iniciar navegación
+          {t.layout_start_navigation}
           <ArrowRight className="w-5 h-5" />
         </button>
       </footer>

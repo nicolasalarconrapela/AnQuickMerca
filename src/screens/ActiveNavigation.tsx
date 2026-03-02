@@ -9,6 +9,7 @@ import {
 import { SupermarketMap } from '../components/SupermarketMap';
 import { useAppContext } from '../context/AppContext';
 import { AVAILABLE_STORES, ListItem } from '../types';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onBack: () => void;
@@ -17,6 +18,7 @@ interface Props {
 export function ActiveNavigation({ onBack }: Props) {
   const [showMap, setShowMap] = useState(false);
   const { lists, activeListId, updateItemInList, completeList, updateList } = useAppContext();
+  const { t } = useTranslation();
 
   const list = lists.find(l => l.id === activeListId);
   const store = AVAILABLE_STORES.find(s => s.name === list?.storeName) || AVAILABLE_STORES[0];
@@ -65,15 +67,15 @@ export function ActiveNavigation({ onBack }: Props) {
         <div className="size-20 bg-emerald-500/10 text-emerald-600 rounded-3xl flex items-center justify-center mb-8 border border-emerald-500/20 shadow-sm">
           <Check className="w-10 h-10" />
         </div>
-        <h2 className="text-2xl font-bold mb-3 text-slate-900">¡Compra finalizada!</h2>
+        <h2 className="text-2xl font-bold mb-3 text-slate-900">{t.nav_completed_title}</h2>
         <p className="text-slate-500 mb-10 text-sm leading-relaxed max-w-[240px]">
-          Has recogido todos los artículos de tu lista en <span className="text-primary font-medium">{store.name}</span>.
+          {t.nav_completed_desc(store.name)}
         </p>
         <button
           onClick={handleFinish}
           className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all"
         >
-          Finalizar y salir
+          {t.nav_finish}
         </button>
       </div>
     );
@@ -325,15 +327,15 @@ export function ActiveNavigation({ onBack }: Props) {
               <MapPin className="w-5 h-5" />
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">Ruta sugerida</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">{t.nav_suggested_route}</span>
               <p className="text-sm font-bold leading-none truncate overflow-hidden whitespace-nowrap">
-                Entrada <span className="mx-1 opacity-50">→</span> Pasillo {currentAisleData?.aisleId || '01'} ({currentAisleData?.side === 'left' ? 'IZQ' : 'DER'})
+                {t.nav_aisle_direction(currentAisleData?.aisleId || '01', currentAisleData?.side === 'left' ? t.nav_left : t.nav_right)}
               </p>
             </div>
 
             {/* Precio Total Compacto */}
             <div className="flex flex-col items-end shrink-0 border-l border-white/20 pl-3">
-              <span className="text-[8px] font-black uppercase tracking-tighter opacity-60">Total</span>
+              <span className="text-[8px] font-black uppercase tracking-tighter opacity-60">{t.nav_total}</span>
               <span className="text-sm font-black tabular-nums">{listTotal.toFixed(2).replace('.', ',')}€</span>
             </div>
           </div>
@@ -471,10 +473,10 @@ export function ActiveNavigation({ onBack }: Props) {
               </h2>
               <div className="flex flex-col mt-1">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none truncate mb-1">
-                  {currentItem.brand || 'Marca blanca'}
+                  {currentItem.brand || ''}
                 </span>
                 <span className="text-sm font-black text-primary leading-none">
-                  {currentItem.price.toFixed(2).replace('.', ',')}€ <span className="text-[10px] font-bold text-slate-300 italic">/ ud.</span>
+                  {currentItem.price.toFixed(2).replace('.', ',')}€ <span className="text-[10px] font-bold text-slate-300 italic">{t.search_price_unit}</span>
                 </span>
               </div>
             </div>
@@ -484,7 +486,7 @@ export function ActiveNavigation({ onBack }: Props) {
               </span>
               {currentItem.quantity > 1 && (
                 <span className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tighter">
-                  x{currentItem.quantity} uds
+                  x{currentItem.quantity} {t.common_products}
                 </span>
               )}
             </div>
@@ -495,9 +497,12 @@ export function ActiveNavigation({ onBack }: Props) {
         {/* Carousel de la sección */}
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">En esta sección</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t.nav_in_section}</h3>
             <span className="text-[10px] font-bold text-primary">
-              {list?.items.filter(i => i.category === currentItem.category && i.checked).length} / {list?.items.filter(i => i.category === currentItem.category).length} cogidos
+              {t.nav_picked_count(
+                list?.items.filter(i => i.category === currentItem.category && i.checked).length || 0,
+                list?.items.filter(i => i.category === currentItem.category).length || 0
+              )}
             </span>
           </div>
 
@@ -550,7 +555,7 @@ export function ActiveNavigation({ onBack }: Props) {
             onClick={onBack}
             className="text-[10px] font-bold text-slate-300 hover:text-slate-500 uppercase tracking-[0.2em] transition-colors py-1 px-4 active:scale-95"
           >
-            Cancelar navegación
+            {t.nav_cancel}
           </button>
         </div>
       </main>
