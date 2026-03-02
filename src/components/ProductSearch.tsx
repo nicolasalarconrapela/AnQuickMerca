@@ -43,9 +43,17 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     else if (query.includes('cepillo')) mockAssetPath = '/data/algolia/cepillo.json';
                     else if (query.includes('pizza') || query.includes('peperoni')) mockAssetPath = '/data/algolia/pizza.json';
                     else if (query.includes('t')) mockAssetPath = '/data/algolia/t.json';
-                    if (mockAssetPath) {
-                        const res = await fetch(mockAssetPath);
-                        if (res.ok) data = await res.json();
+                    else if (query.includes('tortilla') || query.includes('omelette')) {
+                        const lang = userProfile?.language || 'es';
+                        mockAssetPath = `/data/algolia/demo/${lang}/tortilla.json`;
+                    }
+                    else if (query.includes('atun') || query.includes('tuna')) {
+                        const lang = userProfile?.language || 'es';
+                        mockAssetPath = `/data/algolia/demo/${lang}/tuna.json`;
+                    }
+                    else if (query.includes('gazpacho')) {
+                        const lang = userProfile?.language || 'es';
+                        mockAssetPath = `/data/algolia/demo/${lang}/gazpacho.json`;
                     }
                 } else {
                     const colmena = selectedStore?.colmena || 'mad1';
@@ -61,15 +69,25 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     if (response.ok) data = await response.json();
                 }
 
-                const products: Product[] = data.hits.map((hit: any) => ({
-                    id: hit.id,
-                    name: hit.display_name || hit.slug || 'Producto sin nombre',
-                    brand: hit.brand || '',
-                    category: hit.categories?.[0]?.name || 'Otros',
-                    price: parseFloat(hit.price_instructions?.unit_price || "0"),
-                    unit: hit.packaging || hit.price_instructions?.unit_name || 'Ud',
-                    image: hit.thumbnail || ''
-                }));
+                const products: Product[] = data.hits.map((hit: any) => {
+                    const name = hit.name || hit.display_name || hit.slug || 'Producto';
+                    const rawPrice = hit.price !== undefined ? hit.price : (hit.price_instructions?.unit_price || 0);
+                    const price = typeof rawPrice === 'string' ? parseFloat(rawPrice) : Number(rawPrice);
+                    const image = hit.image || hit.thumbnail || '';
+                    const brand = hit.brand || '';
+                    const unit = hit.unit || hit.packaging || hit.price_instructions?.unit_name || 'Ud';
+                    const category = typeof hit.category === 'string' ? hit.category : (hit.categories?.[0]?.name || 'Otros');
+
+                    return {
+                        id: String(hit.id),
+                        name: String(name),
+                        brand: String(brand),
+                        category: String(category),
+                        price: isNaN(price) ? 0 : price,
+                        unit: String(unit),
+                        image: String(image)
+                    };
+                });
 
                 setSearchResults(products);
             } catch (error) {

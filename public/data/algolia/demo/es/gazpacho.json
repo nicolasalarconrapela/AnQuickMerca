@@ -1,0 +1,76 @@
+{
+    "hits": [
+        {
+            "id": "4740",
+            "name": "Aceite de oliva virgen extra Hacendado",
+            "brand": "Hacendado",
+            "category": "Aceite, especias y salsas",
+            "price": 4.95,
+            "unit": "Botella",
+            "image": "https://prod-mercadona.imgix.net/images/a5648e373920a10023a7ab6304eb0dc0.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "69297",
+            "name": "Ajos morados",
+            "brand": "",
+            "category": "Fruta y verdura",
+            "price": 1.85,
+            "unit": "Malla",
+            "image": "https://prod-mercadona.imgix.net/images/3e754d795d63e6a75070fb672c24d773.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "82735",
+            "name": "Hogaza sin gluten",
+            "brand": "",
+            "category": "Panadería y pastelería",
+            "price": 2.96,
+            "unit": "Paquete",
+            "image": "https://prod-mercadona.imgix.net/images/af38980c089d2ef99559f4ecaa47cc7d.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "69584",
+            "name": "Pepino",
+            "brand": "",
+            "category": "Fruta y verdura",
+            "price": 0.38,
+            "unit": "Pieza",
+            "image": "https://prod-mercadona.imgix.net/images/a1e854648225054f10d2bac80ca7ca98.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "69312",
+            "name": "Pimiento verde",
+            "brand": "",
+            "category": "Fruta y verdura",
+            "price": 0.81,
+            "unit": "Pieza",
+            "image": "https://prod-mercadona.imgix.net/images/00d691c0cf3f098281e923b716d89f83.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "19731",
+            "name": "Sal fina Hacendado",
+            "brand": "Hacendado",
+            "category": "Aceite, especias y salsas",
+            "price": 0.4,
+            "unit": "Paquete",
+            "image": "https://prod-mercadona.imgix.net/images/5097b3d7450edab7c2d9586299f5f3b9.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "69937",
+            "name": "Tomate ensalada",
+            "brand": "",
+            "category": "Fruta y verdura",
+            "price": 0.58,
+            "unit": "Pieza",
+            "image": "https://prod-mercadona.imgix.net/images/ccb2b42ba2bb6a7b692dac6101074709.jpg?fit=crop&h=300&w=300"
+        },
+        {
+            "id": "13609",
+            "name": "Vinagre de Jerez reserva Hacendado",
+            "brand": "Hacendado",
+            "category": "Aceite, especias y salsas",
+            "price": 2.1,
+            "unit": "Botella",
+            "image": "https://prod-mercadona.imgix.net/images/bfa0c4aabf80adf4cd9a390df6aa7184.jpg?fit=crop&h=300&w=300"
+        }
+    ]
+}

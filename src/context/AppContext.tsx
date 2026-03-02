@@ -63,29 +63,43 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const lang = currentProfile?.language || 'en';
       let gazpachoHits: any[] = [];
       let tortillaHits: any[] = [];
+      let tunaHits: any[] = [];
 
       try {
-        const [gzRes, ttRes] = await Promise.all([
+        const [gzRes, ttRes, tuRes] = await Promise.all([
           fetch(`/data/algolia/demo/${lang}/gazpacho.json`),
-          fetch(`/data/algolia/demo/${lang}/tortilla.json`)
+          fetch(`/data/algolia/demo/${lang}/tortilla.json`),
+          fetch(`/data/algolia/demo/${lang}/tuna.json`)
         ]);
         if (gzRes.ok) gazpachoHits = (await gzRes.json()).hits || [];
         if (ttRes.ok) tortillaHits = (await ttRes.json()).hits || [];
+        if (tuRes.ok) tunaHits = (await tuRes.json()).hits || [];
       } catch (error) {
         console.error('Error fetching demo data:', error);
       }
 
-      const mapHits = (hits: any[]) => hits.map((hit: any) => ({
-        id: hit.id,
-        name: hit.display_name || hit.slug || 'Producto',
-        brand: hit.brand || '',
-        category: hit.categories?.[0]?.name || 'Otros',
-        price: parseFloat(hit.price_instructions?.unit_price || "0"),
-        unit: hit.packaging || hit.price_instructions?.unit_name || 'Ud',
-        image: hit.thumbnail || hit.image || '',
-        quantity: 1,
-        checked: false
-      }));
+      const mapHits = (hits: any[]) => hits.map((hit: any) => {
+        // Log individual hit to diagnose (this is a conceptual note, we'll use more robust logic)
+        const name = hit.name || hit.display_name || hit.slug || 'Producto';
+        const rawPrice = hit.price !== undefined ? hit.price : (hit.price_instructions?.unit_price || 0);
+        const price = typeof rawPrice === 'string' ? parseFloat(rawPrice) : Number(rawPrice);
+        const image = hit.image || hit.thumbnail || '';
+        const brand = hit.brand || '';
+        const unit = hit.unit || hit.packaging || hit.price_instructions?.unit_name || 'Ud';
+        const category = typeof hit.category === 'string' ? hit.category : (hit.categories?.[0]?.name || 'Otros');
+
+        return {
+          id: String(hit.id),
+          name: String(name),
+          brand: String(brand),
+          category: String(category),
+          price: isNaN(price) ? 0 : price,
+          unit: String(unit),
+          image: String(image),
+          quantity: 1,
+          checked: false
+        };
+      });
 
       if (savedLists) {
         let loadedLists = JSON.parse(savedLists);
@@ -95,8 +109,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           if (l.id === 'gazpacho' && gazpachoHits.length > 0) {
             return { ...l, items: mapHits(gazpachoHits) };
           }
-          if (l.id === 'ryan' && tortillaHits.length > 0) {
-            return { ...l, items: mapHits(tortillaHits) };
+          if (l.id === 'ryan' && (tortillaHits.length > 0 || tunaHits.length > 0)) {
+            return { ...l, items: [...mapHits(tortillaHits), ...mapHits(tunaHits)] };
           }
           return l;
         });
@@ -117,7 +131,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             name: 'Salvar al soldado Ryan',
             storeName: 'Mercadona Sevilla Centro',
             date: new Date().toLocaleDateString(),
-            items: mapHits(tortillaHits),
+            items: [...mapHits(tortillaHits), ...mapHits(tunaHits)],
             status: 'pending'
           }
         ];
