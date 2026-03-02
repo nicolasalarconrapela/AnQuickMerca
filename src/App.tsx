@@ -8,10 +8,12 @@ import { ProductSearch } from './screens/ProductSearch';
 import { ListDetail } from './screens/ListDetail';
 import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
+import { useTheme } from './hooks/useTheme';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
+  useTheme(); // Inicializa el hook y lo mantiene sincronizado
 
   useEffect(() => {
     // Simulate splash screen delay
