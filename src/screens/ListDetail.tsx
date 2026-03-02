@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarClock, Store, ChevronDown, Check, X, Search } from 'lucide-react';
-import { Screen, AVAILABLE_STORES } from '../types';
+import {
+  ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket,
+  Route, CalendarClock, Store, ChevronDown, Check, X,
+  MoreVertical, MapPin, CheckCircle2, Calendar, LayoutGrid
+} from 'lucide-react';
+import { Screen, AVAILABLE_STORES, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
-import { AddProductModal } from '../components/AddProductModal';
+import { ProductSearch } from '../components/ProductSearch';
+import { ProductDetailModal } from '../components/ProductDetailModal';
 
 interface Props {
   onBack: () => void;
@@ -10,12 +15,22 @@ interface Props {
 }
 
 export function ListDetail({ onBack, onNavigate }: Props) {
-  const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList } = useAppContext();
+  const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList, addItemToList, completeList, selectedStore, userProfile } = useAppContext();
   const list = lists.find(l => l.id === activeListId);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState('');
-  const [showAddProductModal, setShowAddProductModal] = useState(false);
+
+  // Search state managed by ProductSearch, but we need local query for UI toggles
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDetail, setSelectedDetail] = useState<any | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCtaMenuOpen, setIsCtaMenuOpen] = useState(false);
+
+  // Selection mode state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const longPressTimer = React.useRef<NodeJS.Timeout | null>(null);
 
   if (!list) {
     return (
@@ -31,7 +46,22 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   const toggleCheck = (id: string) => {
     const item = items.find(i => i.id === id);
     if (item) {
-      updateItemInList(list.id, id, { checked: !item.checked });
+      const newChecked = !item.checked;
+      updateItemInList(list.id, id, { checked: newChecked });
+
+      // Si estamos marcando como hecho, comprobamos si es el último
+      if (newChecked) {
+        const remaining = items.filter(i => i.id !== id && !i.checked);
+        if (remaining.length === 0) {
+          // Todos marcados!
+          setTimeout(() => {
+            completeList(list.id);
+            if (!list.repetition) {
+              onBack(); // Si no es recurrente, volvemos a la home
+            }
+          }, 600);
+        }
+      }
     }
   };
 
@@ -48,18 +78,21 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   };
 
   const handleStoreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-     updateList(list.id, { storeName: e.target.value });
+    updateList(list.id, { storeName: e.target.value });
   };
 
-  const toggleWeekly = () => {
-     updateList(list.id, { repeatWeekly: !list.repeatWeekly });
+  const toggleRepetition = () => {
+    const cycle: (typeof list.repetition)[] = [undefined, 'diaria', 'semanal', 'mensual', 'anual'];
+    const currentIndex = cycle.indexOf(list.repetition);
+    const nextIndex = (currentIndex + 1) % cycle.length;
+    updateList(list.id, { repetition: cycle[nextIndex] });
   };
 
   const handleDeleteList = () => {
-     if (window.confirm('¿Seguro que quieres eliminar esta lista?')) {
-        deleteList(list.id);
-        onBack();
-     }
+    if (window.confirm('¿Seguro que quieres eliminar esta lista?')) {
+      deleteList(list.id);
+      onBack();
+    }
   };
 
   const handleNameSave = () => {
@@ -69,13 +102,59 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     setIsEditingName(false);
   };
 
-  const handleNameClear = () => {
-     setEditNameValue('');
-  };
-
   const handleNameKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleNameSave();
     if (e.key === 'Escape') setIsEditingName(false);
+  };
+
+  const handleClearList = () => {
+    if (list && window.confirm(`¿Quieres vaciar los ${totalCount} productos de "${list.name}"?`)) {
+      list.items.forEach(item => removeItemFromList(list.id, item.id));
+      setIsMenuOpen(false);
+    }
+  };
+
+  const handleLongPress = (id: string) => {
+    setSelectionMode(true);
+    const newSelected = new Set(selectedItems);
+    newSelected.add(id);
+    setSelectedItems(newSelected);
+  };
+
+  const handleTouchStart = (id: string) => {
+    longPressTimer.current = setTimeout(() => handleLongPress(id), 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const toggleSelection = (id: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+      if (newSelected.size === 0) setSelectionMode(false);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const deleteSelected = () => {
+    if (window.confirm(`¿Eliminar ${selectedItems.size} productos?`)) {
+      selectedItems.forEach(id => removeItemFromList(list.id, id));
+      setSelectionMode(false);
+      setSelectedItems(new Set());
+    }
+  };
+
+  const markSelectedAsDone = () => {
+    selectedItems.forEach(id => updateItemInList(list.id, id, { checked: true }));
+    setSelectionMode(false);
+    setSelectedItems(new Set());
   };
 
   const checkedCount = items.filter(i => i.checked).length;
@@ -101,155 +180,236 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
   return (
     <div className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen pb-44 font-display">
-      <header className="sticky top-0 z-30 bg-white dark:bg-slate-900/90 backdrop-blur-md px-5 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between h-10 mb-2">
-          <button onClick={onBack} className="flex items-center justify-center -ml-2 size-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <ArrowLeft className="w-6 h-6 text-slate-700 dark:text-slate-300" />
-          </button>
-          <div className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${statusColor}`}>
-            {statusLabel}
-          </div>
-        </div>
-        
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 group min-h-[40px]">
-            {isEditingName ? (
-               <div className="flex items-center w-full gap-2 border-b-2 border-primary pb-1">
-                 <input
-                   type="text"
-                   autoFocus
-                   value={editNameValue}
-                   onChange={e => setEditNameValue(e.target.value)}
-                   onKeyDown={handleNameKeyDown}
-                   className="flex-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 bg-transparent outline-none p-0 focus:ring-0 min-w-0"
-                 />
-                 <button onClick={handleNameClear} className="p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">
-                    <X className="w-4 h-4" />
-                 </button>
-                 <button onClick={handleNameSave} className="p-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 shrink-0">
-                    <Check className="w-4 h-4" />
-                 </button>
-               </div>
-            ) : (
-               <>
-                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 cursor-pointer truncate" onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }}>
-                   {list.name}
-                 </h1>
-                 <button onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }} className="p-1.5 rounded-full text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors shrink-0">
-                    <Edit2 className="w-4 h-4" />
-                 </button>
-               </>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between mt-1 text-sm">
-             <span className="text-slate-500 dark:text-slate-400 font-medium">{totalCount} productos · <span className="text-slate-800 dark:text-slate-200 font-bold">{totalEstimated.toFixed(2).replace('.', ',')} €</span></span>
-          </div>
-
-          <div className="relative mt-3 inline-flex">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 w-full">
-              <Store className="w-4 h-4 text-slate-400" />
-              <select
-                value={list.storeName}
-                onChange={handleStoreChange}
-                className="bg-transparent border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 w-full appearance-none pr-6 cursor-pointer"
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm">
+        {selectionMode ? (
+          <div className="flex items-center justify-between px-5 h-[72px] animate-in fade-in slide-in-from-top-2 duration-200 bg-primary/10 dark:bg-primary/20">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => { setSelectionMode(false); setSelectedItems(new Set()); }}
+                className="p-2 -ml-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors"
               >
-                <option value="Mercadona">Seleccionar tienda...</option>
-                {AVAILABLE_STORES.map(store => (
-                  <option key={store.id} value={store.name}>{store.name}</option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 pointer-events-none" />
+                <X className="w-6 h-6 text-primary" />
+              </button>
+              <span className="font-bold text-lg text-primary">{selectedItems.size} seleccionados</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={markSelectedAsDone} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-primary" title="Marcar hecho">
+                <CheckCircle2 className="w-6 h-6" />
+              </button>
+              <button onClick={deleteSelected} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-rose-500" title="Eliminar">
+                <Trash2 className="w-6 h-6" />
+              </button>
+              <button className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-slate-400">
+                <MoreVertical className="w-6 h-6" />
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col px-5 pt-3 pb-2 gap-2">
+            <div className="flex items-center justify-between gap-3 h-10">
+              <div className="flex items-center flex-1 min-w-0 gap-2">
+                <button onClick={onBack} className="p-2 -ml-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0">
+                  <ArrowLeft className="w-6 h-6 text-slate-700 dark:text-slate-300" />
+                </button>
+
+                <div className="flex-1 min-w-0 flex items-center gap-1.5">
+                  {isEditingName ? (
+                    <div className="flex items-center w-full gap-1 border-b-2 border-primary pb-0.5">
+                      <input
+                        type="text"
+                        autoFocus
+                        value={editNameValue}
+                        onChange={e => setEditNameValue(e.target.value)}
+                        onKeyDown={handleNameKeyDown}
+                        className="flex-1 text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50 bg-transparent outline-none p-0 focus:ring-0 min-w-0"
+                      />
+                      <button onClick={handleNameSave} className="p-1 rounded-full text-primary">
+                        <Check className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <h1
+                      className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50 truncate cursor-pointer flex items-center gap-1.5"
+                      onClick={() => { setEditNameValue(list.name); setIsEditingName(true); }}
+                    >
+                      {list.name}
+                      <Edit2 className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </h1>
+                  )}
+
+                  <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 ${statusColor}`}>
+                    {statusLabel}
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${isMenuOpen ? 'bg-slate-100 dark:bg-slate-800' : ''}`}
+                >
+                  < MoreVertical className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                </button>
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    <button className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                      <Edit2 className="w-4 h-4 text-slate-400" />
+                      Renombrar
+                    </button>
+                    <button
+                      onClick={handleClearList}
+                      className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-500 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Vaciar lista
+                    </button>
+                    <div className="h-px bg-slate-100 dark:bg-slate-700 my-1 mx-2" />
+                    <button
+                      onClick={handleDeleteList}
+                      className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 font-medium transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Eliminar lista
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mb-1">
+              <div className="relative inline-flex items-center group text-primary">
+                <MapPin className="w-3.5 h-3.5 absolute left-2.5 z-10 pointer-events-none" />
+                <select
+                  value={list.storeName}
+                  onChange={handleStoreChange}
+                  className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 transition-colors pl-8 pr-7 py-1.5 rounded-full text-xs font-bold appearance-none border-none focus:ring-2 focus:ring-primary/20 cursor-pointer min-w-[140px]"
+                >
+                  <option value="Mercadona">Seleccionar tienda...</option>
+                  {AVAILABLE_STORES.map(store => (
+                    <option key={store.id} value={store.name}>{store.name}</option>
+                  ))}
+                </select>
+              <button onClick={toggleRepetition} className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all border ${list.repetition ? "bg-primary/10 text-primary border-primary/20" : "bg-white dark:bg-slate-800 text-slate-300 border-slate-100"}`}><Calendar className="w-3.5 h-3.5" />{list.repetition && <span className="text-[10px] font-bold uppercase tracking-tight">{list.repetition}</span>}</button>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 pointer-events-none group-focus-within:rotate-180 transition-transform" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!selectionMode && (
+          <div className="px-5 pb-3">
+            <div className={`flex gap-2 ${searchQuery ? 'flex-col items-stretch' : 'items-center'}`}>
+              <div className="flex-1 min-w-0">
+                <ProductSearch
+                  listId={list.id}
+                  placeholder="Añadir producto"
+                  onSearchChange={setSearchQuery}
+                />
+              </div>
+              {!searchQuery && (
+                <button className="flex-none size-11 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                  <Plus className="w-6 h-6" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Quick Action Buttons */}
-      <section className="px-5 py-4 flex gap-3">
-         <button
-           onClick={toggleWeekly}
-           className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-colors shadow-sm ${list.repeatWeekly ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`}
-         >
-           <CalendarClock className="w-4 h-4" />
-           {list.repeatWeekly ? 'Semanal' : 'Programar'}
-         </button>
-         <button
-           onClick={handleDeleteList}
-           className="flex-none flex items-center justify-center size-[46px] rounded-2xl border border-red-200 bg-red-50 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400 shadow-sm"
-         >
-           <Trash2 className="w-5 h-5" />
-         </button>
-      </section>
-
-      {/* Conditional Progress Bar */}
-      {totalCount > 0 && (
-        <section className="px-5 mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Completado</span>
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{Math.round(progress)}%</span>
-          </div>
-          <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-primary rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }}></div>
-          </div>
-        </section>
-      )}
-
-      {/* Items List */}
-      <main className="px-5 space-y-3 pb-8">
+      <main className="px-5 space-y-3 pb-8 mt-4">
         {items.filter(i => !i.checked).map(item => (
-          <div key={item.id} className="flex items-center gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-            <input 
-              type="checkbox" 
-              checked={item.checked}
-              onChange={() => toggleCheck(item.id)}
-              className="size-6 rounded border-2 border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer transition-all hover:border-primary shrink-0"
-            />
+          <div
+            key={item.id}
+            onMouseDown={() => handleTouchStart(item.id)}
+            onMouseUp={handleTouchEnd}
+            onMouseLeave={handleTouchEnd}
+            onTouchStart={() => handleTouchStart(item.id)}
+            onTouchEnd={handleTouchEnd}
+            className={`flex items-center gap-4 p-4 rounded-3xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md scale-[1.02]' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 shadow-sm'}`}
+          >
+            {(selectionMode || item.checked) ? (
+              <input
+                type="checkbox"
+                checked={selectionMode ? selectedItems.has(item.id) : item.checked}
+                onChange={() => selectionMode ? toggleSelection(item.id) : toggleCheck(item.id)}
+                className="size-6 rounded-full border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer transition-all shrink-0"
+              />
+            ) : (
+              <div
+                className="size-6 rounded-full border-2 border-slate-300 dark:border-slate-600 transition-colors hover:border-primary shrink-0"
+                onClick={() => toggleCheck(item.id)}
+              />
+            )}
 
-            <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-100 dark:border-slate-700 flex items-center justify-center relative">
+            <div
+              onClick={() => setSelectedDetail(item)}
+              className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-100 dark:border-slate-700 flex items-center justify-center relative cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all active:scale-95"
+            >
               {item.image ? (
-                 <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
+                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
               ) : (
                 <ShoppingBasket className="w-5 h-5 text-slate-400" />
               )}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-slate-900 dark:text-slate-100 truncate">{item.name}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-                {item.brand} • <span className="font-medium text-slate-700 dark:text-slate-300">{(item.price * item.quantity).toFixed(2).replace('.', ',')} €</span>
+                {item.brand}
+              </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                <span className="font-medium text-slate-700 dark:text-slate-300">{(item.price * item.quantity).toFixed(2).replace('.', ',')} €</span>
               </p>
             </div>
 
-            <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50 shrink-0">
-              <button onClick={() => updateQuantity(item.id, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
-                <Minus className="w-4 h-4" />
-              </button>
-              <span className="w-6 text-center font-bold text-slate-800 dark:text-slate-200 text-sm">{item.quantity}</span>
-              <button onClick={() => updateQuantity(item.id, 1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
-                <Plus className="w-4 h-4" />
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50">
+                <button onClick={() => updateQuantity(item.id, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-6 text-center font-bold text-slate-800 dark:text-slate-200 text-sm">{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.id, 1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              <button
+                onClick={() => removeItem(item.id)}
+                className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
           </div>
         ))}
 
         {items.filter(i => i.checked).map(item => (
-          <div key={item.id} className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50 opacity-60">
-            <input 
-              type="checkbox" 
-              checked={item.checked}
-              onChange={() => toggleCheck(item.id)}
-              className="size-6 rounded border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-primary cursor-pointer shrink-0"
+          <div
+            key={item.id}
+            onMouseDown={() => handleTouchStart(item.id)}
+            onMouseUp={handleTouchEnd}
+            onMouseLeave={handleTouchEnd}
+            onTouchStart={() => handleTouchStart(item.id)}
+            onTouchEnd={handleTouchEnd}
+            className={`flex items-center gap-4 p-4 rounded-3xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md' : 'bg-slate-50 dark:bg-slate-800/30 border-slate-100 dark:border-slate-800/50 opacity-60'}`}
+          >
+            <input
+              type="checkbox"
+              checked={selectionMode ? selectedItems.has(item.id) : item.checked}
+              onChange={() => selectionMode ? toggleSelection(item.id) : toggleCheck(item.id)}
+              className="size-6 rounded-full border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-primary cursor-pointer shrink-0"
             />
 
-            <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-400 overflow-hidden relative">
-               {item.image ? (
-                 <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" />
-               ) : (
-                  <ShoppingBasket className="w-5 h-5" />
-               )}
+            <div
+              onClick={() => setSelectedDetail(item)}
+              className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-400 overflow-hidden relative cursor-pointer opacity-80"
+            >
+              {item.image ? (
+                <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" />
+              ) : (
+                <ShoppingBasket className="w-5 h-5" />
+              )}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-slate-500 line-through truncate">{item.name}</h3>
               <p className="text-xs text-slate-400 mt-0.5 truncate">
@@ -270,57 +430,89 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             </div>
             <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">Lista vacía</h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Busca y añade productos a tu compra.</p>
-            <button
-              onClick={() => setShowAddProductModal(true)}
-              className="bg-primary/10 text-primary font-bold px-6 py-3 rounded-full hover:bg-primary/20 transition-colors inline-flex items-center gap-2"
-            >
-              <Search className="w-5 h-5" />
-              Buscar productos
-            </button>
           </div>
         )}
       </main>
 
-      {/* Floating Action Button */}
-      {totalCount > 0 && (
-        <button
-          onClick={() => setShowAddProductModal(true)}
-          className="fixed right-6 size-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 bottom-32"
-        >
-          <Search className="w-6 h-6" />
-        </button>
-      )}
+      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800 shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Total Compra</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">{totalEstimated.toFixed(2).replace('.', ',')}</span>
+              <span className="text-sm font-bold text-slate-400">€</span>
+            </div>
+          </div>
 
-      {/* Unified Bottom Navigation Bar */}
-      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white dark:bg-slate-900 px-5 py-4 z-50 border-t border-slate-100 dark:border-slate-800 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total estimado</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-slate-900 dark:text-white">{totalEstimated.toFixed(2).replace('.', ',')}</span>
-            <span className="font-bold text-slate-500">€</span>
+          <div className="flex items-center shadow-2xl shadow-primary/30 rounded-[2rem] overflow-hidden">
+            <button
+              onClick={() => onNavigate('layout_organization')}
+              disabled={totalCount === 0 || checkedCount === totalCount}
+              className="bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-black text-[11px] uppercase tracking-[0.15em] py-5 px-8 flex items-center justify-center gap-3 transition-all active:scale-[0.98] hover:brightness-110"
+            >
+              <div className="size-6 bg-white/20 rounded-full flex items-center justify-center">
+                <Route size={14} className="animate-pulse" />
+              </div>
+              <span className="truncate">
+                {totalCount === 0
+                  ? 'Lista vacía'
+                  : checkedCount === totalCount
+                    ? 'Hecho'
+                    : `Iniciar compra · ${items.filter(i => !i.checked).length}`
+                }
+              </span>
+            </button>
+            <button
+              onClick={() => setIsCtaMenuOpen(!isCtaMenuOpen)}
+              disabled={totalCount === 0}
+              className="bg-primary-dark/20 dark:bg-black/20 backdrop-blur-md px-3 py-5 border-l border-white/10"
+            >
+              <ChevronDown size={18} className={`text-white transition-transform duration-300 ${isCtaMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
 
-        <button 
-          onClick={() => onNavigate('layout_organization')}
-          disabled={totalCount === 0 || checkedCount === totalCount}
-          className="w-full bg-slate-900 dark:bg-white disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white dark:text-slate-900 font-bold py-4 rounded-2xl shadow-sm flex items-center justify-center gap-2 transition-colors"
-        >
-          <Route className="w-6 h-6" />
-          {totalCount === 0
-            ? 'Añade productos'
-            : checkedCount === totalCount
-              ? 'Lista completada'
-              : 'Iniciar recorrido'
-          }
-        </button>
+        {isCtaMenuOpen && (
+          <div className="absolute bottom-full right-6 mb-3 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <div className="size-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+                <Check className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold">Iniciar ahora</span>
+                <span className="text-[10px] text-slate-400">Ruta optimizada</span>
+              </div>
+            </button>
+            <button
+              onClick={() => { toggleRepetition(); setIsCtaMenuOpen(false); }}
+              className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              <div className={`size-8 rounded-lg flex items-center justify-center ${list.repetition ? 'bg-primary/20 text-primary' : 'bg-slate-100 dark:bg-slate-700/50 text-slate-500'}`}>
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold">{list.repetition ? 'Cambiar frecuencia' : 'Programar compra'}</span>
+                <span className="text-[10px] text-slate-400">{list.repetition || 'Recordatorio semanal/mensual'}</span>
+              </div>
+            </button>
+            <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <div className="size-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                <LayoutGrid className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold">Simular ruta</span>
+                <span className="text-[10px] text-slate-400">Ver mapa interactivo</span>
+              </div>
+            </button>
+          </div>
+        )}
       </div>
 
-      {showAddProductModal && (
-        <AddProductModal
-          preselectedListId={list.id}
-          onClose={() => setShowAddProductModal(false)}
-          onAdded={() => setShowAddProductModal(false)}
+      {selectedDetail && (
+        <ProductDetailModal
+          product={selectedDetail}
+          onClose={() => setSelectedDetail(null)}
+          lang={userProfile?.language}
         />
       )}
     </div>
