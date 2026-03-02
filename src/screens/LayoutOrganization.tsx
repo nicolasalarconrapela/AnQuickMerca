@@ -1,5 +1,11 @@
-import React from 'react';
-import { ArrowRight, X, MapPin, Apple, Coffee, Snowflake, Droplets, Lock, Menu } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  ArrowRight, X, Map as MapIcon, List as ListIcon, ChevronDown
+} from 'lucide-react';
+import { SupermarketMap } from '../components/SupermarketMap';
+import { useAppContext } from '../context/AppContext';
+import { AVAILABLE_STORES } from '../types';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onBack: () => void;
@@ -7,99 +13,89 @@ interface Props {
 }
 
 export function LayoutOrganization({ onBack, onNext }: Props) {
+  const [viewMode, setViewMode] = useState<'visual' | 'list'>('visual');
+  const { lists, activeListId, updateList } = useAppContext();
+  const { t } = useTranslation();
+  const list = lists.find(l => l.id === activeListId);
+  const items = list?.items || [];
+
+  if (!list) return null;
+
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background-light dark:bg-background-dark font-display">
-      <div className="bg-rose-500 text-white p-4 flex items-center justify-between rounded-b-2xl shadow-md z-20 relative">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded-full bg-white text-rose-500 flex items-center justify-center font-bold text-sm">!</div>
-          <span className="font-medium text-sm">Error de ubicación: No se puede colocar aquí</span>
-        </div>
-        <button onClick={onBack} className="text-white/80 hover:text-white">
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
-      <div className="px-6 pt-6 pb-4">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 leading-tight mb-2">
-          Organización del Mercadona
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">
-          Selecciona tu lista para optimizar el recorrido
-        </p>
-      </div>
-
-      <div className="flex-1 px-4 pb-32 relative">
-        <div className="bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-4 min-h-[400px] relative border border-slate-200 dark:border-slate-700 grid grid-cols-2 gap-3">
-          
-          <div className="col-span-1 row-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 relative">
-            <Menu className="absolute top-3 right-3 text-slate-300 w-5 h-5" />
-            <Apple className="w-8 h-8 text-slate-400 mb-2" />
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Fruta y Verdura</span>
-          </div>
-
-          <div className="col-span-1 bg-rose-50 dark:bg-rose-900/20 rounded-xl shadow-sm border-2 border-rose-300 dark:border-rose-700 flex flex-col items-center justify-center p-4 relative">
-            <Menu className="absolute top-3 right-3 text-rose-400 w-5 h-5" />
-            <div className="w-8 h-8 text-rose-500 mb-2 flex items-center justify-center">
-              <span className="material-symbols-outlined">bakery_dining</span>
+    <div className="flex flex-col h-[844px] w-[390px] mx-auto bg-[#F5F7F6] font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative border border-[rgba(31,41,55,0.10)] shadow-[0_6px_18px_rgba(0,0,0,0.08)] rounded-[2rem]">
+      {/* Cabela Blanca */}
+      <header className="px-6 pt-12 pb-4 bg-white border-b border-[rgba(31,41,55,0.10)] flex flex-col relative z-20">
+        <div className="flex justify-between items-start mb-1">
+          <div className="flex-1 min-w-0 pr-4">
+            <h1 className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-1">{t.layout_route_map}</h1>
+            <div className="relative inline-flex items-center w-full">
+              <select
+                value={list.storeName}
+                onChange={(e) => {
+                  updateList(list.id, { storeName: e.target.value });
+                }}
+                className="bg-transparent pl-0 pr-6 py-1 text-xl font-bold text-slate-900 appearance-none border-none focus:ring-0 cursor-pointer w-full truncate"
+              >
+                {AVAILABLE_STORES.map(s => (
+                  <option key={s.id} value={s.name}>{s.name}</option>
+                ))}
+              </select>
+              <ChevronDown className="w-5 h-5 text-slate-400 absolute right-0 pointer-events-none" />
             </div>
-            <span className="text-sm font-bold text-rose-700 dark:text-rose-400 text-center">Panadería</span>
+            <p className="text-sm font-medium text-slate-600 mt-1">
+              {t.layout_pending_products(items.filter(i => !i.checked).length)}
+            </p>
           </div>
-
-          <div className="col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 relative">
-            <Menu className="absolute top-3 right-3 text-slate-300 w-5 h-5" />
-            <Coffee className="w-8 h-8 text-slate-400 mb-2" />
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Secos</span>
-          </div>
-
-          <div className="col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 relative">
-            <Menu className="absolute top-3 right-3 text-slate-300 w-5 h-5" />
-            <div className="w-8 h-8 text-slate-400 mb-2 flex items-center justify-center">
-              <span className="material-symbols-outlined">kitchen</span>
-            </div>
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Refrigerados</span>
-          </div>
-
-          <div className="col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 relative">
-            <Menu className="absolute top-3 right-3 text-slate-300 w-5 h-5" />
-            <Droplets className="w-8 h-8 text-slate-400 mb-2" />
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Limpieza</span>
-          </div>
-
-          <div className="col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-between p-4 relative">
-            <div className="absolute -top-4 left-6 flex flex-col items-center">
-              <div className="w-8 h-8 bg-emerald-400 rounded-full flex items-center justify-center text-white border-2 border-white shadow-md">
-                <MapPin className="w-5 h-5" />
-              </div>
-              <div className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded mt-1">Estás aquí</div>
-            </div>
-            <div className="flex-1 flex items-center justify-center gap-2 pl-8">
-              <Snowflake className="w-5 h-5 text-slate-400" />
-              <span className="text-sm font-bold text-slate-700 dark:text-slate-300">Congelados</span>
-            </div>
-            <Menu className="text-slate-300 w-5 h-5" />
-          </div>
-
-          <div className="col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-between p-4 opacity-70">
-            <div className="flex-1 flex items-center justify-center">
-              <span className="text-sm font-bold text-slate-700 dark:text-slate-300">Cajas / Salida</span>
-            </div>
-            <Lock className="text-slate-300 w-5 h-5" />
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white dark:bg-slate-900 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-30">
-        <div className="p-6">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Selecciona la lista</h3>
-          <button 
-            onClick={onNext}
-            className="w-full bg-emerald-400 hover:bg-emerald-500 text-slate-900 font-bold text-lg py-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-colors"
-          >
-            Continuar a optimización
-            <ArrowRight className="w-6 h-6" />
+          <button onClick={onBack} className="p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 rounded-full border border-[rgba(31,41,55,0.10)]">
+            <X className="w-5 h-5" />
           </button>
         </div>
-      </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 relative overflow-hidden flex flex-col bg-[#F5F7F6]">
+        {viewMode === 'visual' ? (
+          <div className="h-full w-full">
+            <SupermarketMap
+              className="rounded-none border-none shadow-none bg-transparent"
+              showLegend={false}
+              showControls={true}
+            />
+          </div>
+        ) : (
+          <div className="h-full w-full overflow-y-auto px-6 py-2 bg-white m-4 mt-4 mr-4 mb-4 rounded-xl border border-[rgba(31,41,55,0.10)] shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ height: 'calc(100% - 2rem)', width: 'calc(100% - 3rem)' }}>
+            <div className="flex flex-col">
+              {items.filter(i => !i.checked).map((item, index) => (
+                <div key={item.id} className="flex items-center gap-4 py-4 border-b border-[rgba(31,41,55,0.10)] last:border-0 hover:bg-slate-50 transition-colors">
+                  <div className="w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center flex-shrink-0 bg-slate-50">
+                    <span className="text-xs font-semibold text-slate-500">{index + 1}</span>
+                  </div>
+                  <div className="flex-1 min-w-0 pr-2">
+                    <p className="font-semibold text-slate-900 truncate text-sm">{item.name}</p>
+                    <p className="text-xs text-slate-500 truncate mt-0.5">{item.category}</p>
+                  </div>
+                </div>
+              ))}
+              {items.filter(i => !i.checked).length === 0 && (
+                <div className="py-12 text-center text-slate-400 text-sm">
+                  {t.layout_all_collected}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Bottom CTA */}
+      <footer className="p-4 bg-white border-t border-[rgba(31,41,55,0.10)] shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-20 relative">
+        <button
+          onClick={onNext}
+          className="w-full h-[48px] bg-[#00754A] hover:bg-[#00623E] text-white font-semibold text-base rounded border-none flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+        >
+          {t.layout_start_navigation}
+          <ArrowRight className="w-5 h-5" />
+        </button>
+      </footer>
     </div>
   );
 }

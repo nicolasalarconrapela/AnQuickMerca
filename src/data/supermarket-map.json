@@ -1,0 +1,359 @@
+{
+    "map": {
+        "width": 1000,
+        "height": 1200
+    },
+    "sections": [
+        {
+            "id": "fruta-y-verdura",
+            "label": "Fruta y Verdura",
+            "category": "Fruta y verdura",
+            "icon": "Apple",
+            "color": "#10b981",
+            "rect": {
+                "x": 50,
+                "y": 950,
+                "w": 300,
+                "h": 200
+            }
+        },
+        {
+            "id": "panaderia-y-pasteleria",
+            "label": "Panadería",
+            "category": "Panadería y pastelería",
+            "icon": "Croissant",
+            "color": "#f59e0b",
+            "rect": {
+                "x": 400,
+                "y": 950,
+                "w": 250,
+                "h": 200
+            }
+        },
+        {
+            "id": "congelados",
+            "label": "Congelados",
+            "category": "Congelados",
+            "icon": "Snowflake",
+            "color": "#0ea5e9",
+            "rect": {
+                "x": 50,
+                "y": 50,
+                "w": 300,
+                "h": 150
+            }
+        },
+        {
+            "id": "postres-y-yogures",
+            "label": "Yogures",
+            "category": "Postres y yogures",
+            "icon": "IceCream",
+            "color": "#db2777",
+            "rect": {
+                "x": 370,
+                "y": 50,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "huevos-leche-y-mantequilla",
+            "label": "Lácteos",
+            "category": "Huevos, leche y mantequilla",
+            "icon": "Milk",
+            "color": "#8b5cf6",
+            "rect": {
+                "x": 570,
+                "y": 50,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "carne",
+            "label": "Carnicería",
+            "category": "Carne",
+            "icon": "Flame",
+            "color": "#f43f5e",
+            "rect": {
+                "x": 770,
+                "y": 50,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "marisco-y-pescado",
+            "label": "Pescadería",
+            "category": "Marisco y pescado",
+            "icon": "Fish",
+            "color": "#06b6d4",
+            "rect": {
+                "x": 770,
+                "y": 220,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "charcuteria-y-quesos",
+            "label": "Quesos",
+            "category": "Charcutería y quesos",
+            "icon": "Cheese",
+            "color": "#fbbf24",
+            "rect": {
+                "x": 770,
+                "y": 390,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "aceite-especias-y-salsas",
+            "label": "Aceite / Salsas",
+            "category": "Aceite, especias y salsas",
+            "icon": "Droplets",
+            "color": "#65a30d",
+            "rect": {
+                "x": 50,
+                "y": 250,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "arroz-legumbres-y-pasta",
+            "label": "Arroz / Pasta",
+            "category": "Arroz, legumbres y pasta",
+            "icon": "Wheat",
+            "color": "#d97706",
+            "rect": {
+                "x": 270,
+                "y": 250,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "conservas-caldos-y-cremas",
+            "label": "Conservas",
+            "category": "Conservas, caldos y cremas",
+            "icon": "Archive",
+            "color": "#475569",
+            "rect": {
+                "x": 490,
+                "y": 250,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "pizzas-y-platos-preparados",
+            "label": "Pizzas",
+            "category": "Pizzas y platos preparados",
+            "icon": "Pizza",
+            "color": "#ef4444",
+            "rect": {
+                "x": 50,
+                "y": 370,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "aperitivos",
+            "label": "Aperitivos",
+            "category": "Aperitivos",
+            "icon": "Cookie",
+            "color": "#ea580c",
+            "rect": {
+                "x": 270,
+                "y": 370,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "cereales-y-galletas",
+            "label": "Cereales",
+            "category": "Cereales y galletas",
+            "icon": "Box",
+            "color": "#844d19",
+            "rect": {
+                "x": 490,
+                "y": 370,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "cacao-cafe-e-infusiones",
+            "label": "Café / Té",
+            "category": "Cacao, café e infusiones",
+            "icon": "Coffee",
+            "color": "#7c2d12",
+            "rect": {
+                "x": 50,
+                "y": 490,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "azucar-caramelos-y-chocolate",
+            "label": "Dulces",
+            "category": "Azúcar, caramelos y chocolate",
+            "icon": "Candy",
+            "color": "#be185d",
+            "rect": {
+                "x": 270,
+                "y": 490,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "agua-y-refrescos",
+            "label": "Bebidas",
+            "category": "Agua y refrescos",
+            "icon": "CupSoda",
+            "color": "#2563eb",
+            "rect": {
+                "x": 490,
+                "y": 490,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "bodega",
+            "label": "Bodega",
+            "category": "Bodega",
+            "icon": "Wine",
+            "color": "#7f1d1d",
+            "rect": {
+                "x": 720,
+                "y": 560,
+                "w": 230,
+                "h": 150
+            }
+        },
+        {
+            "id": "zumos",
+            "label": "Zumos",
+            "category": "Zumos",
+            "icon": "GlassWater",
+            "color": "#f97316",
+            "rect": {
+                "x": 50,
+                "y": 610,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "bebe",
+            "label": "Bebé",
+            "category": "Bebé",
+            "icon": "Baby",
+            "color": "#06b6d4",
+            "rect": {
+                "x": 270,
+                "y": 610,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "mascotas",
+            "label": "Mascotas",
+            "category": "Mascotas",
+            "icon": "PawPrint",
+            "color": "#ec4899",
+            "rect": {
+                "x": 490,
+                "y": 610,
+                "w": 200,
+                "h": 100
+            }
+        },
+        {
+            "id": "limpieza-y-hogar",
+            "label": "Limpieza",
+            "category": "Limpieza y hogar",
+            "icon": "Wind",
+            "color": "#3b82f6",
+            "rect": {
+                "x": 50,
+                "y": 750,
+                "w": 250,
+                "h": 150
+            }
+        },
+        {
+            "id": "higiene-corporal",
+            "label": "Higiene",
+            "category": "Higiene corporal",
+            "icon": "Bath",
+            "color": "#2dd4bf",
+            "rect": {
+                "x": 320,
+                "y": 750,
+                "w": 200,
+                "h": 150
+            }
+        },
+        {
+            "id": "cuidado-del-cabello",
+            "label": "Cabello",
+            "category": "Cuidado del cabello",
+            "icon": "Scissors",
+            "color": "#a855f7",
+            "rect": {
+                "x": 540,
+                "y": 750,
+                "w": 180,
+                "h": 150
+            }
+        },
+        {
+            "id": "cuidado-facial-y-corporal",
+            "label": "Cuidado",
+            "category": "Cuidado facial y corporal",
+            "icon": "Sparkles",
+            "color": "#e879f9",
+            "rect": {
+                "x": 740,
+                "y": 750,
+                "w": 210,
+                "h": 150
+            }
+        },
+        {
+            "id": "maquillaje",
+            "label": "Maquillaje",
+            "category": "Maquillaje",
+            "icon": "Heart",
+            "color": "#f472b6",
+            "rect": {
+                "x": 720,
+                "y": 950,
+                "w": 230,
+                "h": 200
+            }
+        },
+        {
+            "id": "fitoterapia-y-parafarmacia",
+            "label": "Salud",
+            "category": "Fitoterapia y parafarmacia",
+            "icon": "Stethoscope",
+            "color": "#14b8a6",
+            "rect": {
+                "x": 50,
+                "y": 1080,
+                "w": 150,
+                "h": 70
+            }
+        }
+    ]
+}
