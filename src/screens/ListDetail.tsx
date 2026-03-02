@@ -3,6 +3,7 @@ import { ArrowLeft, Edit2, Minus, Plus, Trash2, ShoppingBasket, Route, CalendarC
 import { Screen, AVAILABLE_STORES } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { ProductSearch } from '../components/ProductSearch';
+import { ProductDetailModal } from '../components/ProductDetailModal';
 
 interface Props {
   onBack: () => void;
@@ -18,6 +19,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
   // Search state managed by ProductSearch, but we need local query for UI toggles
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDetail, setSelectedDetail] = useState<any | null>(null);
 
   if (!list) {
     return (
@@ -235,7 +237,10 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 className="size-6 rounded border-2 border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer transition-all hover:border-primary shrink-0"
               />
 
-              <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-100 dark:border-slate-700 flex items-center justify-center relative">
+              <div
+                onClick={() => setSelectedDetail(item)}
+                className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden border border-slate-100 dark:border-slate-700 flex items-center justify-center relative cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all active:scale-95"
+              >
                 {item.image ? (
                   <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
                 ) : (
@@ -279,7 +284,10 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 className="size-6 rounded border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-primary cursor-pointer shrink-0"
               />
 
-              <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-400 overflow-hidden relative">
+              <div
+                onClick={() => setSelectedDetail(item)}
+                className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center text-slate-400 overflow-hidden relative cursor-pointer opacity-80"
+              >
                 {item.image ? (
                   <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" />
                 ) : (
@@ -335,6 +343,14 @@ export function ListDetail({ onBack, onNavigate }: Props) {
           }
         </button>
       </div>
+
+      {selectedDetail && (
+        <ProductDetailModal
+          product={selectedDetail}
+          onClose={() => setSelectedDetail(null)}
+          lang={userProfile?.language}
+        />
+      )}
     </div>
   );
 }

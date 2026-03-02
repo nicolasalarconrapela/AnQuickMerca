@@ -96,6 +96,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           price: isNaN(price) ? 0 : price,
           unit: String(unit),
           image: String(image),
+          rawHit: hit,
           quantity: 1,
           checked: false
         };

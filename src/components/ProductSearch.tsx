@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, X, ShoppingBasket, Plus, Minus, Check, Package, Download } from 'lucide-react';
 import { Product, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { ProductDetailModal } from './ProductDetailModal';
 
 interface Props {
     placeholder?: string;
@@ -22,14 +23,19 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [useMockData, setUseMockData] = useState(true);
+    const [selectedDetail, setSelectedDetail] = useState<Product | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const resultsPerPage = 3;
 
     const list = useMemo(() => lists.find(l => l.id === listId), [lists, listId]);
 
     useEffect(() => {
         if (!searchQuery.trim()) {
             setSearchResults([]);
+            setCurrentPage(1);
             return;
         }
+        setCurrentPage(1); // Reset page on new search
 
         const timer = setTimeout(async () => {
             setIsLoading(true);
@@ -39,21 +45,27 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
 
                 if (useMockData) {
                     let mockAssetPath = '';
-                    if (query.includes('agua')) mockAssetPath = '/data/algolia/agua.json';
-                    else if (query.includes('cepillo')) mockAssetPath = '/data/algolia/cepillo.json';
-                    else if (query.includes('pizza') || query.includes('peperoni')) mockAssetPath = '/data/algolia/pizza.json';
-                    else if (query.includes('t')) mockAssetPath = '/data/algolia/t.json';
-                    else if (query.includes('tortilla') || query.includes('omelette')) {
-                        const lang = userProfile?.language || 'es';
+                    const lang = userProfile?.language || 'es';
+
+                    if (query.includes('tortilla') || query.includes('omelette')) {
                         mockAssetPath = `/data/algolia/demo/${lang}/tortilla.json`;
-                    }
-                    else if (query.includes('atun') || query.includes('tuna')) {
-                        const lang = userProfile?.language || 'es';
+                    } else if (query.includes('atun') || query.includes('tuna')) {
                         mockAssetPath = `/data/algolia/demo/${lang}/tuna.json`;
-                    }
-                    else if (query.includes('gazpacho')) {
-                        const lang = userProfile?.language || 'es';
+                    } else if (query.includes('gazpacho')) {
                         mockAssetPath = `/data/algolia/demo/${lang}/gazpacho.json`;
+                    } else if (query.includes('agua')) {
+                        mockAssetPath = '/data/algolia/agua.json';
+                    } else if (query.includes('cepillo')) {
+                        mockAssetPath = '/data/algolia/cepillo.json';
+                    } else if (query.includes('pizza') || query.includes('peperoni')) {
+                        mockAssetPath = '/data/algolia/pizza.json';
+                    } else if (query.includes('t')) {
+                        mockAssetPath = '/data/algolia/t.json';
+                    }
+
+                    if (mockAssetPath) {
+                        const response = await fetch(mockAssetPath);
+                        if (response.ok) data = await response.json();
                     }
                 } else {
                     const colmena = selectedStore?.colmena || 'mad1';
@@ -85,7 +97,8 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                         category: String(category),
                         price: isNaN(price) ? 0 : price,
                         unit: String(unit),
-                        image: String(image)
+                        image: String(image),
+                        rawHit: hit
                     };
                 });
 
@@ -176,60 +189,99 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                     {isLoading ? (
                         <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div></div>
                     ) : searchResults.length > 0 ? (
-                        searchResults.map(product => {
-                            const inList = list?.items.find(i => i.id === product.id);
-                            return (
-                                <div key={product.id} className="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                                    <div className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden flex items-center justify-center border border-slate-100 dark:border-slate-700">
-                                        {product.image ? <img src={product.image} className="w-full h-full object-cover" /> : <Package className="w-5 h-5 text-slate-400" />}
-                                    </div>
-                                    <div className="flex-1 min-w-0 pr-2">
-                                        <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{product.name}</h3>
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} €/ud</p>
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); handleDownloadJson(product); }}
-                                                className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary transition-colors"
-                                                title="Descargar JSON"
-                                            >
-                                                <Download className="w-3 h-3" />
-                                            </button>
+                        <>
+                            {searchResults.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage).map(product => {
+                                const inList = list?.items.find(i => i.id === product.id);
+                                return (
+                                    <div key={product.id} className="flex items-center gap-4 bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                                        <div
+                                            onClick={() => setSelectedDetail(product)}
+                                            className="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex-shrink-0 overflow-hidden flex items-center justify-center border border-slate-100 dark:border-slate-700 cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all active:scale-95"
+                                        >
+                                            {product.image ? <img src={product.image} className="w-full h-full object-cover" /> : <Package className="w-5 h-5 text-slate-400" />}
                                         </div>
-                                    </div>
-
-                                    {inList ? (
-                                        <div className="flex items-center gap-2 shrink-0">
-                                            <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50">
-                                                <button onClick={() => handleUpdateQuantity(product.id, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
-                                                    <Minus className="w-4 h-4" />
-                                                </button>
-                                                <span className="w-6 text-center font-bold text-slate-800 dark:text-slate-200 text-sm">{inList.quantity}</span>
-                                                <button onClick={() => handleAdd(product)} className="text-primary hover:bg-primary/10 p-1 rounded-full transition-colors">
-                                                    <Plus className="w-4 h-4" />
+                                        <div
+                                            onClick={() => setSelectedDetail(product)}
+                                            className="flex-1 min-w-0 pr-2 cursor-pointer"
+                                        >
+                                            <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{product.name}</h3>
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{product.price.toFixed(2)} €/ud</p>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleDownloadJson(product); }}
+                                                    className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-primary transition-colors"
+                                                    title="Descargar JSON"
+                                                >
+                                                    <Download className="w-3 h-3" />
                                                 </button>
                                             </div>
-                                            <button
-                                                onClick={() => removeItemFromList(listId!, product.id)}
-                                                className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
-                                            >
-                                                <X className="w-5 h-5" />
-                                            </button>
                                         </div>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleAdd(product)}
-                                            className="size-10 rounded-xl bg-slate-100 dark:bg-slate-900 text-primary hover:bg-primary hover:text-white flex items-center justify-center transition-all"
-                                        >
-                                            <Plus className="w-5 h-5" />
-                                        </button>
-                                    )}
+
+                                        {inList ? (
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <div className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-700/50">
+                                                    <button onClick={() => handleUpdateQuantity(product.id, -1)} className="text-slate-500 hover:text-slate-800 dark:hover:text-white p-1 rounded-full transition-colors">
+                                                        <Minus className="w-4 h-4" />
+                                                    </button>
+                                                    <span className="w-6 text-center font-bold text-slate-800 dark:text-slate-200 text-sm">{inList.quantity}</span>
+                                                    <button onClick={() => handleAdd(product)} className="text-primary hover:bg-primary/10 p-1 rounded-full transition-colors">
+                                                        <Plus className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                                <button
+                                                    onClick={() => removeItemFromList(listId!, product.id)}
+                                                    className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleAdd(product)}
+                                                className="size-10 rounded-xl bg-slate-100 dark:bg-slate-900 text-primary hover:bg-primary hover:text-white flex items-center justify-center transition-all"
+                                            >
+                                                <Plus className="w-5 h-5" />
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })}
+
+                            {searchResults.length > resultsPerPage && (
+                                <div className="flex items-center justify-center gap-4 mt-2">
+                                    <button
+                                        disabled={currentPage === 1}
+                                        onClick={() => setCurrentPage(p => p - 1)}
+                                        className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        Anterior
+                                    </button>
+                                    <span className="text-xs font-bold text-slate-400">
+                                        {currentPage} / {Math.ceil(searchResults.length / resultsPerPage)}
+                                    </span>
+                                    <button
+                                        disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
+                                        onClick={() => setCurrentPage(p => p + 1)}
+                                        className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        Siguiente
+                                    </button>
                                 </div>
-                            );
-                        })
+                            )}
+                        </>
                     ) : (
                         <div className="text-center py-10 text-slate-400 text-sm">No hay resultados para "{searchQuery}"</div>
                     )}
                 </div>
+            )}
+
+            {selectedDetail && (
+                <ProductDetailModal
+                    product={selectedDetail}
+                    onClose={() => setSelectedDetail(null)}
+                    onAdd={handleAdd}
+                    lang={userProfile?.language}
+                />
             )}
         </div>
     );

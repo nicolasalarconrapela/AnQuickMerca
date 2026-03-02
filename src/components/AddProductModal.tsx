@@ -3,6 +3,7 @@ import { X, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { ShoppingList, Product } from '../types';
 import { ProductSearch } from './ProductSearch';
+import { ProductDetailModal } from './ProductDetailModal';
 
 interface Props {
   onClose: () => void;
@@ -23,6 +24,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
 
   const [localNewListItems, setLocalNewListItems] = useState<Record<string, number>>({});
   const [productCache, setProductCache] = useState<Record<string, Product>>({});
+  const [selectedDetail, setSelectedDetail] = useState<Product | null>(null);
 
   const handleProductSelect = (product: Product) => {
     setProductCache(prev => ({ ...prev, [product.id]: product }));
@@ -132,7 +134,12 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
                 <div className="flex flex-wrap gap-2">
                   {Object.keys(localNewListItems).map(id => (
                     <div key={id} className="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full border border-primary/20 text-xs font-bold shadow-sm animate-in zoom-in-50">
-                      {productCache[id]?.name}
+                      <span
+                        onClick={() => setSelectedDetail(productCache[id])}
+                        className="cursor-pointer hover:text-primary transition-colors"
+                      >
+                        {productCache[id]?.name}
+                      </span>
                       <span className="bg-primary text-white size-5 flex items-center justify-center rounded-full text-[10px]">{localNewListItems[id]}</span>
                       <button onClick={() => setLocalNewListItems(prev => { const n = { ...prev }; delete n[id]; return n; })} className="text-slate-400 hover:text-red-500">
                         <X className="w-3 h-3" />
@@ -158,6 +165,14 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
           </div>
         )}
       </div>
+
+      {selectedDetail && (
+        <ProductDetailModal
+          product={selectedDetail}
+          onClose={() => setSelectedDetail(null)}
+          lang={userProfile?.language}
+        />
+      )}
     </div>
   );
 }

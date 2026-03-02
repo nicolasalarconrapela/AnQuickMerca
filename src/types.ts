@@ -22,6 +22,7 @@ export interface Product {
   unit: string;
   category: string;
   image: string;
+  rawHit?: any; // Almacena el objeto original de Algolia para detalles extendidos
 }
 
 export interface ListItem extends Product {
