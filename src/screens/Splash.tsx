@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 
 export function Splash() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Animate progress from 0 to 100 over ~1800ms
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + Math.floor(Math.random() * 15) + 5; // Random steps for realistic feel
+      });
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background-light dark:bg-background-dark">
       <div className="relative flex flex-col items-center justify-between h-full w-full max-w-md p-8">
@@ -22,11 +39,14 @@ export function Splash() {
         <div className="flex-1 flex flex-col justify-end w-full pb-12">
           <div className="w-full space-y-4">
             <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-primary w-1/3 rounded-full animate-pulse"></div>
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${Math.min(100, progress)}%` }}
+              ></div>
             </div>
             <div className="flex justify-center">
               <p className="text-slate-400 dark:text-slate-500 text-sm font-medium tracking-wide">
-                Preparando tu recorrido...
+                Preparando tu recorrido... {Math.min(100, progress)}%
               </p>
             </div>
           </div>
