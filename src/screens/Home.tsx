@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe } from 'lucide-react';
+import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
+import { ConfirmationModal } from '../components/ConfirmationModal';
 
 interface Props {
   onNavigate: (screen: Screen, params?: any) => void;
@@ -10,8 +11,11 @@ interface Props {
 
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
-  const { lists, selectedStore, addList, setActiveListId, userProfile, setUserProfile } = useAppContext();
+  const { lists, selectedStore, addList, deleteList, updateList, setActiveListId, userProfile, setUserProfile } = useAppContext();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [listToDelete, setListToDelete] = useState<ShoppingList | null>(null);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
 
   const isSpanish = userProfile?.language === 'es';
   const name = userProfile?.name || 'User';
@@ -40,6 +44,13 @@ export function Home({ onNavigate }: Props) {
     addList(newList);
     setActiveListId(newList.id);
     onNavigate('list_detail');
+  };
+
+  const handleRename = (id: string) => {
+    if (renameValue.trim()) {
+      updateList(id, { name: renameValue.trim() });
+    }
+    setEditingListId(null);
   };
 
   const getListTotal = (list: ShoppingList) => {
@@ -167,16 +178,76 @@ export function Home({ onNavigate }: Props) {
                     }}
                     className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer"
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-bold text-lg">{list.name}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                    <div className="flex justify-between items-start mb-2 pr-20">
+                      <div className="flex-1 mr-2">
+                        {editingListId === list.id ? (
+                          <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/30 p-1 rounded-xl border border-primary/30">
+                            <input
+                              type="text"
+                              autoFocus
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleRename(list.id);
+                                if (e.key === 'Escape') setEditingListId(null);
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-full bg-transparent border-none outline-none text-lg font-bold p-1"
+                            />
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleRename(list.id); }}
+                              className="p-1.5 bg-primary text-white rounded-lg shadow-sm"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingListId(null); }}
+                              className="p-1.5 bg-slate-200 dark:bg-slate-600 rounded-lg"
+                            >
+                              <CloseIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div
+                            onDoubleClick={(e) => {
+                              e.stopPropagation();
+                              setRenameValue(list.name);
+                              setEditingListId(list.id);
+                            }}
+                          >
+                            <h3 className="font-bold text-lg truncate">{list.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} productos</p>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">{getListTotal(list)} €</p>
                         <p className="text-[10px] text-slate-400 uppercase tracking-tighter">Total estimado</p>
                       </div>
                     </div>
+
+                    <div className="absolute top-4 right-4 flex gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRenameValue(list.name);
+                          setEditingListId(list.id);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-primary transition-colors bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setListToDelete(list);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50">
                       <div className="flex -space-x-2">
                         {list.items.slice(0, 3).map((item, idx) => (
@@ -228,6 +299,23 @@ export function Home({ onNavigate }: Props) {
         <AddProductModal
           onClose={() => setShowAddProductModal(false)}
           onAdded={handleProductAdded}
+        />
+      )}
+
+      {listToDelete && (
+        <ConfirmationModal
+          title={isSpanish ? '¿Eliminar lista?' : 'Delete list?'}
+          message={isSpanish
+            ? `¿Estás seguro de que quieres eliminar la lista "${listToDelete.name}"? Esta acción no se puede deshacer.`
+            : `Are you sure you want to delete the list "${listToDelete.name}"? This action cannot be undone.`
+          }
+          confirmText={isSpanish ? 'Eliminar' : 'Delete'}
+          cancelText={isSpanish ? 'Cancelar' : 'Cancel'}
+          onConfirm={() => {
+            deleteList(listToDelete.id);
+            setListToDelete(null);
+          }}
+          onCancel={() => setListToDelete(null)}
         />
       )}
     </div>
