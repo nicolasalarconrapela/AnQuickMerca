@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="leftArm" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d8c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a3a5c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="rightArm" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3da34d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1b4d6e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wave" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#4cb85c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a0d94a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="arrow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8cc63f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f5c242;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5a623;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="248" fill="white" stroke="none"/>
+  
+  <!-- Left arm of the A -->
+  <polygon points="256,80 120,380 170,380 256,170" fill="url(#leftArm)"/>
+  
+  <!-- Right arm of the A -->
+  <polygon points="256,80 392,380 342,380 256,170" fill="url(#rightArm)"/>
+  
+  <!-- Curved wave through the middle (the crossbar of A becomes a wave) -->
+  <path d="M150,310 Q200,260 256,290 Q312,320 362,270" 
+        stroke="url(#wave)" stroke-width="32" fill="none" stroke-linecap="round"/>
+  
+  <!-- Rising arrow (top-right) -->
+  <path d="M300,300 Q330,240 370,170" 
+        stroke="url(#arrow)" stroke-width="30" fill="none" stroke-linecap="round"/>
+  
+  <!-- Arrow head -->
+  <polygon points="370,130 400,170 360,175" fill="url(#arrow)"/>
+</svg>
