@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ShoppingList, ListItem, UserProfile } from '../types';
+import { ShoppingList, ListItem, UserProfile, Product } from '../types';
 
 interface AppContextType {
   lists: ShoppingList[];
@@ -39,44 +39,93 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // Load from local storage
   useEffect(() => {
-    const savedLists = localStorage.getItem('lists');
-    const savedStore = localStorage.getItem('selectedStore');
-    const savedFavorites = localStorage.getItem('favoriteStores');
-    const savedProfile = localStorage.getItem('userProfile');
+    const initData = async () => {
+      const savedLists = localStorage.getItem('lists');
+      const savedStore = localStorage.getItem('selectedStore');
+      const savedFavorites = localStorage.getItem('favoriteStores');
+      const savedProfile = localStorage.getItem('userProfile');
 
-    if (savedProfile) {
-      setUserProfile(JSON.parse(savedProfile));
-    }
+      let currentProfile = null;
+      if (savedProfile) {
+        currentProfile = JSON.parse(savedProfile);
+        setUserProfile(currentProfile);
+      }
 
-    if (savedStore) {
-      setSelectedStore(JSON.parse(savedStore));
-    }
+      if (savedStore) {
+        setSelectedStore(JSON.parse(savedStore));
+      }
 
-    if (savedFavorites) {
-      setFavoriteStores(JSON.parse(savedFavorites));
-    }
+      if (savedFavorites) {
+        setFavoriteStores(JSON.parse(savedFavorites));
+      }
 
-    if (savedLists) {
-      setLists(JSON.parse(savedLists));
-    } else {
-      // Default list if none exists
-      const defaultList: ShoppingList = {
-        id: 'gazpacho',
-        name: 'Gazpacho',
-        storeName: 'Mercadona Sevilla Centro',
-        date: new Date().toLocaleDateString(),
-        items: [
-          { id: '1', name: 'Tomates Pera', brand: 'Hacendado', unit: '1kg', price: 1.60, category: 'Fruta y Verdura', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&h=500&fit=crop', quantity: 2, checked: false },
-          { id: '2', name: 'Pepinos holandeses', brand: 'Fresco', unit: 'Unidad', price: 1.10, category: 'Fruta y Verdura', image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&h=500&fit=crop', quantity: 1, checked: false },
-          { id: '3', name: 'Pimiento Verde', brand: 'Malla 500g', unit: 'Malla', price: 1.45, category: 'Fruta y Verdura', image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500&h=500&fit=crop', quantity: 1, checked: false },
-          { id: '4', name: 'Aceite de Oliva Virgen Extra', brand: 'Gran Selección', unit: '1L', price: 9.50, category: 'Secos', image: 'https://images.unsplash.com/photo-1474965044331-13683f2da8d4?w=500&h=500&fit=crop', quantity: 1, checked: true },
-          { id: '5', name: 'Vinagre de Jerez', brand: 'Hacendado Reserva', unit: '250ml', price: 2.20, category: 'Secos', image: 'https://images.unsplash.com/photo-1588693892706-5b486d389a6d?w=500&h=500&fit=crop', quantity: 1, checked: true },
-          { id: '6', name: 'Sal Marina', brand: 'Hacendado Fina', unit: '1kg', price: 0.45, category: 'Secos', image: 'https://images.unsplash.com/photo-1517594422361-5e1f0e47cd2f?w=500&h=500&fit=crop', quantity: 1, checked: true },
-        ],
-        status: 'pending'
-      };
-      setLists([defaultList]);
-    }
+      // Fetch demo data based on language
+      const lang = currentProfile?.language || 'en';
+      let gazpachoHits: any[] = [];
+      let tortillaHits: any[] = [];
+
+      try {
+        const [gzRes, ttRes] = await Promise.all([
+          fetch(`/data/algolia/demo/${lang}/gazpacho.json`),
+          fetch(`/data/algolia/demo/${lang}/tortilla.json`)
+        ]);
+        if (gzRes.ok) gazpachoHits = (await gzRes.json()).hits || [];
+        if (ttRes.ok) tortillaHits = (await ttRes.json()).hits || [];
+      } catch (error) {
+        console.error('Error fetching demo data:', error);
+      }
+
+      const mapHits = (hits: any[]) => hits.map((hit: any) => ({
+        id: hit.id,
+        name: hit.display_name || hit.slug || 'Producto',
+        brand: hit.brand || '',
+        category: hit.categories?.[0]?.name || 'Otros',
+        price: parseFloat(hit.price_instructions?.unit_price || "0"),
+        unit: hit.packaging || hit.price_instructions?.unit_name || 'Ud',
+        image: hit.thumbnail || hit.image || '',
+        quantity: 1,
+        checked: false
+      }));
+
+      if (savedLists) {
+        let loadedLists = JSON.parse(savedLists);
+
+        // Force update our static demo lists if they exist
+        loadedLists = loadedLists.map((l: ShoppingList) => {
+          if (l.id === 'gazpacho' && gazpachoHits.length > 0) {
+            return { ...l, items: mapHits(gazpachoHits) };
+          }
+          if (l.id === 'ryan' && tortillaHits.length > 0) {
+            return { ...l, items: mapHits(tortillaHits) };
+          }
+          return l;
+        });
+        setLists(loadedLists);
+      } else {
+        // Default lists if none exist
+        const defaultLists: ShoppingList[] = [
+          {
+            id: 'gazpacho',
+            name: 'Gazpacho',
+            storeName: 'Mercadona Sevilla Centro',
+            date: new Date().toLocaleDateString(),
+            items: mapHits(gazpachoHits),
+            status: 'pending'
+          },
+          {
+            id: 'ryan',
+            name: 'Salvar al soldado Ryan',
+            storeName: 'Mercadona Sevilla Centro',
+            date: new Date().toLocaleDateString(),
+            items: mapHits(tortillaHits),
+            status: 'pending'
+          }
+        ];
+        setLists(defaultLists);
+      }
+    };
+
+    initData();
   }, []);
 
   // Save to local storage

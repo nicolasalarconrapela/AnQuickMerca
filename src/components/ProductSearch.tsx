@@ -3,12 +3,6 @@ import { Search, X, ShoppingBasket, Plus, Minus, Check, Package, Download } from
 import { Product, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
 
-// Mock data
-import aguaData from '../../in/data/algolia/algolia_agua_all.json';
-import cepilloData from '../../in/data/algolia/algolia_cepillo_one.json';
-import pizzaData from '../../in/data/algolia/algolia_pizzapeperroni_two.json';
-import tData from '../../in/data/algolia/algolia_t_all.json';
-
 interface Props {
     placeholder?: string;
     listId?: string; // If provided, it will work with this specific list.
@@ -44,10 +38,15 @@ export function ProductSearch({ placeholder = "Busca productos...", listId, onPr
                 const query = searchQuery.toLowerCase();
 
                 if (useMockData) {
-                    if (query.includes('agua')) data = aguaData;
-                    else if (query.includes('cepillo')) data = cepilloData;
-                    else if (query.includes('pizza') || query.includes('peperoni')) data = pizzaData;
-                    else if (query.includes('t')) data = tData;
+                    let mockAssetPath = '';
+                    if (query.includes('agua')) mockAssetPath = '/data/algolia/agua.json';
+                    else if (query.includes('cepillo')) mockAssetPath = '/data/algolia/cepillo.json';
+                    else if (query.includes('pizza') || query.includes('peperoni')) mockAssetPath = '/data/algolia/pizza.json';
+                    else if (query.includes('t')) mockAssetPath = '/data/algolia/t.json';
+                    if (mockAssetPath) {
+                        const res = await fetch(mockAssetPath);
+                        if (res.ok) data = await res.json();
+                    }
                 } else {
                     const colmena = selectedStore?.colmena || 'mad1';
                     const lang = userProfile?.language || 'es';
