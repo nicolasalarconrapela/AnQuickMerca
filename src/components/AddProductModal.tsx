@@ -40,28 +40,27 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
     if (targetListId === 'new') {
       const idsToAdd = Object.keys(localNewListItems);
       if (idsToAdd.length > 0) {
+        // Crear los items mapeando el cache
+        const items = idsToAdd.map(id => {
+          const p = productCache[id];
+          return p ? { ...p, quantity: localNewListItems[id], checked: false } : null;
+        }).filter((item): item is any => item !== null);
+
         const newList: ShoppingList = {
           id: Math.random().toString(36).substring(7),
-          name: `Lista ${new Date().toLocaleDateString()}`,
+          name: isSpanish ? `Lista ${new Date().toLocaleDateString()}` : `List ${new Date().toLocaleDateString()}`,
           storeName: selectedStore?.name || 'Mercadona',
           date: new Date().toLocaleDateString(),
-          items: [],
+          items: items,
           status: 'pending'
         };
-        addList(newList);
 
-        idsToAdd.forEach(id => {
-          const p = productCache[id];
-          if (p) {
-            addItemToList(newList.id, { ...p, quantity: localNewListItems[id], checked: false });
-          }
-        });
+        addList(newList);
         onAdded(newList.id);
       } else {
         onClose();
       }
     } else {
-      // Direct edits are already saved to context.
       onAdded(targetListId);
     }
     onClose();

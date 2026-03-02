@@ -166,19 +166,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [userProfile]);
 
-  const addList = (list: ShoppingList) => setLists([...lists, list]);
+  const addList = (list: ShoppingList) => setLists(prev => [...prev, list]);
 
   const updateList = (id: string, updates: Partial<ShoppingList>) => {
-    setLists(lists.map(list => list.id === id ? { ...list, ...updates } : list));
+    setLists(prev => prev.map(list => list.id === id ? { ...list, ...updates } : list));
   };
 
   const deleteList = (id: string) => {
-    setLists(lists.filter(list => list.id !== id));
+    setLists(prev => prev.filter(list => list.id !== id));
     if (activeListId === id) setActiveListId(null);
   };
 
   const addItemToList = (listId: string, item: ListItem) => {
-    setLists(lists.map(list => {
+    setLists(prev => prev.map(list => {
       if (list.id === listId) {
         // Check if item already exists
         const existingItem = list.items.find(i => i.id === item.id);
@@ -195,7 +195,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateItemInList = (listId: string, itemId: string, updates: Partial<ListItem>) => {
-    setLists(lists.map(list => {
+    setLists(prev => prev.map(list => {
       if (list.id === listId) {
         return {
           ...list,
@@ -207,7 +207,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeItemFromList = (listId: string, itemId: string) => {
-    setLists(lists.map(list => {
+    setLists(prev => prev.map(list => {
       if (list.id === listId) {
         return {
           ...list,
