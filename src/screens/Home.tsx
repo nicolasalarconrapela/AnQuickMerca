@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon } from 'lucide-react';
+import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon, Map } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
@@ -68,12 +68,9 @@ export function Home({ onNavigate }: Props) {
       <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              {isSpanish ? `Bienvenido, ${name}.` : `Welcome, ${name}.`}
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-7 mb-4">
+              {isSpanish ? `👋🏽 Bienvenido, ${name}.` : `👋🏽 Welcome, ${name}.`}
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {isSpanish ? 'Organiza tu compra inteligente' : 'Organize your smart shopping'}
-            </p>
           </div>
           <div className="flex gap-2">
             <button
@@ -84,23 +81,6 @@ export function Home({ onNavigate }: Props) {
               <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
               <Globe className="w-5 h-5" />
             </button>
-            <button
-              onClick={() => onNavigate('map_demo')}
-              className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors flex items-center justify-center"
-              title="Demo amCharts"
-            >
-              <MapPin className="w-6 h-6" />
-            </button>
-            <button className="p-2 rounded-full hover:bg-primary/10 text-primary transition-colors">
-              <Bell className="w-6 h-6" />
-            </button>
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary/10">
-              <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`}
-                alt="User profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
           </div>
         </div>
 

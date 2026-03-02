@@ -2,6 +2,8 @@ import React, { useLayoutEffect, useRef } from 'react';
 import * as am5 from '@amcharts/amcharts5';
 import * as am5map from '@amcharts/amcharts5/map';
 
+import { AVAILABLE_STORES } from '../types';
+
 const CCAA_DISPLAY_NAMES: Record<string, string> = {
     "01": "Andalucía", "02": "Aragón", "03": "Asturias", "04": "Illes Balears",
     "05": "Canarias", "06": "Cantabria", "07": "Castilla y León", "08": "Castilla-La Mancha",
@@ -33,16 +35,14 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
                 panY: "none",
                 wheelX: "none",
                 wheelY: "none",
-                // Centramos más agresivamente en la península
                 homeGeoPoint: { latitude: 34.5, longitude: -3 },
-                homeZoomLevel: 2.1 // Zoom mucho más alto para que España se vea ENORME
+                homeZoomLevel: 2.1
             })
         );
 
-        // Fondo Océano suave
         chart.chartContainer.set("background", am5.Rectangle.new(root, {
             fill: am5.color(0xdbeafe),
-            fillOpacity: 3
+            fillOpacity: 1
         }));
 
         const polygonSeries = chart.series.push(
@@ -53,15 +53,15 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
         );
 
         polygonSeries.mapPolygons.template.setAll({
-            tooltipText: '{name}: [bold]{value}[/]',
-            fill: am5.color(0x10b981),
+            tooltipText: '{name}',
+            fill: am5.color(0xe2e8f0),
             stroke: am5.color(0xffffff),
             strokeWidth: 0.8,
             interactive: true,
             cursorOverStyle: 'pointer'
         });
 
-        polygonSeries.mapPolygons.template.states.create("hover", { fill: am5.color(0x059669) });
+        polygonSeries.mapPolygons.template.states.create("hover", { fill: am5.color(0xcbd5e1) });
 
         polygonSeries.mapPolygons.template.events.on('click', (ev) => {
             const dataItem = ev.target.dataItem;
@@ -72,6 +72,36 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
                 if (onRegionSelect) onRegionSelect(id, name);
             }
         });
+
+        // Store Markers
+        const pointSeries = chart.series.push(
+            am5map.MapPointSeries.new(root, {})
+        );
+
+        pointSeries.bullets.push(() => {
+            const container = am5.Container.new(root, {
+                tooltipText: "{name}"
+            });
+
+            container.children.push(am5.Circle.new(root, {
+                radius: 4,
+                fill: am5.color(0x10b981),
+                stroke: am5.color(0xffffff),
+                strokeWidth: 2
+            }));
+
+            return am5.Bullet.new(root, {
+                sprite: container
+            });
+        });
+
+        pointSeries.data.setAll(AVAILABLE_STORES.map(s => ({
+            name: s.name,
+            geometry: {
+                type: "Point",
+                coordinates: [s.lng, s.lat]
+            }
+        })));
 
         const loadData = async () => {
             try {
@@ -84,13 +114,10 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
                     f.id = code;
                     f.properties.name = CCAA_DISPLAY_NAMES[code] || f.properties.noml_ccaa;
 
-                    // Canarias "05": Traslación radical para que queden pegadas a la península
                     if (code === "05") {
                         f.geometry.coordinates.forEach((polygon: any) => {
                             polygon.forEach((ring: any) => {
                                 ring.forEach((coord: any) => {
-                                    // Movemos Canarias drásticamente: ~ +15 Longitud y +9.5 Latitud
-                                    // Esto las pone justo debajo de Portugal/Andalucía
                                     coord[0] += 13.5;
                                     coord[1] += 8.8;
                                 });
@@ -104,20 +131,6 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
                     id: f.id,
                     value: valuesByRegion[f.id] || 0
                 })));
-
-                // Recuadro para Canarias (ajustado para que sea discreto pero visible)
-                const line = chart.children.push(am5.Line.new(root, {
-                    stroke: am5.color(0x94a3b8),
-                    strokeDasharray: [3, 3],
-                    strokeWidth: 1,
-                    points: [
-                        { x: am5.percent(2), y: am5.percent(78) },
-                        { x: am5.percent(30), y: am5.percent(78) },
-                        { x: am5.percent(30), y: am5.percent(98) },
-                        { x: am5.percent(2), y: am5.percent(98) },
-                        { x: am5.percent(2), y: am5.percent(78) }
-                    ]
-                } as any));
 
                 chart.appear(1000, 100);
             } catch (err) { console.error(err); }

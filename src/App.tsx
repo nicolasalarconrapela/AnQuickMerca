@@ -9,6 +9,7 @@ import { LayoutOrganization } from './screens/LayoutOrganization';
 import { ActiveNavigation } from './screens/ActiveNavigation';
 import { MapDemo } from './screens/MapDemo';
 import { Welcome } from './screens/Welcome';
+import { StoreMapScreen } from './screens/StoreMapScreen';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { APP_VERSION } from './version';
 import { LogViewer } from './components/LogViewer';
@@ -67,6 +68,7 @@ function MainApp() {
       {currentScreen === 'layout_organization' && <LayoutOrganization onBack={() => navigate('list_detail')} onNext={() => navigate('active_navigation')} />}
       {currentScreen === 'active_navigation' && <ActiveNavigation onBack={() => navigate('list_detail')} />}
       {currentScreen === 'map_demo' && <MapDemo onBack={() => navigate('home')} />}
+      {currentScreen === 'store_map' && <StoreMapScreen onBack={() => navigate('home')} />}
 
       {/* Global version tag */}
       <div
