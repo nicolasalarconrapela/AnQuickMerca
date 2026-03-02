@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertCircle, Trash2, X } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 interface Props {
     title: string;
@@ -16,10 +17,13 @@ export function ConfirmationModal({
     message,
     onConfirm,
     onCancel,
-    confirmText = 'Eliminar',
-    cancelText = 'Cancelar',
+    confirmText,
+    cancelText,
     type = 'danger'
 }: Props) {
+    const { t } = useTranslation();
+    const resolvedConfirm = confirmText ?? t.confirm_delete;
+    const resolvedCancel = cancelText ?? t.confirm_cancel;
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={onCancel}>
             <div
@@ -42,13 +46,13 @@ export function ConfirmationModal({
                             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-600/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
                             <Trash2 className="w-5 h-5" />
-                            {confirmText}
+                            {resolvedConfirm}
                         </button>
                         <button
                             onClick={onCancel}
                             className="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-4 rounded-2xl transition-all active:scale-95"
                         >
-                            {cancelText}
+                            {resolvedCancel}
                         </button>
                     </div>
                 </div>

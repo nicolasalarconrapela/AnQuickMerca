@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { User, Globe, ArrowRight, Check, ChevronDown } from 'lucide-react';
+import { User, Globe, ArrowRight, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import { translations } from '../i18n';
 
 interface Props {
     onNext: () => void;
@@ -11,6 +12,7 @@ export function Welcome({ onNext }: Props) {
     const { setUserProfile } = useAppContext();
     const [name, setName] = useState('');
     const [language, setLanguage] = useState<'en' | 'es'>('en');
+    const t = translations[language];
 
     const handleStart = () => {
         if (name.trim()) {
@@ -39,25 +41,23 @@ export function Welcome({ onNext }: Props) {
                         <User size={48} strokeWidth={1.5} />
                     </motion.div>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-                        {language === 'en' ? 'Welcome!' : '¡Bienvenido!'}
+                        {t.welcome_title}
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">
-                        {language === 'en'
-                            ? 'Tell us your name to personalize your experience.'
-                            : 'Dinos tu nombre para personalizar tu experiencia.'}
+                        {t.welcome_subtitle}
                     </p>
                 </div>
 
                 <div className="space-y-8">
                     <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">
-                            {language === 'en' ? 'Your Name' : 'Tu Nombre'}
+                            {t.welcome_name_label}
                         </label>
                         <div className="relative group">
                             <input
                                 type="text"
                                 autoFocus
-                                placeholder={language === 'en' ? 'e.g. Nicolas' : 'ej. Nicolas'}
+                                placeholder={t.welcome_name_placeholder}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleStart()}
@@ -70,7 +70,7 @@ export function Welcome({ onNext }: Props) {
                     <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 flex items-center gap-2">
                             <Globe size={14} />
-                            {language === 'en' ? 'Language Selection' : 'Selección de Idioma'}
+                            {t.welcome_language_label}
                         </label>
                         <div className="relative">
                             <select
@@ -98,7 +98,7 @@ export function Welcome({ onNext }: Props) {
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none'
                         }`}
                 >
-                    {language === 'en' ? 'Continue' : 'Continuar'}
+                    {t.welcome_continue}
                     <ArrowRight size={24} strokeWidth={2.5} />
                 </motion.button>
             </motion.div>

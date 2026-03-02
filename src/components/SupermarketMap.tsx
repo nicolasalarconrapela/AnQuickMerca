@@ -3,6 +3,7 @@ import * as LucideIcons from 'lucide-react';
 import { usePanZoom } from '../hooks/usePanZoom';
 import { SupermarketMapData, MapSection } from '../types';
 import localMapData from '../data/supermarket-map.json';
+import { useTranslation } from '../i18n';
 
 interface SupermarketMapProps {
     data?: SupermarketMapData;
@@ -32,6 +33,7 @@ export const SupermarketMap: React.FC<SupermarketMapProps> = ({
         initialScale: 0.6,
     });
 
+    const { t } = useTranslation();
     const [hoveredId, setHoveredId] = useState<string | null>(null);
 
     const categories = useMemo(() => {
@@ -155,7 +157,7 @@ export const SupermarketMap: React.FC<SupermarketMapProps> = ({
             {/* Legend Overlay */}
             {showLegend && (
                 <div className="absolute top-6 left-6 max-h-[70%] overflow-y-auto hide-scrollbar p-6 bg-white/95 dark:bg-[#0f231b]/95 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 rounded-[2rem] shadow-2xl pointer-events-auto transition-all duration-500 ring-1 ring-black/5">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-5 px-1 sticky top-0 bg-transparent">Categorías · Mercadona</h4>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-5 px-1 sticky top-0 bg-transparent">{t.smap_legend_title}</h4>
                     <div className="flex flex-col gap-3.5">
                         {categories.map(([cat, color]) => (
                             <div key={cat} className="flex items-center gap-3.5 group">
@@ -172,7 +174,7 @@ export const SupermarketMap: React.FC<SupermarketMapProps> = ({
                 <div className="absolute top-6 right-6 px-4 py-3 bg-primary text-white rounded-2xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300 flex items-center gap-3">
                     <DynamicIcon name={data.sections.find(s => s.id === selectedSectionId)?.icon || 'MapPin'} size={18} />
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase opacity-60 leading-none mb-1">Seleccionado</span>
+                        <span className="text-[10px] font-black uppercase opacity-60 leading-none mb-1">{t.smap_selected}</span>
                         <span className="text-sm font-bold leading-none">{data.sections.find(s => s.id === selectedSectionId)?.label}</span>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import rawJsonData from '../../in/data/mercadona/jsons/locations/mercadona_listo_para_comer_enriquecido.json';
 import colmenasJson from '../../in/data/mercadona/jsons/colmenas/colmenas.json';
 import { SpainRegionsMap } from '../components/SpainRegionsMap';
+import { useTranslation } from '../i18n';
 
 const colmenasData = colmenasJson as any;
 
@@ -124,6 +125,7 @@ interface Props {
 // ─── Main StoreSelection with Spain Map ──────────────────────────────────
 export function StoreSelection({ onNext }: Props) {
     const { selectedStore, setSelectedStore, favoriteStores, setFavoriteStores } = useAppContext();
+    const { t } = useTranslation();
     const jsonData = rawJsonData as unknown as JsonData;
 
     // Drill‑down state
@@ -361,7 +363,7 @@ export function StoreSelection({ onNext }: Props) {
                 )}
                 <div className="flex-1 min-w-0">
                     <h1 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100 truncate">
-                        {level === 'ccaa' && 'Selecciona tu Mercadona'}
+                        {level === 'ccaa' && t.store_title}
                         {level === 'provincia' && titleCase(selectedCcaaName ?? '')}
                         {level === 'poblacion' && titleCase(selectedProvincia ?? '')}
                         {level === 'tienda' && selectedPoblacion}
@@ -374,9 +376,9 @@ export function StoreSelection({ onNext }: Props) {
                 </div>
                 {level !== 'ccaa' && (
                     <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full whitespace-nowrap">
-                        {level === 'provincia' && `${currentProvincias.length} prov.`}
-                        {level === 'poblacion' && `${currentPoblaciones.length} pobl.`}
-                        {level === 'tienda' && `${currentStores.length} tiendas`}
+                        {level === 'provincia' && `${currentProvincias.length} ${t.store_badge_province}`}
+                        {level === 'poblacion' && `${currentPoblaciones.length} ${t.store_badge_city}`}
+                        {level === 'tienda' && `${currentStores.length} ${t.common_stores}`}
                     </span>
                 )}
             </header>
@@ -393,7 +395,7 @@ export function StoreSelection({ onNext }: Props) {
                                 type="text"
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                placeholder="Buscar comunidad, provincia o ciudad..."
+                                placeholder={t.store_search}
                                 className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                             />
                             {searchQuery && (
@@ -433,13 +435,13 @@ export function StoreSelection({ onNext }: Props) {
                                                         <span className={`text-[9px] px-1.5 py-0.5 rounded-full uppercase font-bold ${item.type === 'ccaa' ? 'bg-primary/10 text-primary' :
                                                             item.type === 'provincia' ? 'bg-blue-500/10 text-blue-600' : 'bg-emerald-500/10 text-emerald-600'
                                                             }`}>
-                                                            {item.type === 'provincia' ? 'provincia' : item.type === 'ccaa' ? 'comunidad' : 'ciudad'}
+                                                            {item.type === 'provincia' ? t.store_badge_province : item.type === 'ccaa' ? t.store_badge_region : t.store_badge_city}
                                                         </span>
                                                     </div>
                                                     <p className="text-[10px] text-slate-400">
-                                                        {item.type === 'ccaa' ? `${item.count} tiendas totales` :
-                                                            item.type === 'provincia' ? `En ${titleCase(item.parentCcaa!)} · ${item.count} tiendas` :
-                                                                `En ${titleCase(item.parentProvincia!)} (${titleCase(item.parentCcaa!)})`}
+                                                        {item.type === 'ccaa' ? t.store_total_stores(item.count) :
+                                                            item.type === 'provincia' ? t.store_in_region(titleCase(item.parentCcaa!), item.count) :
+                                                                t.store_in_province(titleCase(item.parentProvincia!), titleCase(item.parentCcaa!))}
                                                     </p>
                                                 </div>
                                                 <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
@@ -448,7 +450,7 @@ export function StoreSelection({ onNext }: Props) {
 
                                     {searchableItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                                         <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                                            No se encontraron resultados.
+                                            {t.store_no_results}
                                         </div>
                                     )}
                                 </div>
@@ -459,11 +461,11 @@ export function StoreSelection({ onNext }: Props) {
                         <div className="flex items-center gap-4 mb-3 text-xs text-slate-500 z-10">
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-3 rounded bg-[#4ade80] border border-[#047857]" />
-                                <span>Con tiendas</span>
+                                <span>{t.store_with_stores}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-3 h-3 rounded bg-slate-200 border border-slate-400" />
-                                <span>Sin datos</span>
+                                <span>{t.store_no_data}</span>
                             </div>
                         </div>
 
@@ -492,7 +494,7 @@ export function StoreSelection({ onNext }: Props) {
                                     type="text"
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    placeholder="Buscar provincia…"
+                                    placeholder={t.store_search_province}
                                     className="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                                 />
                                 {searchQuery && (
@@ -528,7 +530,7 @@ export function StoreSelection({ onNext }: Props) {
                                                     : titleCase(prov.name)}
                                             </p>
                                             <p className="text-xs text-slate-400 mt-0.5">
-                                                {prov.poblaciones.length} poblaciones · {prov.totalStores} tiendas
+                                                {t.store_cities_and_stores(prov.poblaciones.length, prov.totalStores)}
                                             </p>
                                         </div>
                                         <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
@@ -548,7 +550,7 @@ export function StoreSelection({ onNext }: Props) {
                                     type="text"
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    placeholder="Buscar población…"
+                                    placeholder={t.store_search_city}
                                     className="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                                 />
                                 {searchQuery && (
@@ -583,7 +585,7 @@ export function StoreSelection({ onNext }: Props) {
                                                     ? pob.nombre.toUpperCase()
                                                     : pob.nombre}
                                             </p>
-                                            <p className="text-xs text-slate-400 mt-0.5">{pob.stores.length} tienda{pob.stores.length > 1 ? 's' : ''}</p>
+                                            <p className="text-xs text-slate-400 mt-0.5">{t.store_count(pob.stores.length)}</p>
                                         </div>
                                         <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors flex-shrink-0" />
                                     </button>
@@ -602,7 +604,7 @@ export function StoreSelection({ onNext }: Props) {
                                     type="text"
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    placeholder="Buscar dirección…"
+                                    placeholder={t.store_search_address}
                                     className="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                                 />
                                 {searchQuery && (
@@ -648,12 +650,12 @@ export function StoreSelection({ onNext }: Props) {
                                         <div className="flex items-center gap-2 mt-1">
                                             {store.listo_para_comer === true && (
                                                 <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
-                                                    ✓ Listo para comer
+                                                    ✓ {t.store_ready_to_eat}
                                                 </span>
                                             )}
                                             {store.listo_para_comer === false && (
                                                 <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                                                    Sin "Listo para comer"
+                                                    {t.store_no_ready_to_eat}
                                                 </span>
                                             )}
                                         </div>

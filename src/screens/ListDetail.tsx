@@ -8,6 +8,7 @@ import { Screen, AVAILABLE_STORES, ListItem } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { ProductSearch } from '../components/ProductSearch';
 import { ProductDetailModal } from '../components/ProductDetailModal';
+import { useTranslation } from '../i18n';
 
 interface Props {
   onBack: () => void;
@@ -16,6 +17,7 @@ interface Props {
 
 export function ListDetail({ onBack, onNavigate }: Props) {
   const { lists, activeListId, updateItemInList, removeItemFromList, updateList, deleteList, addItemToList, completeList, selectedStore, userProfile } = useAppContext();
+  const { t, lang } = useTranslation();
   const list = lists.find(l => l.id === activeListId);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -35,8 +37,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   if (!list) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900">
-        <p className="text-slate-500 mb-4">Lista no encontrada</p>
-        <button onClick={onBack} className="bg-primary text-white px-6 py-3 rounded-full font-bold shadow-sm">Volver</button>
+        <p className="text-slate-500 mb-4">{t.list_not_found}</p>
+        <button onClick={onBack} className="bg-primary text-white px-6 py-3 rounded-full font-bold shadow-sm">{t.list_back}</button>
       </div>
     );
   }
@@ -89,7 +91,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   };
 
   const handleDeleteList = () => {
-    if (window.confirm('¿Seguro que quieres eliminar esta lista?')) {
+    if (window.confirm(t.list_confirm_delete)) {
       deleteList(list.id);
       onBack();
     }
@@ -107,8 +109,12 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     if (e.key === 'Escape') setIsEditingName(false);
   };
 
+  const checkedCount = items.filter(i => i.checked).length;
+  const totalCount = items.length;
+  const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
+
   const handleClearList = () => {
-    if (list && window.confirm(`¿Quieres vaciar los ${totalCount} productos de "${list.name}"?`)) {
+    if (list && window.confirm(t.list_confirm_clear(totalCount, list.name))) {
       list.items.forEach(item => removeItemFromList(list.id, item.id));
       setIsMenuOpen(false);
     }
@@ -144,7 +150,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
   };
 
   const deleteSelected = () => {
-    if (window.confirm(`¿Eliminar ${selectedItems.size} productos?`)) {
+    if (window.confirm(t.list_confirm_delete_selected(selectedItems.size))) {
       selectedItems.forEach(id => removeItemFromList(list.id, id));
       setSelectionMode(false);
       setSelectedItems(new Set());
@@ -157,24 +163,20 @@ export function ListDetail({ onBack, onNavigate }: Props) {
     setSelectedItems(new Set());
   };
 
-  const checkedCount = items.filter(i => i.checked).length;
-  const totalCount = items.length;
-  const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
-
   const totalEstimated = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
   // Status Label
-  let statusLabel = 'Pdte';
+  let statusLabel: string = t.list_status_pending;
   let statusColor = 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400';
 
   if (totalCount > 0 && checkedCount > 0 && checkedCount < totalCount) {
-    statusLabel = `Proceso (${checkedCount}/${totalCount})`;
+    statusLabel = t.list_status_in_progress_count(checkedCount, totalCount);
     statusColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
   } else if (totalCount > 0 && checkedCount === totalCount) {
-    statusLabel = 'Hecho';
+    statusLabel = t.list_status_done;
     statusColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
   } else if (list.status === 'completed') {
-    statusLabel = 'Hecho';
+    statusLabel = t.list_status_done;
     statusColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
   }
 
@@ -190,13 +192,13 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               >
                 <X className="w-6 h-6 text-primary" />
               </button>
-              <span className="font-bold text-lg text-primary">{selectedItems.size} seleccionados</span>
+              <span className="font-bold text-lg text-primary">{t.list_selected(selectedItems.size)}</span>
             </div>
             <div className="flex items-center gap-1">
-              <button onClick={markSelectedAsDone} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-primary" title="Marcar hecho">
+              <button onClick={markSelectedAsDone} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-primary" title={t.list_mark_done}>
                 <CheckCircle2 className="w-6 h-6" />
               </button>
-              <button onClick={deleteSelected} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-rose-500" title="Eliminar">
+              <button onClick={deleteSelected} className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-rose-500" title={t.list_delete}>
                 <Trash2 className="w-6 h-6" />
               </button>
               <button className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors text-slate-400">
@@ -254,14 +256,14 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
                     <button className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                       <Edit2 className="w-4 h-4 text-slate-400" />
-                      Renombrar
+                      {t.list_rename}
                     </button>
                     <button
                       onClick={handleClearList}
                       className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-500 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Vaciar lista
+                      {t.list_clear}
                     </button>
                     <div className="h-px bg-slate-100 dark:bg-slate-700 my-1 mx-2" />
                     <button
@@ -269,7 +271,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                       className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 font-medium transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Eliminar lista
+                      {t.list_delete}
                     </button>
                   </div>
                 )}
@@ -284,7 +286,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                   onChange={handleStoreChange}
                   className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 transition-colors pl-8 pr-7 py-1.5 rounded-full text-xs font-bold appearance-none border-none focus:ring-2 focus:ring-primary/20 cursor-pointer min-w-[140px]"
                 >
-                  <option value="Mercadona">Seleccionar tienda...</option>
+                <option value="Mercadona">{t.list_select_store}</option>
                   {AVAILABLE_STORES.map(store => (
                     <option key={store.id} value={store.name}>{store.name}</option>
                   ))}
@@ -302,7 +304,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               <div className="flex-1 min-w-0">
                 <ProductSearch
                   listId={list.id}
-                  placeholder="Añadir producto"
+                  placeholder={t.list_add_product}
                   onSearchChange={setSearchQuery}
                 />
               </div>
@@ -428,8 +430,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             <div className="bg-slate-100 dark:bg-slate-800 size-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingBasket className="w-10 h-10 text-slate-400" />
             </div>
-            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">Lista vacía</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Busca y añade productos a tu compra.</p>
+            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">{t.list_empty_title}</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{t.list_empty_hint}</p>
           </div>
         )}
       </main>
@@ -437,7 +439,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
       <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800 shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Total Compra</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.list_shopping_total}</span>
             <div className="flex items-baseline gap-1">
               <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">{totalEstimated.toFixed(2).replace('.', ',')}</span>
               <span className="text-sm font-bold text-slate-400">€</span>
@@ -455,10 +457,10 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               </div>
               <span className="truncate">
                 {totalCount === 0
-                  ? 'Lista vacía'
+                  ? t.list_empty_cta
                   : checkedCount === totalCount
-                    ? 'Hecho'
-                    : `Iniciar compra · ${items.filter(i => !i.checked).length}`
+                    ? t.list_done_cta
+                    : t.list_start_shopping(items.filter(i => !i.checked).length)
                 }
               </span>
             </button>
@@ -479,8 +481,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 <Check className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold">Iniciar ahora</span>
-                <span className="text-[10px] text-slate-400">Ruta optimizada</span>
+                <span className="font-bold">{t.list_start_now}</span>
+                <span className="text-[10px] text-slate-400">{t.list_optimized_route}</span>
               </div>
             </button>
             <button
@@ -491,8 +493,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold">{list.repetition ? 'Cambiar frecuencia' : 'Programar compra'}</span>
-                <span className="text-[10px] text-slate-400">{list.repetition || 'Recordatorio semanal/mensual'}</span>
+                <span className="font-bold">{list.repetition ? t.list_change_frequency : t.list_schedule_title}</span>
+                <span className="text-[10px] text-slate-400">{list.repetition || t.list_schedule_hint}</span>
               </div>
             </button>
             <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
@@ -500,8 +502,8 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 <LayoutGrid className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold">Simular ruta</span>
-                <span className="text-[10px] text-slate-400">Ver mapa interactivo</span>
+                <span className="font-bold">{t.list_simulate_route}</span>
+                <span className="text-[10px] text-slate-400">{t.list_view_map}</span>
               </div>
             </button>
           </div>
@@ -512,7 +514,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         <ProductDetailModal
           product={selectedDetail}
           onClose={() => setSelectedDetail(null)}
-          lang={userProfile?.language}
+          lang={lang}
         />
       )}
     </div>
