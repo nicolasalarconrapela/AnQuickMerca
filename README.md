@@ -8,7 +8,16 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-purple)](./public/manifest.json)
 
+
+<p align="center">
+  <img src="imgs/image-3.png" alt="loading" width="140" />
+  <img src="imgs/image.png" alt="welcome" width="140" style="margin-right:12px;" />
+  <img src="imgs/image-1.png" alt="lista gazpacho" width="140" style="margin-right:12px;" />
+  <img src="imgs/image-2.png" alt="navegacion" width="136" style="margin-right:12px;"/>
+</p>
 </div>
+
+🌐 https://anquickmerca-frontend.onrender.com
 
 ## What is AnQuickMerca?
 
