@@ -1,32 +1,40 @@
 <div align="center">
   <img src="public/icon.svg" alt="AnQuickMerca Logo" width="120" height="120" style="border-radius: 24px;" />
 
-  # AnQuickMerca
+# AnQuickMerca
 
-  **Optimize your shopping in seconds**
+**Optimize your shopping in seconds**
 
-  [![Version](https://img.shields.io/badge/version-0.5.0--beta-blue)](./src/version.ts)
-  [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
-  [![PWA](https://img.shields.io/badge/PWA-ready-purple)](./public/manifest.json)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![PWA](https://img.shields.io/badge/PWA-ready-purple)](./public/manifest.json)
 
+
+<p align="center">
+  <img src="imgs/image-3.png" alt="loading" width="140" />
+  <img src="imgs/image.png" alt="welcome" width="140" style="margin-right:12px;" />
+  <img src="imgs/image-1.png" alt="lista gazpacho" width="140" style="margin-right:12px;" />
+  <img src="imgs/image-2.png" alt="navegacion" width="136" style="margin-right:12px;"/>
+</p>
 </div>
 
-### What is AnQuickMerca?
+🌐 https://anquickmerca-frontend.onrender.com
+
+## What is AnQuickMerca?
 
 AnQuickMerca is a **Progressive Web App (PWA)** built to optimize your Mercadona shopping in real time. Create smart shopping lists, get an efficient in-store route, and search products with AI assistance.
 
-### Key Features
+## Key Features
 
-* 🛒 **Shopping lists** — Create, edit, and organize multiple lists
-* 🗺️ **In-store navigation** — Optimized aisle routes to reduce time and backtracking
-* 🔍 **AI-assisted search** — Find products using Google Gemini assistance
-* 🌍 **Store picker** — Interactive Spain map with Mercadona locations
-* 📱 **Installable PWA** — Works offline and feels like a native app on mobile
-* 🌐 **Bilingual UI** — Full interface in Spanish and English
-* 🔁 **Recurring lists** — Schedule daily, weekly, monthly, or yearly shopping
-* 💰 **Estimated total** — Real-time cost estimate as you build your list
+- 🛒 **Shopping lists** — Create, edit, and organize multiple lists
+- 🗺️ **In-store navigation** — Optimized aisle routes to reduce time and backtracking
+- 🔍 **AI-assisted search** — Find products using Google Gemini assistance
+- 🌍 **Store picker** — Interactive Spain map with Mercadona locations
+- 📱 **Installable PWA** — Works offline and feels like a native app on mobile
+- 🌐 **Bilingual UI** — Full interface in Spanish and English
+- 🔁 **Recurring lists** — Schedule daily, weekly, monthly, or yearly shopping
+- 💰 **Estimated total** — Real-time cost estimate as you build your list
 
-### Tech Stack
+## Tech Stack
 
 | Technology             | Purpose                          |
 | ---------------------- | -------------------------------- |
@@ -39,7 +47,7 @@ AnQuickMerca is a **Progressive Web App (PWA)** built to optimize your Mercadona
 | amCharts 5             | Interactive Spain map            |
 | PWA (Web App Manifest) | Installability & offline support |
 
-### Installation & Development
+## Installation & Development
 
 ```bash
 # Clone the repository
@@ -58,13 +66,13 @@ npm run dev
 # Open http://localhost:3000
 ```
 
-### Environment Variables
+## Environment Variables
 
 | Variable         | Description                              | Required |
 | ---------------- | ---------------------------------------- | -------- |
 | `GEMINI_API_KEY` | Google Gemini API key for product search | Yes      |
 
-### Available Scripts
+## Available Scripts
 
 ```bash
 npm run dev      # Start dev server on port 3000
@@ -73,7 +81,7 @@ npm run preview  # Preview the production build
 npm run lint     # TypeScript checks (and linting if configured)
 ```
 
-### Project Structure
+## Project Structure
 
 ```text
 AnQuickMerca/
@@ -92,7 +100,7 @@ AnQuickMerca/
 └── .github/            # Issue/PR templates and CI/CD
 ```
 
-### Contributing
+## Contributing
 
 1. Fork the repo
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
@@ -104,18 +112,20 @@ AnQuickMerca/
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-* `feat:` — New functionality
-* `fix:` — Bug fix
-* `docs:` — Documentation updates
-* `style:` — Formatting/UI-only changes (no logic)
-* `refactor:` — Refactoring without behavior change
-* `chore:` — Maintenance tasks
+- `feat:` — New functionality
+- `fix:` — Bug fix
+- `docs:` — Documentation updates
+- `style:` — Formatting/UI-only changes (no logic)
+- `refactor:` — Refactoring without behavior change
+- `chore:` — Maintenance tasks
 
+### Idea
+
+![SmartWatch](./imgs/gemini_smartwatch.png)
+![SmartWatch](./imgs/gemini_vr.png)
 ---
 
 <div align="center">
-  Made with ❤️ for smarter shopping
-
-<b>AnQuickMerca</b> · v0.5.0-beta
+  Made with ❤️ by AnAppWiLos
 
 </div>

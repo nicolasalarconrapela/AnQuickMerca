@@ -13,6 +13,7 @@ import { StoreMapScreen } from './screens/StoreMapScreen';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { APP_VERSION } from './version';
 import { LogViewer } from './components/LogViewer';
+import { InstallButton } from './components/InstallButton';
 
 function MainApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
@@ -81,6 +82,7 @@ function MainApp() {
       </div>
 
       {showLogs && <LogViewer onClose={() => setShowLogs(false)} />}
+      <InstallButton />
     </div>
   );
 }
