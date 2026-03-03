@@ -12,6 +12,7 @@ interface AppContextType {
   setSelectedStore: (store: any | null) => void;
   setFavoriteStores: (storeIds: string[]) => void;
   setUserProfile: (profile: UserProfile | null) => void;
+  setTheme: (theme: "light" | "dark" | "system") => void;
   addList: (list: ShoppingList) => void;
   updateList: (id: string, updates: Partial<ShoppingList>) => void;
   deleteList: (id: string) => void;
@@ -167,6 +168,29 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [userProfile]);
 
+  const setTheme = (theme: "light" | "dark" | "system") => {
+    if (userProfile) {
+      setUserProfile({ ...userProfile, theme });
+    } else {
+      // Create a dummy profile if none exists just to hold the theme preference
+      setUserProfile({ name: '', language: 'en', theme });
+    }
+  };
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Default to system if not set
+    const currentTheme = userProfile?.theme || 'system';
+
+    if (currentTheme === 'dark' || (currentTheme === 'system' && isSystemDark)) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [userProfile?.theme]);
+
   const addList = (list: ShoppingList) => setLists(prev => [...prev, list]);
 
   const updateList = (id: string, updates: Partial<ShoppingList>) => {
@@ -247,6 +271,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       setSelectedStore,
       setFavoriteStores,
       setUserProfile,
+      setTheme,
       addList,
       updateList,
       deleteList,

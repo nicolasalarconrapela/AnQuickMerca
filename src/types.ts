@@ -13,6 +13,7 @@ export type Screen =
 export interface UserProfile {
   name: string;
   language: "en" | "es";
+  theme?: "light" | "dark" | "system";
 }
 
 export interface Product {

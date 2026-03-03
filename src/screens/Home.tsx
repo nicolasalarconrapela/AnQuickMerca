@@ -190,7 +190,7 @@ export function Home({ onNavigate }: Props) {
                                 if (e.key === 'Escape') setEditingListId(null);
                               }}
                               onClick={(e) => e.stopPropagation()}
-                              className="w-full bg-transparent border-none outline-none text-lg font-bold p-1"
+                              className="w-full bg-transparent border-none outline-none text-lg font-bold p-1 dark:text-white"
                             />
                             <button
                               onClick={(e) => { e.stopPropagation(); handleRename(list.id); }}
@@ -213,7 +213,7 @@ export function Home({ onNavigate }: Props) {
                               setEditingListId(list.id);
                             }}
                           >
-                            <h3 className="font-bold text-lg truncate">{list.name}</h3>
+                            <h3 className="font-bold text-lg truncate dark:text-white">{list.name}</h3>
                             <p className="text-xs text-slate-500 dark:text-slate-400">{list.items.length} {t.home_products}</p>
                           </div>
                         )}
@@ -282,8 +282,8 @@ export function Home({ onNavigate }: Props) {
                   >
                     <div className="flex justify-between items-start mb-2 pr-10">
                       <div>
-                        <h3 className="font-bold text-lg text-slate-500 line-through truncate">{list.name}</h3>
-                        <p className="text-xs text-slate-400">{list.items.length} {t.home_products} • {list.date}</p>
+                        <h3 className="font-bold text-lg text-slate-500 dark:text-slate-400 line-through truncate">{list.name}</h3>
+                        <p className="text-xs text-slate-400 dark:text-slate-500">{list.items.length} {t.home_products} • {list.date}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-slate-400">{getListTotal(list)} €</p>
