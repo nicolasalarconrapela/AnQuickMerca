@@ -22,6 +22,7 @@ export const translations = {
     // Home
     home_welcome: (name: string) => `👋🏽 Welcome, ${name}.`,
     home_switch_language: 'Switch language',
+    home_switch_theme: 'Toggle theme',
     home_select_store: 'Select your store',
     home_search_placeholder: 'Search food...',
     home_my_lists: 'My lists',
@@ -259,6 +260,7 @@ export const translations = {
     // Home
     home_welcome: (name: string) => `👋🏽 Bienvenido, ${name}.`,
     home_switch_language: 'Cambiar idioma',
+    home_switch_theme: 'Cambiar tema',
     home_select_store: 'Selecciona tu Mercadona',
     home_search_placeholder: 'Buscar alimentos...',
     home_my_lists: 'Mis listas',

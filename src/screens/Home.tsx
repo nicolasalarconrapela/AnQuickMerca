@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon, Map } from 'lucide-react';
+import { Bell, MapPin, Search, ChevronRight, Plus, Calendar, ShoppingBag, Globe, Trash2, Edit2, Check, X as CloseIcon, Map, Sun, Moon, Monitor } from 'lucide-react';
 import { Screen, ShoppingList } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { AddProductModal } from '../components/AddProductModal';
@@ -12,7 +12,7 @@ interface Props {
 
 export function Home({ onNavigate }: Props) {
   const [activeTab, setActiveTab] = useState<'pendientes' | 'realizadas'>('pendientes');
-  const { lists, selectedStore, addList, deleteList, updateList, setActiveListId, userProfile, setUserProfile } = useAppContext();
+  const { lists, selectedStore, addList, deleteList, updateList, setActiveListId, userProfile, setUserProfile, setTheme } = useAppContext();
   const { t } = useTranslation();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [listToDelete, setListToDelete] = useState<ShoppingList | null>(null);
@@ -33,6 +33,13 @@ export function Home({ onNavigate }: Props) {
 
   const pendingLists = lists.filter(l => l.status === 'pending');
   const completedLists = lists.filter(l => l.status === 'completed');
+
+
+  const handleToggleTheme = () => {
+    const currentTheme = userProfile?.theme || 'system';
+    const nextTheme = currentTheme === 'system' ? 'light' : currentTheme === 'light' ? 'dark' : 'system';
+    setTheme(nextTheme);
+  };
 
   const createNewList = () => {
     const newList: ShoppingList = {
@@ -74,7 +81,15 @@ export function Home({ onNavigate }: Props) {
               {t.home_welcome(name)}
             </h1>
           </div>
+
           <div className="flex gap-2">
+            <button
+              onClick={handleToggleTheme}
+              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              title={t.home_switch_theme || 'Change theme'}
+            >
+              {(!userProfile?.theme || userProfile.theme === 'system') ? <Monitor className="w-5 h-5" /> : userProfile.theme === 'light' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <button
               onClick={toggleLanguage}
               className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
