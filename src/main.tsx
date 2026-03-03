@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   (async () => {
     try {
-      const mod = await import('virtual:pwa-register');
+      const mod = await import('virtual:pwa-register' as string);
       const registerSW = mod.registerSW;
       registerSW({
         onRegistered(reg) {
