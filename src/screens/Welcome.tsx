@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { User, Globe, ArrowRight, ChevronDown, Sun, Moon, Monitor } from 'lucide-react';
+import { User, Globe, ArrowRight, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { translations } from '../i18n';
 
@@ -9,20 +9,15 @@ interface Props {
 }
 
 export function Welcome({ onNext }: Props) {
-    const { setUserProfile, setTheme: setAppTheme } = useAppContext();
+    const { setUserProfile } = useAppContext();
     const [name, setName] = useState('');
     const [language, setLanguage] = useState<'en' | 'es'>('en');
-    const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
     const t = translations[language];
-
-    React.useEffect(() => {
-        // Apply theme immediately when user changes selection
-        if (setAppTheme) setAppTheme(theme);
-    }, [theme, setAppTheme]);
 
     const handleStart = () => {
         if (name.trim()) {
-            setUserProfile({ name: name.trim(), language, theme });
+            // Force theme to 'light' when saving profile
+            setUserProfile({ name: name.trim(), language, theme: 'light' });
             onNext();
         }
     };
@@ -37,22 +32,8 @@ export function Welcome({ onNext }: Props) {
             <div className="text-center space-y-4">
                 
 
-            {/* Top-right compact icons (monitor + language + globe) */}
-                <div className="absolute top-4 right-4 z-50 flex items-center ">
-                    <div className="relative group">
-                        <button
-                            type="button"
-                            onClick={() => setTheme(theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system')}
-                            title="Cambiar tema"
-                            className={`p-2 rounded-md transition-colors ${theme === 'system' ? 'text-sky-300' : theme === 'light' ? 'text-yellow-300' : 'text-sky-400'}`}
-                        >
-                            <Monitor size={18} />
-                        </button>
-                        <div className="absolute -top-9 right-6 px-2 py-1 bg-black/80 text-white text-xs rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity">
-                            Tema: {theme === 'system' ? 'Sistema' : theme === 'light' ? 'Claro' : 'Oscuro'}
-                        </div>
-                    </div>
-
+            {/* Top-right compact language icons */}
+                <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
                     <div className="relative group">
                         <button
                             type="button"
@@ -62,6 +43,9 @@ export function Welcome({ onNext }: Props) {
                         >
                             {language === 'en' ? 'US' : 'ES'}
                         </button>
+                        <div className="absolute -top-9 right-6 px-2 py-1 bg-black/80 text-white text-xs rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity">
+                            Idioma: {language === 'en' ? 'English' : 'Español'}
+                        </div>
                     </div>
 
                     <div className="relative group">

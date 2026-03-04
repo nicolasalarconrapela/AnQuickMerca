@@ -169,26 +169,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, [userProfile]);
 
   const setTheme = (theme: "light" | "dark" | "system") => {
+    // Theme choices removed — force light theme only.
+    const forced = 'light' as const;
     if (userProfile) {
-      setUserProfile({ ...userProfile, theme });
+      setUserProfile({ ...userProfile, theme: forced });
     } else {
-      // Create a dummy profile if none exists just to hold the theme preference
-      setUserProfile({ name: '', language: 'en', theme });
+      setUserProfile({ name: '', language: 'en', theme: forced });
     }
   };
 
   useEffect(() => {
+    // Force light mode: always remove dark class
     const root = window.document.documentElement;
-    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    // Default to system if not set
-    const currentTheme = userProfile?.theme || 'system';
-
-    if (currentTheme === 'dark' || (currentTheme === 'system' && isSystemDark)) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.classList.remove('dark');
   }, [userProfile?.theme]);
 
   const addList = (list: ShoppingList) => setLists(prev => [...prev, list]);
