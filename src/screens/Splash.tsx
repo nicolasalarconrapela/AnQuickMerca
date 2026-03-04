@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
+import { useLogoBase64 } from '../hooks/useLogoBase64';
 
 export function Splash() {
   const [progress, setProgress] = useState(0);
@@ -20,13 +21,15 @@ export function Splash() {
     return () => clearInterval(interval);
   }, []);
 
+  const logo = useLogoBase64();
+
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background-light dark:bg-background-dark">
       <div className="relative flex flex-col items-center justify-between h-full w-full max-w-md p-8">
         <div className="flex-1"></div>
         <div className="flex flex-col items-center gap-6">
           <div className="flex items-center justify-center mb-2">
-            <img src="public/icon.svg" alt="AnQuickMerca Logo" width="96" height="96" style={{ borderRadius: '20px' }} />
+            <img src={logo || '/icon.svg'} alt="AnQuickMerca Logo" width="96" height="96" style={{ borderRadius: '20px' }} />
           </div>
           <div className="text-center">
             <h1 className="text-slate-900 dark:text-slate-100 text-4xl font-bold tracking-tight mb-2">

@@ -40,9 +40,10 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
             })
         );
 
+        // Darker/map-accented background for higher contrast
         chart.chartContainer.set("background", am5.Rectangle.new(root, {
-            fill: am5.color(0xdbeafe),
-            fillOpacity: 1
+            fill: am5.color(0x03BB85)   ,
+            fillOpacity: 2
         }));
 
         const polygonSeries = chart.series.push(
@@ -54,14 +55,14 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
 
         polygonSeries.mapPolygons.template.setAll({
             tooltipText: '{name}',
-            fill: am5.color(0xe2e8f0),
-            stroke: am5.color(0xffffff),
+            fill: am5.color(0xBFEFE6),
+            stroke: am5.color(0x13283f),
             strokeWidth: 0.8,
             interactive: true,
             cursorOverStyle: 'pointer'
         });
 
-        polygonSeries.mapPolygons.template.states.create("hover", { fill: am5.color(0xcbd5e1) });
+        polygonSeries.mapPolygons.template.states.create("hover", { fill: am5.color(0x1f4b7a) });
 
         polygonSeries.mapPolygons.template.events.on('click', (ev) => {
             const dataItem = ev.target.dataItem;
@@ -85,7 +86,7 @@ export const SpainRegionsMap: React.FC<SpainRegionsMapProps> = ({
 
             container.children.push(am5.Circle.new(root, {
                 radius: 4,
-                fill: am5.color(0x10b981),
+                fill: am5.color(0x00c2a8),
                 stroke: am5.color(0xffffff),
                 strokeWidth: 2
             }));
