@@ -76,13 +76,13 @@ export function Home({ onNavigate }: Props) {
     <div className="flex flex-col min-h-screen w-full bg-background-light dark:bg-background-dark font-display pb-24">
       <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-7 mb-4">
+          <div className="flex-1 min-w-0 pr-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-7 mb-4 truncate">
               {t.home_welcome(name)}
             </h1>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 shrink-0">
             <button
               onClick={handleToggleTheme}
               className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
@@ -160,7 +160,7 @@ export function Home({ onNavigate }: Props) {
           {activeTab === 'pendientes' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {pendingLists.length === 0 ? (
-                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                <div className="col-span-full text-center py-16 px-4 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
                     {t.home_no_pending}
@@ -264,7 +264,7 @@ export function Home({ onNavigate }: Props) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {completedLists.length === 0 ? (
-                <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                <div className="col-span-full text-center py-16 px-4 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
                     {t.home_no_completed}
