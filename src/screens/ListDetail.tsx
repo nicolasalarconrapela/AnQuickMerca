@@ -320,7 +320,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         )}
       </header>
 
-      <main className="px-5 space-y-3 pb-8 mt-4">
+      <main className="px-5 md:px-12 lg:px-24 xl:px-48 space-y-3 pb-8 mt-4">
         {items.filter(i => !i.checked).map(item => (
           <div
             key={item.id}
@@ -438,7 +438,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         )}
       </main>
 
-      <div className="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800">
+      <div className="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 px-6 md:px-12 lg:px-24 xl:px-48 py-6 z-50 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.list_shopping_total}</span>
@@ -477,7 +477,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         </div>
 
         {isCtaMenuOpen && (
-          <div className="absolute bottom-full right-6 mb-3 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="absolute bottom-full right-6 md:right-12 lg:right-24 xl:right-48 mb-3 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               <div className="size-8 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                 <Check className="w-4 h-4" />

@@ -282,7 +282,7 @@ export function ActiveNavigation({ onBack }: Props) {
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light font-sans text-slate-900 antialiased">
       {/* Top Bar - Simplified without progress bar */}
-      <header className="fixed top-0 inset-x-0 bg-background-light  z-[60] pt-14 px-6 pb-6">
+      <header className="fixed top-0 inset-x-0 bg-background-light  z-[60] pt-14 px-6 md:px-12 lg:px-24 xl:px-48 pb-6">
         {/* Navigation Row - Google Maps Style */}
         <div className="flex flex-col gap-4">
           <div className="relative flex items-center justify-between min-h-[56px] bg-white rounded-2xl border border-slate-100 shadow-sm px-2">

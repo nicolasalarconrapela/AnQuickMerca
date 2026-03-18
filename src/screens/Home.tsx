@@ -69,7 +69,7 @@ export function Home({ onNavigate }: Props) {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-background-light dark:bg-background-dark font-display pb-24">
-      <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+      <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-12 lg:px-24 xl:px-48 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1 min-w-0 pr-4">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-7 mb-4 truncate">
@@ -142,7 +142,7 @@ export function Home({ onNavigate }: Props) {
         </div>
       </header>
 
-      <main className="px-4 pb-10">
+      <main className="px-4 md:px-12 lg:px-24 xl:px-48 pb-10">
         <section className="mt-4">
 
           {activeTab === 'pendientes' ? (
