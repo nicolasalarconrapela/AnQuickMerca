@@ -171,13 +171,13 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
   if (totalCount > 0 && checkedCount > 0 && checkedCount < totalCount) {
     statusLabel = t.list_status_in_progress_count(checkedCount, totalCount);
-    statusColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+    statusColor = 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary';
   } else if (totalCount > 0 && checkedCount === totalCount) {
     statusLabel = t.list_status_done;
-    statusColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
+    statusColor = 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary';
   } else if (list.status === 'completed') {
     statusLabel = t.list_status_done;
-    statusColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
+    statusColor = 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary';
   }
 
   return (
@@ -477,7 +477,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         {isCtaMenuOpen && (
           <div className="absolute bottom-full right-6 mb-3 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-              <div className="size-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+              <div className="size-8 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                 <Check className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
@@ -498,7 +498,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
               </div>
             </button>
             <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-              <div className="size-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+              <div className="size-8 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                 <LayoutGrid className="w-4 h-4" />
               </div>
               <div className="flex flex-col">

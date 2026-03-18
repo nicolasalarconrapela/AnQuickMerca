@@ -49,7 +49,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                     </button>
 
                     {hit.badges?.is_water && (
-                        <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-blue-500 text-white flex items-center gap-1.5 text-[10px] font-bold shadow-lg shadow-blue-500/20">
+                        <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-primary text-white flex items-center gap-1.5 text-[10px] font-bold shadow-lg shadow-primary/20">
                             <Droplet className="w-3 h-3" />
                             {lang === 'es' ? 'AGUA MINERAL' : 'MINERAL WATER'}
                         </div>
@@ -113,11 +113,11 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                             </div>
                             {hit.published && (
                                 <div className="flex items-center justify-between text-sm py-2">
-                                    <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
+                                    <div className="flex items-center gap-1.5 text-primary font-bold">
                                         <ShieldCheck className="w-4 h-4" />
                                         <span>{t.product_in_stock}</span>
                                     </div>
-                                    <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 px-2 py-0.5 rounded text-uppercase">VERIFIED</span>
+                                    <span className="text-[10px] font-bold bg-primary/10 dark:bg-primary/20 text-primary px-2 py-0.5 rounded text-uppercase">VERIFIED</span>
                                 </div>
                             )}
                         </div>

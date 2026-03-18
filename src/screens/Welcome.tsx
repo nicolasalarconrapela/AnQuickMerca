@@ -35,7 +35,7 @@ export function Welcome({ onNext }: Props) {
                             type="button"
                             onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
                             title="Cambiar idioma"
-                            className="px-2 py-1 rounded-md bg-transparent text-sky-300 font-bold text-sm"
+                            className="px-2 py-1 rounded-md bg-transparent text-primary font-bold text-sm"
                         >
                             {language === 'en' ? 'US' : 'ES'}
                         </button>
@@ -49,7 +49,7 @@ export function Welcome({ onNext }: Props) {
                             type="button"
                             onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
                             title="Cambiar idioma"
-                            className="p-2 rounded-md bg-transparent text-sky-300"
+                            className="p-2 rounded-md bg-transparent text-primary"
                         >
                             <Globe size={16} />
                         </button>

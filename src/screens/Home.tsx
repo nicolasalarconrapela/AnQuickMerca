@@ -85,14 +85,14 @@ export function Home({ onNavigate }: Props) {
           <div className="flex gap-2">
             <button
               onClick={handleToggleTheme}
-              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
               title={t.home_switch_theme || 'Change theme'}
             >
               {(!userProfile?.theme || userProfile.theme === 'system') ? <Monitor className="w-5 h-5" /> : userProfile.theme === 'light' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={toggleLanguage}
-              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
               title={t.home_switch_language}
             >
               <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
