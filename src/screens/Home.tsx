@@ -158,7 +158,7 @@ export function Home({ onNavigate }: Props) {
         <section className="mt-4">
 
           {activeTab === 'pendientes' ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {pendingLists.length === 0 ? (
                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -262,7 +262,7 @@ export function Home({ onNavigate }: Props) {
               )}
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {completedLists.length === 0 ? (
                 <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />

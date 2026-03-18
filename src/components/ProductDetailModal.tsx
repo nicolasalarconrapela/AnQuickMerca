@@ -26,7 +26,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-lg animate-in zoom-in-95 duration-300 max-h-[85vh] flex flex-col"
+                className="w-full max-w-md md:max-w-xl bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-lg animate-in zoom-in-95 duration-300 max-h-[85vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header con imagen - Tamaño reducido para aspecto flotante */}

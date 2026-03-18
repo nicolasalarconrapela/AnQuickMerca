@@ -72,9 +72,9 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   const newItemsCount = Object.keys(localNewListItems).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60  animate-in fade-in duration-200" onClick={handleDone}>
+    <div className="fixed inset-0 z-50 flex flex-col justify-end md:justify-center md:items-center md:p-6 bg-slate-900/40 dark:bg-black/60  animate-in fade-in duration-200" onClick={handleDone}>
       <div
-        className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-2xl shadow-lg flex flex-col h-[85vh] animate-in slide-in-from-bottom duration-300"
+        className="bg-white dark:bg-slate-900 w-full max-w-md md:max-w-xl mx-auto rounded-t-2xl md:rounded-2xl shadow-lg flex flex-col h-[85vh] md:h-auto md:max-h-[85vh] animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
         {/* Sticky Header Section */}

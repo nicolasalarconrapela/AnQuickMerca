@@ -25,7 +25,7 @@ export function Splash() {
 
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background-light dark:bg-background-dark">
-      <div className="relative flex flex-col items-center justify-between h-full w-full max-w-md p-8">
+      <div className="relative flex flex-col items-center justify-between h-full w-full max-w-md md:max-w-3xl lg:max-w-5xl p-8">
         <div className="flex-1"></div>
         <div className="flex flex-col items-center gap-6">
           <div className="flex items-center justify-center mb-2">
