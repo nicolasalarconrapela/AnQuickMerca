@@ -47,14 +47,14 @@ export const StoreMapScreen: React.FC<StoreMapScreenProps> = ({ onBack }) => {
             {/* Selected Section Detail Card */}
             {selectedSection && (
                 <div className="px-6 pb-8 animate-in slide-in-from-bottom-8 duration-500">
-                    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-md border border-slate-200 dark:border-slate-800 relative overflow-hidden">
                         {/* Decorative background circle */}
                         <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-10" style={{ backgroundColor: selectedSection.color }} />
 
                         <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center gap-4">
                                 <div
-                                    className="w-14 h-14 rounded-3xl flex items-center justify-center shadow-lg"
+                                    className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg"
                                     style={{ backgroundColor: `${selectedSection.color}20`, color: selectedSection.color }}
                                 >
                                     <Info size={28} />
@@ -73,17 +73,17 @@ export const StoreMapScreen: React.FC<StoreMapScreenProps> = ({ onBack }) => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 mb-4">
-                            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800">
+                            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p className="text-[10px] font-black uppercase text-slate-400 mb-1">{t.smap_aisles}</p>
                                 <p className="text-sm font-bold">{selectedSection.label}</p>
                             </div>
-                            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-800">
+                            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p className="text-[10px] font-black uppercase text-slate-400 mb-1">{t.smap_capacity}</p>
                                 <p className="text-sm font-bold">{t.smap_high_occupancy}</p>
                             </div>
                         </div>
 
-                        <button className="w-full py-4 bg-primary text-white text-sm font-black uppercase tracking-widest rounded-3xl shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        <button className="w-full py-4 bg-primary text-white text-sm font-black uppercase tracking-widest rounded-xl shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all">
                             {t.smap_view_products}
                         </button>
                     </div>

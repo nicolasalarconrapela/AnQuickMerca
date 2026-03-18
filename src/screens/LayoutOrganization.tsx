@@ -22,9 +22,9 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
   if (!list) return null;
 
   return (
-    <div className="flex flex-col h-[844px] w-[390px] mx-auto bg-[#F5F7F6] font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative border border-[rgba(31,41,55,0.10)] shadow-[0_6px_18px_rgba(0,0,0,0.08)] rounded-[2rem]">
+    <div className="flex flex-col w-full max-w-md mx-auto min-h-screen bg-slate-50 dark:bg-slate-900 font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-lg rounded-xl">
       {/* Cabela Blanca */}
-      <header className="px-6 pt-12 pb-4 bg-white border-b border-[rgba(31,41,55,0.10)] flex flex-col relative z-20">
+      <header className="px-6 pt-12 pb-4 bg-white border-b border-slate-200 dark:border-slate-800 flex flex-col relative z-20">
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-4">
             <h1 className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-1">{t.layout_route_map}</h1>
@@ -46,14 +46,14 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
               {t.layout_pending_products(items.filter(i => !i.checked).length)}
             </p>
           </div>
-          <button onClick={onBack} className="p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 rounded-full border border-[rgba(31,41,55,0.10)]">
+          <button onClick={onBack} className="p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 rounded-full border border-slate-200 dark:border-slate-800">
             <X className="w-5 h-5" />
           </button>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative overflow-hidden flex flex-col bg-[#F5F7F6]">
+      <main className="flex-1 relative overflow-hidden flex flex-col bg-slate-50 dark:bg-slate-900">
         {viewMode === 'visual' ? (
           <div className="h-full w-full">
             <SupermarketMap
@@ -63,10 +63,10 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
             />
           </div>
         ) : (
-          <div className="h-full w-full overflow-y-auto px-6 py-2 bg-white m-4 mt-4 mr-4 mb-4 rounded-xl border border-[rgba(31,41,55,0.10)] shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ height: 'calc(100% - 2rem)', width: 'calc(100% - 3rem)' }}>
+          <div className="h-full w-full overflow-y-auto px-6 py-2 bg-white m-4 mt-4 mr-4 mb-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm" style={{ height: 'calc(100% - 2rem)', width: 'calc(100% - 3rem)' }}>
             <div className="flex flex-col">
               {items.filter(i => !i.checked).map((item, index) => (
-                <div key={item.id} className="flex items-center gap-4 py-4 border-b border-[rgba(31,41,55,0.10)] last:border-0 hover:bg-slate-50 transition-colors">
+                <div key={item.id} className="flex items-center gap-4 py-4 border-b border-slate-200 dark:border-slate-800 last:border-0 hover:bg-slate-50 transition-colors">
                   <div className="w-7 h-7 rounded-full border border-slate-200 flex items-center justify-center flex-shrink-0 bg-slate-50">
                     <span className="text-xs font-semibold text-slate-500">{index + 1}</span>
                   </div>
@@ -87,10 +87,10 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
       </main>
 
       {/* Bottom CTA */}
-      <footer className="p-4 bg-white border-t border-[rgba(31,41,55,0.10)] shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-20 relative">
+      <footer className="p-4 bg-white border-t border-slate-200 dark:border-slate-800 shadow-sm z-20 relative">
         <button
           onClick={onNext}
-          className="w-full h-[48px] bg-[#00754A] hover:bg-[#00623E] text-white font-semibold text-base rounded border-none flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+          className="w-full h-[48px] bg-primary hover:bg-primary-dark text-white font-semibold text-base rounded border-none flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
         >
           {t.layout_start_navigation}
           <ArrowRight className="w-5 h-5" />

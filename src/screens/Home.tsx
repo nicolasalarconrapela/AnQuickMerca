@@ -174,7 +174,7 @@ export function Home({ onNavigate }: Props) {
                       setActiveListId(list.id);
                       onNavigate('list_detail');
                     }}
-                    className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer"
+                    className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2 pr-20">
                       <div className="flex-1 mr-2">
@@ -278,7 +278,7 @@ export function Home({ onNavigate }: Props) {
                       setActiveListId(list.id);
                       onNavigate('list_detail');
                     }}
-                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group active:scale-[0.98] transition-transform cursor-pointer"
+                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2 pr-10">
                       <div>
@@ -324,7 +324,7 @@ export function Home({ onNavigate }: Props) {
 
       <button
         onClick={createNewList}
-        className="fixed right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 flex items-center justify-center transition-transform active:scale-90 z-40 bottom-6"
+        className="fixed right-6 w-14 h-14 bg-primary text-white rounded-full shadow-md flex items-center justify-center transition-transform active:scale-95 z-40 bottom-6"
       >
         <Plus className="w-8 h-8" />
       </button>

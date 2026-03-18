@@ -22,11 +22,11 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60  animate-in fade-in duration-300"
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 max-h-[85vh] flex flex-col"
+                className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-lg animate-in zoom-in-95 duration-300 max-h-[85vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header con imagen - Tamaño reducido para aspecto flotante */}
@@ -127,7 +127,7 @@ export function ProductDetailModal({ product, onClose, onAdd, lang = 'es' }: Pro
                     {onAdd && (
                         <button
                             onClick={() => { onAdd(product); onClose(); }}
-                            className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 h-14 rounded-2xl font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-slate-900/10 dark:shadow-white/5 mt-4"
+                            className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 h-14 rounded-2xl font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-sm mt-4"
                         >
                             <ShoppingCart className="w-5 h-5" />
                             {t.product_add_to_list}

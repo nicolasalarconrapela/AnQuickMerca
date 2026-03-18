@@ -24,13 +24,9 @@ export function Welcome({ onNext }: Props) {
 
     return (
 
-
         <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-slate-900 px-8 py-12 relative overflow-hidden text-slate-900 dark:text-white">
-            {/* Background blobs for premium look */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[30%] bg-primary/20 blur-[100px] rounded-full"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[30%] bg-indigo-500/20 blur-[100px] rounded-full"></div>
+
             <div className="text-center space-y-4">
-                
 
             {/* Top-right compact language icons */}
                 <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
@@ -102,8 +98,8 @@ export function Welcome({ onNext }: Props) {
                     whileTap={{ scale: 0.98 }}
                     disabled={!name.trim()}
                     onClick={handleStart}
-                    className={`w-full py-5 rounded-3xl font-black text-lg flex items-center justify-center gap-2 shadow-xl transition-all ${name.trim()
-                        ? 'bg-primary text-white shadow-primary/20 cursor-pointer'
+                    className={`w-full py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-2 shadow-sm transition-all ${name.trim()
+                        ? 'bg-primary text-white shadow-sm cursor-pointer'
                         : 'bg-slate-700 dark:bg-slate-800 text-slate-300 dark:text-slate-400 cursor-not-allowed shadow-none'
                         }`}
                 >

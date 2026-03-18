@@ -72,9 +72,9 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
   const newItemsCount = Object.keys(localNewListItems).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={handleDone}>
+    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/40 dark:bg-black/60  animate-in fade-in duration-200" onClick={handleDone}>
       <div
-        className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-[2rem] shadow-2xl flex flex-col h-[85vh] animate-in slide-in-from-bottom duration-300"
+        className="bg-white dark:bg-slate-900 w-full max-w-md mx-auto rounded-t-2xl shadow-lg flex flex-col h-[85vh] animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
         {/* Sticky Header Section */}
@@ -155,7 +155,7 @@ export function AddProductModal({ onClose, onAdded, preselectedListId }: Props) 
 
         {/* Footer (Only really needed if creating a new list, but keeping consistent is good. If modifying existing, changes are immediate) */}
         {targetListId === 'new' && (
-          <div className="shrink-0 p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-[2rem] pb-safe">
+          <div className="shrink-0 p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-b-2xl pb-safe">
             <button
               onClick={handleDone}
               disabled={newItemsCount === 0}

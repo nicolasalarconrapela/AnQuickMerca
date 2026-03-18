@@ -182,7 +182,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
   return (
     <div className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen pb-44 font-display">
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm">
+      <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm">
         {selectionMode ? (
           <div className="flex items-center justify-between px-5 h-[72px] animate-in fade-in slide-in-from-top-2 duration-200 bg-primary/10 dark:bg-primary/20">
             <div className="flex items-center gap-4">
@@ -327,7 +327,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             onMouseLeave={handleTouchEnd}
             onTouchStart={() => handleTouchStart(item.id)}
             onTouchEnd={handleTouchEnd}
-            className={`flex items-center gap-4 p-4 rounded-3xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md scale-[1.02]' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 shadow-sm'}`}
+            className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md scale-100' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 shadow-sm'}`}
           >
             {(selectionMode || item.checked) ? (
               <input
@@ -392,7 +392,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             onMouseLeave={handleTouchEnd}
             onTouchStart={() => handleTouchStart(item.id)}
             onTouchEnd={handleTouchEnd}
-            className={`flex items-center gap-4 p-4 rounded-3xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md' : 'bg-slate-50 dark:bg-slate-800/30 border-slate-100 dark:border-slate-800/50 opacity-60'}`}
+            className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-300 border ${selectionMode && selectedItems.has(item.id) ? 'bg-primary/10 border-primary shadow-md' : 'bg-slate-50 dark:bg-slate-800/30 border-slate-100 dark:border-slate-800/50 opacity-60'}`}
           >
             <input
               type="checkbox"
@@ -436,7 +436,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         )}
       </main>
 
-      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800 shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+      <div className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white dark:bg-slate-900 px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.list_shopping_total}</span>
@@ -446,11 +446,11 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center shadow-2xl shadow-primary/30 rounded-[2rem] overflow-hidden">
+          <div className="flex items-center shadow-sm rounded-xl overflow-hidden">
             <button
               onClick={() => onNavigate('layout_organization')}
               disabled={totalCount === 0 || checkedCount === totalCount}
-              className="bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-black text-[11px] uppercase tracking-[0.15em] py-5 px-8 flex items-center justify-center gap-3 transition-all active:scale-[0.98] hover:brightness-110"
+              className="bg-primary disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed text-white font-black text-[11px] uppercase tracking-[0.15em] py-5 px-8 flex items-center justify-center gap-3 transition-all active:scale-95 hover:brightness-110"
             >
               <div className="size-6 bg-white/20 rounded-full flex items-center justify-center">
                 <Route size={14} className="animate-pulse" />
@@ -467,7 +467,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
             <button
               onClick={() => setIsCtaMenuOpen(!isCtaMenuOpen)}
               disabled={totalCount === 0}
-              className="bg-primary-dark/20 dark:bg-black/20 backdrop-blur-md px-3 py-5 border-l border-white/10"
+              className="bg-primary-dark/20 dark:bg-black/20 px-3 py-5 border-l border-white/10"
             >
               <ChevronDown size={18} className={`text-white transition-transform duration-300 ${isCtaMenuOpen ? 'rotate-180' : ''}`} />
             </button>
@@ -475,7 +475,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         </div>
 
         {isCtaMenuOpen && (
-          <div className="absolute bottom-full right-6 mb-3 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="absolute bottom-full right-6 mb-3 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               <div className="size-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
                 <Check className="w-4 h-4" />

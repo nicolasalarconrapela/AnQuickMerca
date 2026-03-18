@@ -406,7 +406,7 @@ export function StoreSelection({ onNext }: Props) {
 
                             {/* Desplegable de Resultados Absoluto */}
                             {searchQuery && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 flex flex-col max-h-[60vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden z-50 flex flex-col max-h-[60vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
                                     {searchableItems
                                         .filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
                                         .sort((a, b) => {
