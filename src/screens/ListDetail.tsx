@@ -308,11 +308,13 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                   onSearchChange={setSearchQuery}
                 />
               </div>
+              {/* Feature disabled temporarily as requested
               {!searchQuery && (
                 <button className="flex-none size-11 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-all">
                   <Plus className="w-6 h-6" />
                 </button>
               )}
+              */}
             </div>
           </div>
         )}
