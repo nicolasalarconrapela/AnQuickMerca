@@ -64,7 +64,7 @@ export function ActiveNavigation({ onBack }: Props) {
   if (!currentItem || itemsToFind.length === 0) {
     return (
       <div className="flex flex-col min-h-screen w-full bg-background-light items-center justify-center p-8 text-center">
-        <div className="size-20 bg-emerald-500/10 text-emerald-600 rounded-3xl flex items-center justify-center mb-8 border border-emerald-500/20 shadow-sm">
+        <div className="size-20 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center mb-8 border border-emerald-500/20 shadow-sm">
           <Check className="w-10 h-10" />
         </div>
         <h2 className="text-2xl font-bold mb-3 text-slate-900">{t.nav_completed_title}</h2>
@@ -73,7 +73,7 @@ export function ActiveNavigation({ onBack }: Props) {
         </p>
         <button
           onClick={handleFinish}
-          className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all"
+          className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-2xl shadow-sm active:scale-95 transition-all"
         >
           {t.nav_finish}
         </button>
@@ -280,9 +280,9 @@ export function ActiveNavigation({ onBack }: Props) {
 
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden bg-background-light font-sans text-slate-900 antialiased">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light font-sans text-slate-900 antialiased">
       {/* Top Bar - Simplified without progress bar */}
-      <header className="fixed top-0 inset-x-0 bg-background-light/80 backdrop-blur-xl z-[60] pt-14 px-6 pb-6 max-w-md mx-auto">
+      <header className="fixed top-0 inset-x-0 bg-background-light  z-[60] pt-14 px-6 md:px-12 lg:px-24 xl:px-48 pb-6">
         {/* Navigation Row - Google Maps Style */}
         <div className="flex flex-col gap-4">
           <div className="relative flex items-center justify-between min-h-[56px] bg-white rounded-2xl border border-slate-100 shadow-sm px-2">
@@ -322,7 +322,7 @@ export function ActiveNavigation({ onBack }: Props) {
           </div>
 
           {/* Indicación estilo Google Maps */}
-          <div className="flex items-center gap-3 bg-primary text-white p-4 rounded-2xl shadow-lg shadow-primary/20 animate-in slide-in-from-left duration-500 relative">
+          <div className="flex items-center gap-3 bg-primary text-white p-4 rounded-2xl shadow-sm animate-in slide-in-from-left duration-500 relative">
             <div className="bg-white/20 p-2 rounded-xl">
               <MapPin className="w-5 h-5" />
             </div>
@@ -353,7 +353,7 @@ export function ActiveNavigation({ onBack }: Props) {
               transform: `translateX(${swipeOffset}px)`,
               opacity: 1 + swipeOffset / 400
             }}
-            className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/40 group relative aspect-square w-full transition-transform active:scale-[0.98] z-10"
+            className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm shadow-slate-200/40 group relative aspect-square w-full transition-transform active:scale-[0.98] z-10"
           >
             {showMap ? (
               <div className="w-full h-full animate-in fade-in zoom-in-95 duration-500">
@@ -386,7 +386,7 @@ export function ActiveNavigation({ onBack }: Props) {
                 {/* Icono Mapa a la izquierda - Toggle Manual */}
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowMap(true); }}
-                  className="absolute top-4 left-4 p-3 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 text-slate-400 z-10 transition-all active:scale-95"
+                  className="absolute top-4 left-4 p-3 bg-white  rounded-2xl shadow-lg border border-white/50 text-slate-400 z-10 transition-all active:scale-95"
                 >
                   <MapIcon className="w-6 h-6" />
                 </button>
@@ -403,8 +403,8 @@ export function ActiveNavigation({ onBack }: Props) {
                     onMouseLeave={endLongPress}
                     onTouchStart={startLongPress}
                     onTouchEnd={endLongPress}
-                    className={`relative size-14 flex items-center justify-center rounded-2xl shadow-xl transition-all active:scale-90 overflow-hidden
-                      ${currentPicked > 0 ? 'bg-primary text-white' : 'bg-white/90 backdrop-blur-md text-slate-300 border border-white/50'}`}
+                    className={`relative size-14 flex items-center justify-center rounded-2xl shadow-sm transition-all active:scale-90 overflow-hidden
+                      ${currentPicked > 0 ? 'bg-primary text-white' : 'bg-white  text-slate-300 border border-white/50'}`}
                   >
                     {/* Ring de progreso para long press */}
                     {longPressProgress > 0 && (
@@ -428,10 +428,10 @@ export function ActiveNavigation({ onBack }: Props) {
                 {/* Overlay gris al deslizar */}
                 {swipeOffset < 0 && (
                   <div
-                    className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center transition-opacity"
+                    className="absolute inset-0 bg-slate-900/40  flex items-center justify-center transition-opacity"
                     style={{ opacity: -swipeOffset / 200 }}
                   >
-                    <div className="bg-white p-4 rounded-full shadow-2xl scale-125">
+                    <div className="bg-white p-4 rounded-full shadow-md scale-125">
                       <Check className="w-8 h-8 text-primary" />
                     </div>
                   </div>
@@ -444,7 +444,7 @@ export function ActiveNavigation({ onBack }: Props) {
               <>
                 <button
                   onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 text-slate-600 z-20 active:scale-90 transition-all disabled:opacity-30"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white  rounded-2xl shadow-lg border border-white/50 text-slate-600 z-20 active:scale-90 transition-all disabled:opacity-30"
                   disabled={itemsToFind.length <= 1}
                 >
                   <ChevronRight className="w-6 h-6 rotate-180" />
@@ -452,7 +452,7 @@ export function ActiveNavigation({ onBack }: Props) {
 
                 <button
                   onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 text-slate-600 z-20 active:scale-90 transition-all disabled:opacity-30"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white  rounded-2xl shadow-lg border border-white/50 text-slate-600 z-20 active:scale-90 transition-all disabled:opacity-30"
                   disabled={itemsToFind.length <= 1}
                 >
                   <ChevronRight className="w-6 h-6" />
@@ -464,7 +464,7 @@ export function ActiveNavigation({ onBack }: Props) {
 
         <div className="mb-4">
           <div className="flex items-start gap-4">
-            <div className="size-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 shadow-sm shadow-primary/20">
+            <div className="size-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 shadow-sm">
               {currentIndex + 1}
             </div>
             <div className="flex-1 min-w-0">
@@ -538,7 +538,7 @@ export function ActiveNavigation({ onBack }: Props) {
                     )}
 
                     {isChecked && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-emerald-500/20 backdrop-blur-[1px]">
+                      <div className="absolute inset-0 flex items-center justify-center bg-emerald-500/20 ">
                         <Check className="w-6 h-6 text-emerald-600 drop-shadow-sm" />
                       </div>
                     )}

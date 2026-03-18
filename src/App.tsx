@@ -59,7 +59,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-md mx-auto bg-background-light dark:bg-background-dark overflow-x-hidden relative shadow-2xl">
+    <div className="min-h-screen w-full bg-background-light dark:bg-background-dark overflow-x-hidden relative">
       {currentScreen === 'splash' && <Splash />}
       {currentScreen === 'welcome' && <Welcome onNext={() => navigate('store_selection')} />}
       {currentScreen === 'onboarding' && <Onboarding onNext={() => navigate('store_selection')} />}

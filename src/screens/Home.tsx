@@ -35,11 +35,6 @@ export function Home({ onNavigate }: Props) {
   const completedLists = lists.filter(l => l.status === 'completed');
 
 
-  const handleToggleTheme = () => {
-    const currentTheme = userProfile?.theme || 'system';
-    const nextTheme = currentTheme === 'system' ? 'light' : currentTheme === 'light' ? 'dark' : 'system';
-    setTheme(nextTheme);
-  };
 
   const createNewList = () => {
     const newList: ShoppingList = {
@@ -74,25 +69,18 @@ export function Home({ onNavigate }: Props) {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-background-light dark:bg-background-dark font-display pb-24">
-      <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+      <header className="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-12 lg:px-24 xl:px-48 pt-6 pb-2">
         <div className="flex items-center justify-between mb-2">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mt-7 mb-4">
+          <div className="flex-1 min-w-0 pr-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-7 mb-4 truncate">
               {t.home_welcome(name)}
             </h1>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={handleToggleTheme}
-              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
-              title={t.home_switch_theme || 'Change theme'}
-            >
-              {(!userProfile?.theme || userProfile.theme === 'system') ? <Monitor className="w-5 h-5" /> : userProfile.theme === 'light' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+          <div className="flex gap-2 shrink-0">
             <button
               onClick={toggleLanguage}
-              className="p-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
+              className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
               title={t.home_switch_language}
             >
               <span className="text-lg">{isSpanish ? '🇪🇸' : '🇺🇸'}</span>
@@ -154,13 +142,13 @@ export function Home({ onNavigate }: Props) {
         </div>
       </header>
 
-      <main className="px-4 pb-10">
+      <main className="px-4 md:px-12 lg:px-24 xl:px-48 pb-10">
         <section className="mt-4">
 
           {activeTab === 'pendientes' ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {pendingLists.length === 0 ? (
-                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                <div className="col-span-full text-center py-16 px-4 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
                     {t.home_no_pending}
@@ -174,7 +162,7 @@ export function Home({ onNavigate }: Props) {
                       setActiveListId(list.id);
                       onNavigate('list_detail');
                     }}
-                    className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group active:scale-[0.98] transition-transform cursor-pointer"
+                    className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2 pr-20">
                       <div className="flex-1 mr-2">
@@ -262,9 +250,9 @@ export function Home({ onNavigate }: Props) {
               )}
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {completedLists.length === 0 ? (
-                <div className="text-center p-8 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                <div className="col-span-full text-center py-16 px-4 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
                   <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500 text-sm">
                     {t.home_no_completed}
@@ -278,7 +266,7 @@ export function Home({ onNavigate }: Props) {
                       setActiveListId(list.id);
                       onNavigate('list_detail');
                     }}
-                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group active:scale-[0.98] transition-transform cursor-pointer"
+                    className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden grayscale opacity-70 group cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-2 pr-10">
                       <div>
@@ -324,7 +312,7 @@ export function Home({ onNavigate }: Props) {
 
       <button
         onClick={createNewList}
-        className="fixed right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 flex items-center justify-center transition-transform active:scale-90 z-40 bottom-6"
+        className="fixed right-6 w-14 h-14 bg-primary text-white rounded-full shadow-md flex items-center justify-center transition-transform active:scale-95 z-40 bottom-6"
       >
         <Plus className="w-8 h-8" />
       </button>

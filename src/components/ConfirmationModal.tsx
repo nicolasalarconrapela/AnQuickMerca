@@ -25,9 +25,9 @@ export function ConfirmationModal({
     const resolvedConfirm = confirmText ?? t.confirm_delete;
     const resolvedCancel = cancelText ?? t.confirm_cancel;
     return (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={onCancel}>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60  animate-in fade-in duration-300" onClick={onCancel}>
             <div
-                className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
+                className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-lg animate-in zoom-in-95 duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-8 text-center">
