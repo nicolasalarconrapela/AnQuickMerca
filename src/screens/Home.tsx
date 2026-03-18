@@ -35,11 +35,6 @@ export function Home({ onNavigate }: Props) {
   const completedLists = lists.filter(l => l.status === 'completed');
 
 
-  const handleToggleTheme = () => {
-    const currentTheme = userProfile?.theme || 'system';
-    const nextTheme = currentTheme === 'system' ? 'light' : currentTheme === 'light' ? 'dark' : 'system';
-    setTheme(nextTheme);
-  };
 
   const createNewList = () => {
     const newList: ShoppingList = {
@@ -83,13 +78,6 @@ export function Home({ onNavigate }: Props) {
           </div>
 
           <div className="flex gap-2 shrink-0">
-            <button
-              onClick={handleToggleTheme}
-              className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
-              title={t.home_switch_theme || 'Change theme'}
-            >
-              {(!userProfile?.theme || userProfile.theme === 'system') ? <Monitor className="w-5 h-5" /> : userProfile.theme === 'light' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
             <button
               onClick={toggleLanguage}
               className="p-2 rounded-full hover:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all flex items-center justify-center gap-1.5 border border-transparent hover:border-primary/30 dark:hover:border-primary/30"
