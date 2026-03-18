@@ -436,7 +436,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
         )}
       </main>
 
-      <div className="fixed bottom-0 inset-x-0 max-w-md md:max-w-3xl lg:max-w-5xl mx-auto bg-white dark:bg-slate-900 px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800">
+      <div className="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 px-6 py-6 z-50 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.list_shopping_total}</span>

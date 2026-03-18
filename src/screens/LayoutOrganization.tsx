@@ -22,7 +22,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
   if (!list) return null;
 
   return (
-    <div className="flex flex-col w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto min-h-screen bg-slate-50 dark:bg-slate-900 font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative border border-slate-200 dark:border-slate-800 shadow-lg rounded-xl">
+    <div className="flex flex-col w-full min-h-screen bg-slate-50 dark:bg-slate-900 font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative">
       {/* Cabela Blanca */}
       <header className="px-6 pt-12 pb-4 bg-white border-b border-slate-200 dark:border-slate-800 flex flex-col relative z-20">
         <div className="flex justify-between items-start mb-1">
