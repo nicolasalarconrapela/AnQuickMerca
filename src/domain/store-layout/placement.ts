@@ -39,9 +39,14 @@ export const createBlockFromBox = (
 ): StoreZoneBlock => {
   const paddedBox = applyPadding(box, config.padding);
 
-  // Consideramos heurística de peso si quisiéramos escalar (opcional en fase 2,
-  // aquí respetamos la caja asignada pero podríamos guardar el peso para metadatos).
+  // Consideramos heurística de peso si quisiéramos escalar
   const weight = ZONE_SIZE_WEIGHTS[department.zoneType] || 1.0;
+
+  // Three.js centra los meshes en sus posiciones [x,y,z].
+  // Calculamos el centro exacto del BoundingBox paddedeado.
+  const centerX = paddedBox.x + paddedBox.width / 2;
+  const centerZ = paddedBox.z + paddedBox.depth / 2;
+  const centerY = config.height / 2;
 
   return {
     id: `block-${department.id}`,
@@ -49,11 +54,8 @@ export const createBlockFromBox = (
     departmentName: department.name,
     zoneType: department.zoneType,
     color: ZONE_COLORS[department.zoneType] || ZONE_COLORS.unknown,
-    // [x, y, z] -> [ancho, altura, profundidad]
-    position: [paddedBox.x, 0, paddedBox.z],
-    // Asignamos una altura base para dar volumen 3D después
+    position: [centerX, centerY, centerZ], // Centro geométrico real
     size: [paddedBox.width, config.height, paddedBox.depth],
-    // Sin rotación en la grilla básica inicial
     rotation: [0, 0, 0],
     label: department.name,
     categories: [...department.categories],

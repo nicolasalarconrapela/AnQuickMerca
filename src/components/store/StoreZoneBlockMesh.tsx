@@ -3,6 +3,7 @@ import { useStoreInteraction } from '../../store/useStoreInteraction';
 import { StoreZoneBlock } from '../../domain/store-layout/types';
 import * as THREE from 'three';
 import { Edges } from '@react-three/drei';
+import { StoreLabel } from './StoreLabel';
 
 interface Props {
   block: StoreZoneBlock;
@@ -29,11 +30,10 @@ export const StoreZoneBlockMesh: React.FC<Props> = ({ block }) => {
   // Cálculos visuales
   const scaleY = isSelected ? 1.2 : isHovered ? 1.1 : 1.0;
 
-  // Posición Y ajustada para mantener la base en el suelo al escalar
+  // Como el centro base ya es block.size[1]/2 (centerY),
+  // ajustamos posición Y para que al crecer mantenga su base en 0.
   const height = block.size[1];
-  const positionY = isSelected || isHovered
-    ? block.position[1] + (height * scaleY - height) / 2
-    : block.position[1];
+  const positionY = block.position[1] + (height * scaleY - height) / 2;
 
   let displayColor = block.color;
   let emissiveIntensity = 0;
@@ -54,41 +54,51 @@ export const StoreZoneBlockMesh: React.FC<Props> = ({ block }) => {
   }
 
   return (
-    <mesh
-      ref={meshRef}
-      position={[block.position[0], positionY, block.position[2]]}
-      scale={[1, scaleY, 1]}
-      onPointerEnter={(e) => {
-        e.stopPropagation();
-        setHoveredBlockId(block.id);
-        document.body.style.cursor = 'pointer';
-      }}
-      onPointerLeave={(e) => {
-        e.stopPropagation();
-        if (hoveredBlockId === block.id) {
-          setHoveredBlockId(null);
-          document.body.style.cursor = 'default';
-        }
-      }}
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelectedBlockId(block.id === selectedBlockId ? null : block.id);
-      }}
-    >
-      <boxGeometry args={block.size} />
-      <meshStandardMaterial
-        color={displayColor}
-        emissive={displayColor}
-        emissiveIntensity={emissiveIntensity}
-        transparent={true}
-        opacity={isHovered || isSelected || isRouteTarget ? 0.9 : 0.7}
-      />
+    <group>
+      <mesh
+        ref={meshRef}
+        position={[block.position[0], positionY, block.position[2]]}
+        scale={[1, scaleY, 1]}
+        onPointerEnter={(e) => {
+          e.stopPropagation();
+          setHoveredBlockId(block.id);
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerLeave={(e) => {
+          e.stopPropagation();
+          if (hoveredBlockId === block.id) {
+            setHoveredBlockId(null);
+            document.body.style.cursor = 'default';
+          }
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setSelectedBlockId(block.id === selectedBlockId ? null : block.id);
+        }}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={block.size} />
+        <meshStandardMaterial
+          color={displayColor}
+          emissive={displayColor}
+          emissiveIntensity={emissiveIntensity}
+          transparent={true}
+          opacity={isHovered || isSelected || isRouteTarget ? 0.95 : 0.8}
+        />
 
-      {/* Bordes para dar definición al bloque */}
-      <Edges
-        linewidth={isSelected ? 2 : 1}
-        color={isSelected ? '#000000' : '#4b5563'}
+        {/* Bordes para dar definición al bloque */}
+        <Edges
+          linewidth={isSelected ? 3 : 1}
+          color={isSelected ? '#000000' : '#4b5563'}
+        />
+      </mesh>
+
+      {/* Etiqueta arriba del bloque */}
+      <StoreLabel
+        text={block.label}
+        position={[block.position[0], positionY + height * scaleY / 2 + 0.1, block.position[2]]}
       />
-    </mesh>
+    </group>
   );
 };
