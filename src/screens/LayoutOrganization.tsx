@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ArrowRight, X, Map as MapIcon, List as ListIcon, ChevronDown
 } from 'lucide-react';
-import { SupermarketMap } from '../components/SupermarketMap';
 import { useAppContext } from '../context/AppContext';
 import { AVAILABLE_STORES } from '../types';
 import { useTranslation } from '../i18n';
+
+// Importaciones del nuevo engine 3D
+import { StoreLayout } from '../domain/store-layout/types';
+import { generateStoreLayout } from '../domain/store-layout/generators';
+import { StoreScene } from '../components/store/StoreScene';
+import { StoreInspectorPanel } from '../components/store-ui/StoreInspectorPanel';
+import { StoreDepartmentList } from '../components/store-ui/StoreDepartmentList';
+import { StoreToolbar } from '../components/store-ui/StoreToolbar';
+import { StoreDepartment } from '../domain/store-catalog/types';
 
 interface Props {
   onBack: () => void;
   onNext: () => void;
 }
+
+// Datos Mock generados para probar UI independiente del API
+const MOCK_DEPARTMENTS: StoreDepartment[] = [
+  { id: 1, name: 'Fruits & vegetables', zoneType: 'produce', order: 1, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 2, name: 'Bread & bakery', zoneType: 'bakery', order: 2, layout: 1, published: true, isExtended: false, categories: [{ id: 201, name: 'Pan fresco', order: 1, layout: 1, published: true, isExtended: false }] },
+  { id: 3, name: 'Pizza & ready meals', zoneType: 'ready-meals', order: 3, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 4, name: 'Meat', zoneType: 'refrigerated', order: 4, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 5, name: 'Seafood & fish', zoneType: 'refrigerated', order: 5, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 6, name: 'Frozen food', zoneType: 'frozen', order: 6, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 7, name: 'Oils, spices & sauces', zoneType: 'ambient', order: 7, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 8, name: 'Water & soft drinks', zoneType: 'ambient', order: 8, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 9, name: 'Cereal & biscuits', zoneType: 'ambient', order: 9, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 10, name: 'Cleaning & household', zoneType: 'household', order: 10, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 11, name: 'Facial & body care', zoneType: 'perfume', order: 11, layout: 1, published: true, isExtended: false, categories: [] },
+  { id: 12, name: 'Pet', zoneType: 'pet', order: 12, layout: 1, published: true, isExtended: false, categories: [] },
+];
+
 
 export function LayoutOrganization({ onBack, onNext }: Props) {
   const [viewMode, setViewMode] = useState<'visual' | 'list'>('visual');
@@ -19,11 +44,15 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
   const list = lists.find(l => l.id === activeListId);
   const items = list?.items || [];
 
+  const layout = useMemo<StoreLayout>(() => {
+    return generateStoreLayout(MOCK_DEPARTMENTS, { width: 30, depth: 40 });
+  }, []);
+
   if (!list) return null;
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-slate-50 dark:bg-slate-900 font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative">
-      {/* Cabela Blanca */}
+      {/* Cabecera Blanca */}
       <header className="px-6 pt-12 pb-4 bg-white border-b border-slate-200 dark:border-slate-800 flex flex-col relative z-20">
         <div className="flex justify-between items-start mb-1">
           <div className="flex-1 min-w-0 pr-4">
@@ -55,12 +84,14 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
       {/* Main Content Area */}
       <main className="flex-1 relative overflow-hidden flex flex-col bg-slate-50 dark:bg-slate-900">
         {viewMode === 'visual' ? (
-          <div className="h-full w-full">
-            <SupermarketMap
-              className="rounded-none border-none shadow-none bg-transparent"
-              showLegend={false}
-              showControls={true}
-            />
+          <div className="h-full w-full relative">
+            {/* Componentes UI 3D Map */}
+            <StoreDepartmentList layout={layout} />
+            <StoreInspectorPanel layout={layout} />
+            <StoreToolbar layout={layout} />
+
+            {/* Engine Visual 3D */}
+            <StoreScene layout={layout} />
           </div>
         ) : (
           <div className="h-full w-full overflow-y-auto px-6 py-2 bg-white m-4 mt-4 mr-4 mb-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm" style={{ height: 'calc(100% - 2rem)', width: 'calc(100% - 3rem)' }}>
