@@ -48,7 +48,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
     return generateStoreLayout(MOCK_DEPARTMENTS, { width: 30, depth: 40 });
   }, []);
 
-  if (!list) return null;
+  // removed list requirement
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-slate-50 dark:bg-slate-900 font-[Inter,system-ui,sans-serif] text-slate-900 overflow-hidden relative">
@@ -59,9 +59,9 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
             <h1 className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-1">{t.layout_route_map}</h1>
             <div className="relative inline-flex items-center w-full">
               <select
-                value={list.storeName}
+                value={list?.storeName}
                 onChange={(e) => {
-                  updateList(list.id, { storeName: e.target.value });
+                  if (list) updateList(list.id, { storeName: e.target.value });
                 }}
                 className="bg-transparent pl-0 pr-6 py-1 text-xl font-bold text-slate-900 appearance-none border-none focus:ring-0 cursor-pointer w-full truncate"
               >
@@ -72,7 +72,7 @@ export function LayoutOrganization({ onBack, onNext }: Props) {
               <ChevronDown className="w-5 h-5 text-slate-400 absolute right-0 pointer-events-none" />
             </div>
             <p className="text-sm font-medium text-slate-600 mt-1">
-              {t.layout_pending_products(items.filter(i => !i.checked).length)}
+              {items ? t.layout_pending_products(items.filter(i => !i.checked).length) : ""}
             </p>
           </div>
           <button onClick={onBack} className="p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 rounded-full border border-slate-200 dark:border-slate-800">
