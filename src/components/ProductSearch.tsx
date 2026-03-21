@@ -156,8 +156,8 @@ export function ProductSearch({ placeholder, listId, onProductSelect, onSearchCh
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 group flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700/50 focus-within:border-primary/50 p-2.5 rounded-2xl shadow-sm transition-all duration-300">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
+                <div className="w-full sm:flex-1 group flex items-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700/50 focus-within:border-primary/50 p-2.5 rounded-2xl shadow-sm transition-all duration-300">
                     <Search className="w-5 h-5 text-slate-400 group-focus-within:text-primary" />
                     <input
                         type="text"
