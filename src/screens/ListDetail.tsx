@@ -478,7 +478,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
 
         {isCtaMenuOpen && (
           <div className="absolute bottom-full right-6 md:right-12 lg:right-24 xl:right-48 mb-3 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => onNavigate("layout_organization")} className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               <div className="size-8 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                 <Check className="w-4 h-4" />
               </div>
@@ -499,7 +499,7 @@ export function ListDetail({ onBack, onNavigate }: Props) {
                 <span className="text-[10px] text-slate-400">{list.repetition || t.list_schedule_hint}</span>
               </div>
             </button>
-            <button className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => onNavigate("layout_organization")} className="w-full px-5 py-3 text-left text-sm flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               <div className="size-8 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                 <LayoutGrid className="w-4 h-4" />
               </div>
